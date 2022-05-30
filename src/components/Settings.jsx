@@ -10,10 +10,10 @@ export function Settings(){
         localStorage.setItem('theme', form.theme.value);
     }
     return(
-        <div className="h-screen w-screen px-2 dark:text-white">
+        <div className="h-fit w-screen px-2 dark:text-white">
             <div className="w-full h-fit">
-                <form className="" onSubmit={handleForm}>
-                    <div className="border border-t-0 p-2 flex flex-col divide-y gap-y-2">
+                <form className="mt-2" onSubmit={handleForm}>
+                    <div className="p-2 flex flex-col divide-y gap-y-2">
                         <div className="flex-1">
                             <div className="flex flex-row">
                                 <div className="flex-auto flex flex-col w-1/2">

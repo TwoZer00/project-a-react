@@ -3,6 +3,7 @@ import { getProfileImageURL, resize, updateProf, uploadProfileImage } from "../u
 import projectA from "../img/projectA.svg";
 import { CameraIcon } from '@heroicons/react/outline'
 import { ProfileImage } from "./elements/ProfileImage";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 export function ProfileSettings({user,setProfileImage,setUser,img}){
 
@@ -13,9 +14,9 @@ export function ProfileSettings({user,setProfileImage,setUser,img}){
     const imgURL = useRef();
     const [isLoadingImage,setIsLoadingImage] = useState(false);
     const [isUpdating,setIsUpdating] = useState(false);
+    const location = useLocation();
 
     //const[username,setUsername] = useState(user?.username);
-
     console.log(user); 
     const handleChangeProfilImage = ()=>{
         inputFile.current.click();
@@ -107,5 +108,8 @@ export function ProfileSettings({user,setProfileImage,setUser,img}){
                 </form>
             </div>
         );
+    }
+    else{
+        return(<Navigate to='/login' state={{from: location}} replace></Navigate>);
     }
 }

@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { collection, doc, getDoc, getDocs, getFirestore, orderBy, query, where } from "firebase/firestore";
-import firebase from "../utils/firebase";
 import projectA from "../img/projectA.svg";
 import { Element } from "./elements/Element";
-import { ElementProfile } from "./elements/ElementProfile";
-import { getProfileImageURL, getUserFollowers, getUserInfo, getUsername, getUserPosts, setUserFollow, stringToDate } from "../utils/utils";
-import { UserGroupIcon } from "@heroicons/react/solid";
-import { UsersIcon } from "@heroicons/react/outline";
+import { getProfileImageURL, getUserFollowers, getUserInfo, getUserPosts, setUserFollow, stringToDate } from "../utils/utils";
 import { FollowerCounter } from "./elements/FollowersCounter";
-const db = getFirestore(firebase);
 
 export function Profile({img,user,player}){
     //console.warn(user);
