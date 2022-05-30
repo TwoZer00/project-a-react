@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/project-a-react/static/css/main.c621f50b.css",
+    "main.js": "/project-a-react/static/js/main.e7e7fb20.js",
+    "index.html": "/project-a-react/index.html",
+    "static/media/projectA.svg": "/project-a-react/static/media/projectA.e4fbf8d18ce3dbcf91d5f9e643c6d18c.svg",
+    "static/media/microphone-stroke.svg": "/project-a-react/static/media/microphone-stroke.98686fe47d5c53b192d91e6d25848dc6.svg",
+    "main.c621f50b.css.map": "/project-a-react/static/css/main.c621f50b.css.map",
+    "main.e7e7fb20.js.map": "/project-a-react/static/js/main.e7e7fb20.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c621f50b.css",
+    "static/js/main.e7e7fb20.js"
+  ]
+}
