@@ -34,8 +34,21 @@ export function App() {
   const [profileImage, setProfileImage] = useState("");
   const [userId, setUserId] = useState("");
   const [user, setUser] = useState();
-
+  const [dark, setDark] = useState(localStorage.getItem("theme"));
+  const main = useRef();
+  // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+  console.log(localStorage.getItem("theme"));
   useEffect(() => {
+    if (
+      localStorage.theme === 2 ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      //setDark("light");
+    } else {
+      setDark("light");
+    }
+    console.log();
     if (isMounted.current) {
       onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -64,7 +77,7 @@ export function App() {
     }
   }, [auth, userId]);
   return (
-    <div className="bg-white dark:bg-neutral-900">
+    <div className={`bg-white dark:bg-neutral-900 ${dark}`}>
       <header className="border-b fixed top-0 w-screen">
         <Menu
           profileImage={profileImage}
@@ -72,7 +85,7 @@ export function App() {
           logoutFunction={logout}
         ></Menu>
       </header>
-      <main className="h-screen w-screen">
+      <main className={`h-screen w-screen`}>
         {/* <div className="h-screen">
           <div className="h-full w-fit border overflow-auto ">
             <Routes>
@@ -111,7 +124,7 @@ export function App() {
           <div className="h-full w-screen flex flex-col">
             <div className="flex-auto h-5/6 overflow-auto mt-2 mb-2">
               <Routes>
-                <Route path="/" element={<Home player={handleObj} />} />
+                <Route exact path="/" element={<Home player={handleObj} />} />
                 <Route path="/login" user={user} element={<Login />} />
                 <Route
                   path="/user/:userId"
@@ -128,7 +141,7 @@ export function App() {
                   element={<Post handleAudioURL={handleObj} />}
                 />
                 <Route path="/upload" element={<Upload user={user} />} />
-                <Route path="/settings" element={<MenuSettings />}>
+                <Route path="/settings" element={<MenuSettings user={user} />}>
                   <Route
                     path="user"
                     element={
@@ -142,7 +155,6 @@ export function App() {
                   />
                   <Route path="" element={<Settings />} />
                 </Route>
-
                 <Route
                   path="/feed"
                   element={<Feed user={user} player={handleObj} />}
