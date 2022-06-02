@@ -42,8 +42,8 @@ export function Login({user}){
             <>
                 <h1 className="text-center text-2xl font-bold mt-3 dark:text-white">Login</h1>
                 <form className="w-full px-2 lg:w-2/5 lg:mx-auto mt-2 flex flex-col gap-2" onSubmit={login}>
-                    <input type="email" className="flex-auto border h-10 rounded p-3 w-full disabled:text-gray-400 disabled:bg-gray-200" placeholder="email" onChange={handleEmail}  disabled={isLoading} />
-                    <input type="password" className="flex-auto border h-10 rounded p-3 disabled:text-gray-400 disabled:bg-gray-200" placeholder="password" onChange={handlePassword} disabled={isLoading}  />
+                    <input type="email" className="flex-auto border h-10 rounded p-3 w-full disabled:text-gray-400 disabled:bg-gray-200 dark:bg-transparent dark:text-white" placeholder="email" onChange={handleEmail}  disabled={isLoading} />
+                    <input type="password" className="flex-auto border h-10 rounded p-3 disabled:text-gray-400 disabled:bg-gray-200 dark:bg-transparent dark:text-white" placeholder="password" onChange={handlePassword} disabled={isLoading}  />
                     <input type="submit" className={`flex-auto w-full h-10 rounded-full w-full cursor-pointer bg-purple-700 text-white disabled:bg-purple-500`} value={`${isLoading?'Loading':'Login'}`} disabled={isLoading} />
                 </form>
             </>

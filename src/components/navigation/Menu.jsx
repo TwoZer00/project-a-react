@@ -1,19 +1,54 @@
 import projectA from "../../img/projectA.svg";
+import profileSquare from "../../img/profileImg.jpg";
 import microphone from "../../img/microphone-stroke.svg";
 import { InboxIcon } from '@heroicons/react/outline'
 //import { CustomLink } from "../router/CustomLink";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { MenuProfile } from "../CustomElements/Menus/MenuProfile";
 
-export function Menu({profileImage,user,logoutFunction}){
+
+function useOutsideAlerter(ref) {
+    useEffect(() => {
+      /**
+       * Alert if clicked on outside of element
+       */
+      function handleClickOutside(event) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          //alert("You clicked outside of me!");
+		  console.log("123");
+        }
+      }
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
+  }
+
+export function Menu({profileImage,user,logoutFunction,setDark}){
 	const [isDown,setDown] = useState(false);
-	const dropdown = ()=>{
-		if(isDown){
-			setDown(false);
+	const button = useRef();
+	const wrapperRef = useRef(null);
+	useOutsideAlerter(wrapperRef);
+	const dropdown = (e)=>{
+		console.log(e.target,button.current,isDown)
+		if(e.target==button.current){
+			console.log("bbb")
+			if(isDown){
+				setDown(false);
+			}
+			else{
+				setDown(true);
+			}
 		}
 		else{
+			console.log("aaa")
 			setDown(true);
 		}
+		
 	}
 	useEffect(()=>{
 	},[user]);
@@ -41,17 +76,11 @@ export function Menu({profileImage,user,logoutFunction}){
 							<img
 									src={profileImage || projectA}
 									alt="profile"
+									ref={button}
 									className={`h-full w-12 bg-purple-700 dark:bg-purple-900 ${profileImage?"object-cover":"p-1.5"}`}
 								/>
 						</div>
-						<div className={`w-32 w-max-40 h-fit h-max-32 bg-white border dark:border-white rounded absolute z-10 top-full right-0 drop-shadow-md dark:bg-neutral-900 ${isDown?'block':'hidden'}`}>
-							<div className="flex flex-col h-fit divide-y first:pt-2 last:pb-2 text-center content-center">
-								{user?<Link to={`/user/${user.userId}`} className={`w-full dark:text-white h-1/4 hover:bg-purple-200 dark-hover:bg-purple-200/10 hover:cursor-pointer p-2`}>Profile</Link>:''}
-								<Link to={user?'/settings/user':'/settings'} className={`${user?"h-1/4":"h-1/2"} dark:text-white hover:bg-purple-200 dark-hover:bg-purple-200/10 hover:cursor-pointer p-2`}>Settings</Link>
-								{user?<Link to={`/feed`} className={`w-full h-1/4 hover:bg-purple-200 dark-hover:bg-purple-200/20 hover:cursor-pointer p-2 dark:text-white`}>Feed</Link>:''}
-								{user?<button className={`h-1/4 hover:bg-purple-200 dark-hover:bg-purple-200/20 hover:cursor-pointer p-2 dark:text-white`} onClick={logoutFunction}>Logout</button>:<Link to='/login' className="h-1/2 dark:text-white hover:bg-purple-200 dark-hover:bg-purple-200/20 hover:cursor-pointer p-2">Login</Link>}
-							</div>
-						</div>
+						<MenuProfile user={user} profileImage={profileImage} isDown={isDown} setDark={setDark} ref={wrapperRef} />
 					</div>
 				</div>
 			</nav>

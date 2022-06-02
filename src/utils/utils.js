@@ -204,7 +204,7 @@ export async function setUserFollow(userfollowing, userfollowid, followers) {
   //   console.error(error.message);
   // }
   // console.log(userfollowing);
-  if (followers.length <= 0) {
+  if (!followers|| followers.length <= 0) {
     try {
       await setDoc(doc(db, "follow", userfollowing.userId), {
         followers: [],

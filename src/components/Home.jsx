@@ -34,7 +34,7 @@ export function Home({player}){
         return(
             <div className="w-full px-2 lg:w-5/6 lg:mx-auto flex flex-col gap-2">
                 {
-                    querySnapshot?.docs.map((doc) => <Element play={player} post={doc.data()} id={doc.id}  key={doc.id} user={doc.data().userId} />)
+                    querySnapshot?.docs.map((doc) => <Element key={doc.id} play={player} post={doc.data()} id={doc.id}  key={doc.id} user={doc.data().userId} />)
                 }
             </div>
         );

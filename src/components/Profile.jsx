@@ -76,9 +76,9 @@ export function Profile({img,user,player}){
                      <p>{userInfo?.desc}</p>
                  </div>
                  <div className="flex-auto w-full lg:w-3/4 border rounded mb-[7rem]">
-                     <div className="flex flex-col devide-y">
+                     <div className="flex flex-col devide-y h-full">
                          {
-                             userPosts?.map((doc)=><Element key={doc.id} post={doc.data()} id={doc.id} isLoading={isLoading} play={player} view={'profile'} ></Element>)
+                             userPosts.size>0?userPosts?.map((doc)=><Element key={doc.id} post={doc.data()} id={doc.id} isLoading={isLoading} play={player} view={'profile'} ></Element>): <div className="dark:text-white block text-center">This user had no post</div>
                          }
                      </div>
                  </div>
