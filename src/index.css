@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .dark select option  {
+      @apply bg-transparent text-white cursor-pointer;
+    }
+    select {
+        @apply bg-white text-black cursor-pointer;
+    }
+  }

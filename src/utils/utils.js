@@ -29,7 +29,6 @@ import firebase from "./firebase";
 const storage = getStorage();
 const auth = getAuth();
 const db = getFirestore(firebase);
-const nsfw = localStorage.getItem("nsfw") || false;
 
 export function stringToDate(string) {
   //console.log(new Date(string));
@@ -196,7 +195,7 @@ export async function getUser(id) {
   return undefined;
 }
 
-export async function setUserFollow(userfollowing, userfollowid, followers) {
+export async function setUserFollow(followerUserId, userId) {
   // console.log(userfollowing);
   // try {
   //   userfollowing.followers = await getUserFollowers(userfollowing.userId);
@@ -204,23 +203,25 @@ export async function setUserFollow(userfollowing, userfollowid, followers) {
   //   console.error(error.message);
   // }
   // console.log(userfollowing);
-  if (!followers|| followers.length <= 0) {
+
+  const followers = await getUserFollowers(userId);
+  if (!followers || followers.length === 0) {
     try {
-      await setDoc(doc(db, "follow", userfollowing.userId), {
+      await setDoc(doc(db, "follow", userId), {
         followers: [],
       });
     } catch (error) {
       console.error(error.message);
     }
   }
-  const updateRef = doc(db, "follow", userfollowing.userId);
-  if (followers.includes(userfollowid)) {
+  const updateRef = doc(db, "follow", userId);
+  if (followers.includes(followerUserId)) {
     try {
       console.warn("remove");
       await updateDoc(updateRef, {
-        followers: arrayRemove(userfollowid),
+        followers: arrayRemove(followerUserId),
       });
-      return await getUserFollowers(userfollowing.userId);
+      return await getUserFollowers(userId);
     } catch (error) {
       console.error(error.message);
     }
@@ -228,9 +229,9 @@ export async function setUserFollow(userfollowing, userfollowid, followers) {
     try {
       console.warn("add");
       await updateDoc(updateRef, {
-        followers: arrayUnion(userfollowid),
+        followers: arrayUnion(followerUserId),
       });
-      return await getUserFollowers(userfollowing.userId);
+      return await getUserFollowers(userId);
     } catch (error) {
       console.error(error.message);
     }
@@ -390,7 +391,8 @@ export async function getUserInfo(id) {
 
 export async function getUserPosts(id, user) {
   //let q;
-  console.log(id);
+  console.log("Getting post from" + id);
+  const nsfw = localStorage.getItem("nsfw") === "true";
   // if (nsfw) {
   //   q = query(
   //     collection(db, "post"),
@@ -431,6 +433,7 @@ export async function getUserFollowers(id) {
 }
 
 export async function getUserFeed(id) {
+  const nsfw = localStorage.getItem("nsfw") === "true";
   const citiesRef = collection(db, "follow");
   let q = query(citiesRef, where("followers", "array-contains", id));
   let result = await getDocs(q);
@@ -484,5 +487,16 @@ export async function getAudioUrl(path) {
     return await getDownloadURL(gsReference);
   } catch (error) {
     console.error(error);
+  }
+}
+export function numToGender(num) {
+  // 0 female - 1 male - 2 no specify
+  switch (num) {
+    case 0:
+      return "Female";
+    case 1:
+      return "Male";
+    default:
+      return "No specify";
   }
 }

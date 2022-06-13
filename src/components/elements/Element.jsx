@@ -3,14 +3,11 @@ import { Link } from "react-router-dom";
 import { daysAgo, getUsername } from "../../utils/utils";
 import {PlayIcon} from "@heroicons/react/solid";
 
-export function Element({post,id,isLoading,play}){
+export function Element({post,id,profileUsername,isLoading,play}){
     const [username,setUsername] = useState();
     const [isUsernameLoading,setIsUsernameLoading] = useState(true);
     const handleClick = ()=>{
         play(post)
-    }
-    const handleViewMore = ()=>{
-        
     }
     useEffect(()=>{
         const gUser = async()=>{
@@ -18,15 +15,15 @@ export function Element({post,id,isLoading,play}){
             post.username = username;
             setIsUsernameLoading(false);
         }
-        if(post){
+        if(!profileUsername){
             gUser();
         }
-    },[post]);
+    },[username]);
     if(post){
         return(
-            <div className={`rounded w-full p-2 dark:text-white border ${isLoading?'bg-gray-50 h-24 animate-pulse':''}`}>
-                <Link to={`/user/${post.userId}`} className={`mr-2 inline underline ${isUsernameLoading?'bg-purple-100 w-32':''}`}>{username}</Link>
-                <p className="text-xs inline bg-purple-300 rounded p-1 text-neutral-900">{daysAgo(post?.date)}</p>
+            <div className={`rounded w-full p-2 dark:text-white border`}>
+                <Link to={`/user/${post.userId}`} className={`mr-2 inline underline ${isUsernameLoading?'bg-purple-100 w-32':''}`}>{profileUsername?profileUsername:username}</Link>
+                <p className="text-xs inline bg-purple-700 rounded p-1 text-white">{daysAgo(post?.date)}</p>
                 <div className="text-2xl cursor-pointer" onClick={handleClick} >
                     {post.title}
                 </div>

@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import firebase from "../utils/firebase";
 import { Element } from "./elements/Element";
+import PostList from "./PostList";
+import Spinner from "./Spinner";
+import UserPost from "./UserPost";
 const db = getFirestore(firebase);
 
 export function Home({player}){
@@ -10,9 +13,10 @@ export function Home({player}){
     const [isLoading,setisLoading] = useState(true);
     useEffect(()=>{
         async function getPosts(){
+            console.log("Getting post for HOME page")
             let postRef = collection(db, "post");
             let q;
-            if(localStorage.getItem("nsfw") === true){
+            if(localStorage.getItem("nsfw") === 'true'){
                 q = query(postRef, orderBy("date","desc"));
             }
             else{
@@ -20,23 +24,27 @@ export function Home({player}){
             }
             setQuerySnapshot(await getDocs(q));
             setisLoading(false);
+            console.log(querySnapshot.docs)
+            //
         }
         getPosts();
     },[]);
     if(isLoading){
         return (
-            <div className="w-full px-2 lg:w-5/6 lg:mx-auto flex flex-col gap-2">
-                {[1,2,3,4,5].map(()=><Element post={undefined} isLoading={isLoading}></Element>)}
+            <div className="flex flex-col h-full justify-center items-center">
+                <PostList/>
             </div>
         );
     }
     else{
         return(
-            <div className="w-full px-2 lg:w-5/6 lg:mx-auto flex flex-col gap-2">
-                {
-                    querySnapshot?.docs.map((doc) => <Element key={doc.id} play={player} post={doc.data()} id={doc.id}  key={doc.id} user={doc.data().userId} />)
-                }
-            </div>
-        );
+            <div className={`w-full px-2 lg:w-5/6 lg:mx-auto flex flex-col gap-2`}>
+                <PostList postArray={querySnapshot?.docs} playerFunction={player} />
+            </div>)
     }
+    // return(
+    //     // <div className="flex flex-col">
+    //     //     <Spinner/>
+    //     // </div>
+    // );
 }
