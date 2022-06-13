@@ -84,8 +84,8 @@ export function Player({post}){
             <audio src={audio||''} ref={audioElement} onLoadedData={handleAudio} onPlaying={handlePlay} onTimeUpdate={handleTimeUpdate} onEnded={handleEndend}></audio>
             <div className="w-5/6 mx-auto h-full rounded-t bg-white dark:bg-neutral-900 border border-b-0">
                 <div className="flex flex-row gap-x-2 gap-y-1 items-center h-full">
-                    <div className="flex-none w-fit h-full bg-purple-200 overflow-hidden">
-                        <img src={coverImage} alt="" className="h-full object-cover" />
+                    <div className="flex-1 w-fit h-full bg-purple-200 overflow-hidden">
+                        <img src={coverImage} alt="" className="h-full object-cover w-fit" />
                     </div>
                     <div className="bg-white dark:bg-neutral-900 dark:text-white flex-auto w-4/6 lg:w-5/6 flex flex-row items-center gap-x-1 pr-2">
                         <div className="cursor-pointer h-full w-20" onClick={handleClickPlay}>
