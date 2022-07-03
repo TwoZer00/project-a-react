@@ -19,6 +19,6 @@ export default function Username({id,className,children}){
         }
     },[children, id]);
     return(
-        <Link to={`/user/${id}`} className={`${className} underline ${isUsernameLoading?'bg-purple-100 w-32':''}`}>{username}</Link>
+        <Link to={`/user/${id}`} className={`${className} ${isUsernameLoading?'bg-purple-100 w-32 rounded':''}`}>{username}</Link>
     );
 }

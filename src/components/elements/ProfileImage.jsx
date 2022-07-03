@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { getProfileImageURL } from "../../utils/utils";
+import projectA from "../../img/projectA.svg";
 
 export function ProfileImage({img,refa,user,setImage, ...props}){
     useEffect(()=>{
@@ -17,9 +18,7 @@ export function ProfileImage({img,refa,user,setImage, ...props}){
         }
     },[img,setImage]);
 
-    if(img){
-        return(
-            <img src={img} ref={refa} alt={`${user.username}profile's`} {...props}/>
-        )
-    }
+    return(
+        <img src={img||projectA} alt={`${user.username}profile's`} ref={refa} {...props}/>
+    )
 }

@@ -1,5 +1,10 @@
 import { async } from "@firebase/util";
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import {
   addDoc,
   arrayRemove,
@@ -9,6 +14,7 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  increment,
   orderBy,
   query,
   setDoc,
@@ -34,8 +40,8 @@ export function stringToDate(string) {
   //console.log(new Date(string));
   let date = new Date(1616258233000);
 
-  if (string && !string === "") {
-    date = new Date(string);
+  if (string && string !== "") {
+    date = new Date(string * 1000);
   }
 
   // console.log(new Date("1616258233000"));
@@ -71,12 +77,15 @@ export function secToPorcentage(time, totalTime) {
 }
 
 export async function getUsername(id) {
+  //console.info("Get username from id:", id);
   const db = getFirestore(firebase);
   const docRef = doc(db, "user", id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     //console.log(docSnap.data().username);
     return docSnap.data().username;
+  } else {
+    //console.info("user not found");
   }
   //console.warn("No user found");
   return undefined;
@@ -115,6 +124,23 @@ export function pixToPorcentage(pixels, totalPixels) {
   return (pixels * 100) / totalPixels;
 }
 
+export async function checkUsernameValidity(username) {
+  const userRef = collection(db, "user");
+  const q = query(userRef, where("username", "==", username));
+  let user = await getDocs(q);
+  console.warn(user.docs);
+  if (user.docs.length > 0) {
+    return true;
+  }
+  console.log("aaaa");
+  return false;
+}
+
+export function UserAlreadyExistException(message) {
+  this.message = message;
+  this.name = "UserAlreadyExistException";
+}
+
 export async function uploadPost(post, file, setProgress) {
   post.date = new Date();
   //let complete = false;
@@ -132,7 +158,7 @@ export async function uploadPost(post, file, setProgress) {
   //console.log(downloadURL, downloadURL.ref, downloadURL.downloadURL);
   //post.fileURL = downloadURL;
   let filePath = downloadURL.ref.fullPath;
-  console.log(encodeURIComponent(filePath));
+  //console.log(encodeURIComponent(filePath));
   post.filePath = filePath;
   await setDoc(newCityRef, post);
 
@@ -331,6 +357,7 @@ export async function uploadProfileImage(file, userId) {
 }
 
 export async function resize(file, element) {
+  //console.info(element);
   let data;
   //define the width to resize e.g 600px
   var resize_width = 200; //without px
@@ -490,13 +517,84 @@ export async function getAudioUrl(path) {
   }
 }
 export function numToGender(num) {
+  //console.info(typeof parseInt(num));
   // 0 female - 1 male - 2 no specify
-  switch (num) {
+  switch (parseInt(num)) {
     case 0:
-      return "Female";
+      return "(Female)";
     case 1:
-      return "Male";
+      return "(Male)";
     default:
-      return "No specify";
+      return "";
   }
+}
+export async function getReproductions(id) {
+  const cityRef = doc(db, "reproduction", id);
+  const docSnap = await getDoc(cityRef);
+  if (docSnap.exists()) {
+    return docSnap.data().reproductions;
+  }
+}
+export async function setReproduction(post) {
+  const cityRef = doc(db, "reproduction", post.postId);
+  const docSnap = await getDoc(cityRef);
+
+  if (!docSnap.exists()) {
+    await initReproduction(cityRef, post);
+  }
+  // Atomically increment the population of the city by 50.
+  await updateDoc(cityRef, {
+    reproductions: increment(1),
+  });
+}
+async function initReproduction(ref, post) {
+  await setDoc(ref, { reproductions: 0, userId: post.userId });
+}
+
+export async function getProfileReproductions(id) {
+  const reproductionRef = collection(db, "reproduction");
+  const queryR = query(reproductionRef, where("userId", "==", id));
+  const posts = await getDocs(queryR);
+  let counter = 0;
+  posts.forEach((post) => {
+    counter += post.data().reproductions;
+  });
+  return counter;
+}
+export function optimize(amount) {
+  if (amount >= 1000000) {
+    return (amount / 1000000).toFixed(0) + "M";
+  } else if (amount >= 10000) {
+    return (amount / 1000).toFixed(0) + "K";
+  } else if (amount) {
+    return amount + "";
+  } else {
+    return 0 + "";
+  }
+}
+export async function setEmailVerify(id) {
+  const userRef = doc(db, "user", id);
+  const docSnap = await updateDoc(userRef, { emailVerify: true });
+}
+
+export async function createUserAuth(user, authUser) {
+  let authu = await createUserWithEmailAndPassword(
+    getAuth(),
+    authUser.email,
+    authUser.password
+  );
+  await createUser(
+    {
+      ...user,
+      ...{ creationTime: authu.user.metadata.creationTime },
+    },
+    authu.user.uid
+  );
+  return authu.user.uid;
+}
+
+export async function createUser(user, id) {
+  console.log("Creating user", user);
+  const userRef = doc(db, "user", id);
+  await setDoc(userRef, user);
 }

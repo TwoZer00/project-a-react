@@ -24,10 +24,10 @@ export function Home({player}){
             }
             setQuerySnapshot(await getDocs(q));
             setisLoading(false);
-            console.log(querySnapshot.docs)
-            //
         }
-        getPosts();
+        if(!querySnapshot){
+            getPosts();
+        }
     },[]);
     if(isLoading){
         return (
@@ -42,9 +42,4 @@ export function Home({player}){
                 <PostList postArray={querySnapshot?.docs} playerFunction={player} />
             </div>)
     }
-    // return(
-    //     // <div className="flex flex-col">
-    //     //     <Spinner/>
-    //     // </div>
-    // );
 }

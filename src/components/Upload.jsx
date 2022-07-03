@@ -1,3 +1,4 @@
+import { getAuth } from "firebase/auth";
 import { collection, doc, getFirestore, setDoc } from "firebase/firestore";
 import { getDownloadURL } from "firebase/storage";
 import { useRef, useState } from "react";
@@ -28,12 +29,14 @@ export function Upload({user}){
         let file = form.file.files[0];
         if (form.reportValidity() && file.type.includes("audio")) {
             console.log("send");
-            //setPost(obj)
-            console.log(await uploadPost(obj, file));
-            setIsSendingPost(false);
-            //handleUploadTask(uploadTask);
-            //console.log(complete);
-            form.reset();
+            try {
+                console.log(await uploadPost(obj, file));
+                setIsSendingPost(false);
+                form.reset();
+            } catch (error) {
+                console.error(error.message);
+                setIsSendingPost(false);
+            }
         }
         else{
             console.log("not send");
@@ -45,9 +48,6 @@ export function Upload({user}){
         let file = element.files[0];
         if (file.size / 1024 / 1024 > 60) {
             element.setCustomValidity("File size exceeds 60MB");
-        }
-        else{
-            console.log('v')
         }
     }
     if(user){
@@ -65,7 +65,8 @@ export function Upload({user}){
                         <input type="file" name="file" onChange={handleFile} className="flex-auto w-2/3 inline-block file:rounded-full dark:bg-transparent file:bg-purple-50 file:border-0 file:p-2 border-2 rounded-full"/>
                     </div>
                     <textarea name="desc" id="" cols="30" rows="10" className="border px-2 rounded-lg resize-none dark-placeholder:text-black/20 dark:bg-transparent" placeholder="Description"></textarea>
-                    <input type="submit" value={`${isSendingPost?"Uploading":"Upload"}`} className="bg-purple-700 text-white rounded-full font-bold text-xl p-3 justify-self-end cursor-pointer disabled:bg-purple-300 disabled:animation-pulse disabled:cursor-not-allowed" disabled={isSendingPost} />
+                    <input type="submit" value={`${isSendingPost?"Uploading":"Upload"}`} className="bg-purple-700 text-white rounded-full font-bold text-xl p-3 justify-self-end cursor-pointer disabled:bg-purple-300 disabled:animation-pulse disabled:cursor-not-allowed" disabled={!getAuth().currentUser.emailVerified||isSendingPost} />
+                    {getAuth().currentUser.emailVerified?"":<small className="text-sm">In order to upload audios first you need verify your email. Go to <b>Edit profile</b> &gt; click on <b>Verify email</b> </small>}
                 </form>
             </div>
         </>);

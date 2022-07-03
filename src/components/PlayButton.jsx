@@ -5,9 +5,6 @@ export function PlayButton({state,className,...props}){
         case "playing":
             return(<>
                 <PauseIcon className={`transition-all ${className} hover:scale-110`} {...props} />
-                {/* {
-                                        !audioElement.current?.paused?():
-                                    } */}
             </>);
         case "paused":
             return(<>

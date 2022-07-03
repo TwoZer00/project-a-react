@@ -20,18 +20,29 @@ import { Settings } from "./components/Settings";
 import { ProfileSettings } from "./components/ProfileSettings";
 import { MenuSettings } from "./components/navigation/MenuSettings";
 import { Feed } from "./components/Feed";
+import EmailVerify from "./EmailVerify";
+import Signup from "./components/Signup";
 
 export function App() {
   const auth = getAuth();
-  const [audioUrl, setAudioUrl] = useState();
+  const [latestAudio, setLatestAudio] = useState();
+  const [onPlay, setOnPlay] = useState();
+  const [playerAction, setPlayerAction] = useState("none");
   const handleObj = async (obj) => {
-    setAudioUrl(obj);
-    console.log(audioUrl);
+    //setLatestAudio(obj);
+    if (obj.postId !== onPlay?.postId) {
+      //console.info(obj, onPlay);
+      setOnPlay(obj);
+    } else {
+      setPlayerAction("resume");
+    }
+    setPlayerDisplay("");
   };
   const isMounted = useRef(true);
   const [isLoading, setIsLoading] = useState(true);
   const [profileImage, setProfileImage] = useState("");
   const [userId, setUserId] = useState("");
+  const [playerDisplay, setPlayerDisplay] = useState("hidden");
   const [cursorState, setCursorState] = useState();
   const [user, setUser] = useState();
   const [dark, setDark] = useState(
@@ -40,6 +51,10 @@ export function App() {
         ? "dark"
         : "ligth")
   );
+  const handleClick = (e)=>{
+    const element = e.target;
+    element.parentElement.parentElement.remove();
+  }
   useEffect(() => {
     if (isMounted.current) {
       onAuthStateChanged(auth, async (user) => {
@@ -71,7 +86,7 @@ export function App() {
   return (
     <div className={`${dark ? dark : ""} ${cursorState} `}>
       <div className={`bg-white dark:bg-neutral-900`}>
-        <header className="border-b fixed top-0 w-screen">
+        <header className="border-b fixed top-0 w-screen z-10">
           <Menu
             profileImage={profileImage}
             user={user}
@@ -79,11 +94,15 @@ export function App() {
             setDark={setDark}
           ></Menu>
         </header>
-        <main className={`h-screen w-screen`}>
+        <main className={`h-screen w-screen z-0 relative`}>
           <div className="h-full pt-[60px]">
             <div className="h-full w-screen flex flex-col">
-              <div className="flex-auto h-5/6 overflow-auto mt-2 mb-2">
+              <div className="flex-auto h-5/6 overflow-auto">
                 <Routes>
+                  <Route
+                    path="/emailRedirect"
+                    element={<EmailVerify auth={auth} />}
+                  />
                   <Route exact path="/" element={<Home player={handleObj} />} />
                   <Route
                     path="/login"
@@ -113,6 +132,7 @@ export function App() {
                       path="user"
                       element={
                         <ProfileSettings
+                          auth={auth}
                           user={user}
                           img={profileImage}
                           setProfileImage={setProfileImage}
@@ -120,17 +140,28 @@ export function App() {
                         />
                       }
                     />
-                    <Route path="" element={<Settings />} />
+                    <Route path="" element={<Settings setDark={setDark} />} />
                   </Route>
                   <Route
                     path="/feed"
                     element={<Feed user={user} player={handleObj} />}
                   />
+                  <Route path="/register" element={<Signup />} />
                 </Routes>
               </div>
-              <div className="flex-auto h-24">
-                <Player post={audioUrl || ""} />
+              <div className={`flex-auto h-24 ${playerDisplay}`}>
+                <Player
+                  post={onPlay || ""}
+                  playerDisplay={setPlayerDisplay}
+                  playerAction={playerAction}
+                />
               </div>
+            </div>
+          </div>
+          <div className="absolute inset-x-0 bottom-0 h-fit bg-yellow-500/60 text-center font-bold text-white" >
+            <div className="relative flex flex-row">
+              <p className="w-full">This application is under development, you may experience bugs.</p>
+              <span className="w-fit pr-2 hover:cursor-pointer" onClick={handleClick} >x</span>
             </div>
           </div>
         </main>

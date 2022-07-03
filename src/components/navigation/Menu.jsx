@@ -7,25 +7,16 @@ import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { MenuProfile } from "../CustomElements/Menus/MenuProfile";
 
-export function Menu({profileImage,user,logoutFunction,setDark}){
+export function Menu({profileImage,user,setDark}){
 	const [isDown,setDown] = useState(false);
 	const button = useRef();
 	const dropdown = (e)=>{
-		//console.log(e.target,button.current,isDown)
-		if(e.target===button.current){
-			console.log("bbb")
-			if(isDown){
-				setDown(false);
-			}
-			else{
-				setDown(true);
-			}
+		if(isDown){
+			setDown(false);
 		}
 		else{
-			console.log("aaa")
 			setDown(true);
 		}
-		
 	}
 	useEffect(()=>{
 	},[user]);
@@ -44,7 +35,7 @@ export function Menu({profileImage,user,logoutFunction,setDark}){
 					<Link to="/upload" className="bg-purple-700 dark:bg-purple-900 group hover:bg-purple-700 h-8 p-1 rounded-lg my-auto font-bold text-white cursor-pointer">
 						Upload audio
 					</Link>
-					<div className="h-12 relative hover:cursor-pointer group" onClick={dropdown}>
+					<div className="h-12 relative hover:cursor-pointer group z-10" onClick={dropdown}>
 						<div className="rounded-full h-full overflow-hidden">
 							<img
 									src={profileImage || projectA}

@@ -6,6 +6,9 @@
     .dark select option  {
       @apply bg-transparent text-white cursor-pointer;
     }
+    .dark select option:disabled  {
+      @apply text-white/20;
+    }
     select {
         @apply bg-white text-black cursor-pointer;
     }
