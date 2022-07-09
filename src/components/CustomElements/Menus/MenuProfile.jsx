@@ -49,7 +49,7 @@ export function MenuProfile({ user, profileImage,isDown,setDark,...props }) {
                   Edit profile
                 </Link>
               </div>:""}
-              {user?<div className="w-full hover:bg-purple-200/20 hover:cursor-pointer ">
+              {user?<div className="w-full hover:bg-purple-200/20 hover:cursor-pointer pointer-events-none bg-purple-100/20">
                 <Link
                   to="/feed"
                   className="dark:text-white block text-center py-3"

@@ -128,7 +128,7 @@ export async function checkUsernameValidity(username) {
   const userRef = collection(db, "user");
   const q = query(userRef, where("username", "==", username));
   let user = await getDocs(q);
-  console.warn(user.docs);
+  //console.warn(user.docs);
   if (user.docs.length > 0) {
     return true;
   }
@@ -401,8 +401,6 @@ export async function resize(file, element) {
 
 export async function updateProf(obj, userid) {
   const docRef = doc(db, "user", userid);
-
-  // Update the timestamp field with the value from the server
   return await updateDoc(docRef, obj);
 }
 

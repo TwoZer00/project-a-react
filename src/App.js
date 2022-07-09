@@ -86,7 +86,8 @@ export function App() {
   return (
     <div className={`${dark ? dark : ""} ${cursorState} `}>
       <div className={`bg-white dark:bg-neutral-900`}>
-        <header className="border-b fixed top-0 w-screen z-10">
+        <div className="flex flex-col">
+        <header className="border-b fixed top-0 w-screen bg-neutral-900 z-10 h-16">
           <Menu
             profileImage={profileImage}
             user={user}
@@ -94,8 +95,8 @@ export function App() {
             setDark={setDark}
           ></Menu>
         </header>
-        <main className={`h-screen w-screen z-0 relative`}>
-          <div className="h-full pt-[60px]">
+        <main className={`h-screen w-screen relative pt-[4rem]`}>
+          <div className="h-full">
             <div className="h-full w-screen flex flex-col">
               <div className="flex-auto h-5/6 overflow-auto">
                 <Routes>
@@ -158,13 +159,8 @@ export function App() {
               </div>
             </div>
           </div>
-          <div className="absolute inset-x-0 bottom-0 h-fit bg-yellow-500/60 text-center font-bold text-white" >
-            <div className="relative flex flex-row">
-              <p className="w-full">This application is under development, you may experience bugs.</p>
-              <span className="w-fit pr-2 hover:cursor-pointer" onClick={handleClick} >x</span>
-            </div>
-          </div>
         </main>
+        </div>
       </div>
     </div>
   );

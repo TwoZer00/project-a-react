@@ -1,8 +1,5 @@
 import projectA from "../../img/projectA.svg";
-import profileSquare from "../../img/profileImg.jpg";
-import microphone from "../../img/microphone-stroke.svg";
 import { InboxIcon } from '@heroicons/react/outline'
-//import { CustomLink } from "../router/CustomLink";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { MenuProfile } from "../CustomElements/Menus/MenuProfile";
@@ -11,6 +8,7 @@ export function Menu({profileImage,user,setDark}){
 	const [isDown,setDown] = useState(false);
 	const button = useRef();
 	const dropdown = (e)=>{
+		//console.log("Click",e.target);
 		if(isDown){
 			setDown(false);
 		}
@@ -22,9 +20,9 @@ export function Menu({profileImage,user,setDark}){
 	},[user]);
     return (
         <>
-            <nav className="w-full lg:w-5/6 m-auto flex flex-row items-center">
-				<div className="rounded-full h-12 bg-purple-700 dark:bg-purple-900 m-2 ">
-					<Link to="/"><img src={projectA} alt="" className="h-full p-1.5" /></Link>
+            <nav className="w-full lg:w-5/6 m-auto flex flex-row items-center h-full">
+				<div className="rounded-full h-12 bg-purple-700 dark:bg-purple-900 mx-2">
+					<Link to="/"><img src={projectA} alt="" className="h-full p-1.5"/></Link>
 				</div>
 				<p className="text-2xl font-bold dark:text-white">project A</p>
 				<div className="flex-1 flex flex-row justify-end align-middle mr-2 gap-2">
@@ -35,7 +33,7 @@ export function Menu({profileImage,user,setDark}){
 					<Link to="/upload" className="bg-purple-700 dark:bg-purple-900 group hover:bg-purple-700 h-8 p-1 rounded-lg my-auto font-bold text-white cursor-pointer">
 						Upload audio
 					</Link>
-					<div className="h-12 relative hover:cursor-pointer group z-10" onClick={dropdown}>
+					<div className="h-12 relative hover:cursor-pointer group z-10" onClick={dropdown} on={()=>{alert("Hellow")}}>
 						<div className="rounded-full h-full overflow-hidden">
 							<img
 									src={profileImage || projectA}

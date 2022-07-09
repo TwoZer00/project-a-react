@@ -26,7 +26,7 @@ export default function ThemeSelector({themeFunction}){
 
     return(
         <>
-        <div className="flex flex-row w-full dark:text-white items-center gap-x-2 py-3 justify-evenly content-center">
+        <div className="flex flex-row h-auto w-full dark:text-white items-center gap-x-2 py-3 justify-evenly content-center">
             <div className="flex-1 text-center w-1/2">
               <label htmlFor="theme" className="cursor-pointer block font-bold">Theme</label>
               <small className="text-sm dark:text-white/70">Change the theme of the application, It is also automatically set by the settings of your device.</small>

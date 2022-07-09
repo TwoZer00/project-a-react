@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { getProfileImageURL, resize, updateProf, uploadProfileImage } from "../utils/utils";
+import { checkUsernameValidity, getProfileImageURL, resize, updateProf, uploadProfileImage } from "../utils/utils";
 import projectA from "../img/projectA.svg";
 import { CameraIcon } from '@heroicons/react/outline'
 import { ProfileImage } from "./elements/ProfileImage";
@@ -7,15 +7,12 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getAuth, sendEmailVerification } from "firebase/auth";
 
 export function ProfileSettings({user,setProfileImage,setUser,img,auth}){
-
-    // if
-
-    //const [profileImageURL,setProfileImageURL] = useState();
     const inputFile = useRef();
     const imgURL = useRef();
     const [isLoadingImage,setIsLoadingImage] = useState(false);
     const [isUpdating,setIsUpdating] = useState(false);
     const location = useLocation();
+    const [userVal,setUserVal] = useState(false);
 
     const handleChangeProfilImage = ()=>{
         inputFile.current.click();
@@ -51,6 +48,19 @@ export function ProfileSettings({user,setProfileImage,setUser,img,auth}){
             console.log("Email sended")
         });
     }
+
+    const handleBlur = async(e)=>{
+        let username = (e.target.value).trim();
+        if(username!==user.username && username.length>0){
+            // e.target.disabled = "true";
+            setUserVal(await checkUsernameValidity((e.target.value).trim()));
+        }
+        else{
+            setUserVal(false)
+        }
+        console.log(username,user.username,userVal);
+    }
+
     const handleUpdateProfile = async (event)=>{
         setIsUpdating(true);
         event.preventDefault();
@@ -60,9 +70,11 @@ export function ProfileSettings({user,setProfileImage,setUser,img,auth}){
             gender:form.gender.value || user?.gender,
             desc:(form.desc.value).trim() || user?.desc
         }
-        await updateProf(obj,user.userId);
-        setUser(Object.assign({},user,obj));
-        setIsUpdating(false);
+        if(await checkUsernameValidity(obj.username)){
+            await updateProf(obj,user.userId);
+            setUser(Object.assign({},user,obj));
+            setIsUpdating(false);
+        }
     }
     useEffect(()=>{
     },[user]);
@@ -92,7 +104,7 @@ export function ProfileSettings({user,setProfileImage,setUser,img,auth}){
                     <div className="mb-2">
                         <label htmlFor="username">Username</label>
                         <div className="flex gap-x-2">
-                            <input type="text" id="username" name="username" placeholder={user.username} className="border w-full px-2 rounded dark:bg-transparent" />
+                            <input type="text" id="username" name="username" placeholder={user.username} onBlur={handleBlur} className="border w-full px-2 rounded dark:bg-transparent"  />
                             <select name="gender" id="gender" className="dark:text-white dark:bg-neutral-900 dark:border rounded border w-fit" defaultValue={user.gender} placeholder={user.gender}>
                                 <option value="" disabled>Gender</option>
                                 <option value="0">Female</option>
@@ -100,13 +112,14 @@ export function ProfileSettings({user,setProfileImage,setUser,img,auth}){
                                 <option value="2">No specify</option>
                             </select>
                         </div>
+                        {userVal?<small className="text-red-500 text-xs">Username already in use</small>:""}
                     </div>
                     <div className="mb-2">
                         <label htmlFor="desc">Description</label>
                         <input type="text" name="desc" id="desc" placeholder={user.desc?.length<=0?'Description':user.desc} className="  dark:bg-transparent border rounded px-1 w-full" />
                     </div>
                     <div>
-                        <input type="submit" value={isUpdating?"Updating...":"Update"} className="my-2 bg-purple-700 p-2 rounded-full text-white" disabled={isUpdating} />
+                        <input type="submit" value={isUpdating?"Updating...":"Update"} className="my-2 bg-purple-700 p-2 rounded-full text-white disabled:bg-purple-500 disabled:cursor-disabled" disabled={isUpdating||userVal} />
                     </div>
                 </form>
                 
