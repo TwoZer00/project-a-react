@@ -51,10 +51,10 @@ export function App() {
         ? "dark"
         : "ligth")
   );
-  const handleClick = (e)=>{
+  const handleClick = (e) => {
     const element = e.target;
     element.parentElement.parentElement.remove();
-  }
+  };
   useEffect(() => {
     if (isMounted.current) {
       onAuthStateChanged(auth, async (user) => {
@@ -87,79 +87,83 @@ export function App() {
     <div className={`${dark ? dark : ""} ${cursorState} `}>
       <div className={`bg-white dark:bg-neutral-900`}>
         <div className="flex flex-col">
-        <header className="border-b fixed top-0 w-screen bg-neutral-900 z-10 h-16">
-          <Menu
-            profileImage={profileImage}
-            user={user}
-            logoutFunction={logout}
-            setDark={setDark}
-          ></Menu>
-        </header>
-        <main className={`h-screen w-screen relative pt-[4rem]`}>
-          <div className="h-full">
-            <div className="h-full w-screen flex flex-col">
-              <div className="flex-auto h-5/6 overflow-auto">
-                <Routes>
-                  <Route
-                    path="/emailRedirect"
-                    element={<EmailVerify auth={auth} />}
-                  />
-                  <Route exact path="/" element={<Home player={handleObj} />} />
-                  <Route
-                    path="/login"
-                    user={user}
-                    element={<Login cursorState={setCursorState} />}
-                  />
-                  <Route
-                    path="/user/:userId"
-                    element={
-                      <Profile
-                        img={profileImage}
-                        player={handleObj}
-                        user={user}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/post/:postId"
-                    element={<Post handleAudioURL={handleObj} />}
-                  />
-                  <Route path="/upload" element={<Upload user={user} />} />
-                  <Route
-                    path="/settings"
-                    element={<MenuSettings user={user} />}
-                  >
+          <header className="border-b fixed top-0 w-screen z-10 h-16">
+            <Menu
+              profileImage={profileImage}
+              user={user}
+              logoutFunction={logout}
+              setDark={setDark}
+            ></Menu>
+          </header>
+          <main className={`h-screen w-screen relative pt-[4rem]`}>
+            <div className="h-full">
+              <div className="h-full w-screen flex flex-col">
+                <div className="flex-auto h-5/6 overflow-auto">
+                  <Routes>
                     <Route
-                      path="user"
+                      path="/emailRedirect"
+                      element={<EmailVerify auth={auth} />}
+                    />
+                    <Route
+                      exact
+                      path="/"
+                      element={<Home player={handleObj} />}
+                    />
+                    <Route
+                      path="/login"
+                      user={user}
+                      element={<Login cursorState={setCursorState} />}
+                    />
+                    <Route
+                      path="/user/:userId"
                       element={
-                        <ProfileSettings
-                          auth={auth}
-                          user={user}
+                        <Profile
                           img={profileImage}
-                          setProfileImage={setProfileImage}
-                          setUser={setUser}
+                          player={handleObj}
+                          user={user}
                         />
                       }
                     />
-                    <Route path="" element={<Settings setDark={setDark} />} />
-                  </Route>
-                  <Route
-                    path="/feed"
-                    element={<Feed user={user} player={handleObj} />}
+                    <Route
+                      path="/post/:postId"
+                      element={<Post handleAudioURL={handleObj} />}
+                    />
+                    <Route path="/upload" element={<Upload user={user} />} />
+                    <Route
+                      path="/settings"
+                      element={<MenuSettings user={user} />}
+                    >
+                      <Route
+                        path="user"
+                        element={
+                          <ProfileSettings
+                            auth={auth}
+                            user={user}
+                            img={profileImage}
+                            setProfileImage={setProfileImage}
+                            setUser={setUser}
+                          />
+                        }
+                      />
+                      <Route path="" element={<Settings setDark={setDark} />} />
+                    </Route>
+                    <Route
+                      path="/feed"
+                      element={<Feed user={user} player={handleObj} />}
+                    />
+                    <Route path="/register" element={<Signup />} />
+                  </Routes>
+                </div>
+                <div className={`flex-auto h-24 ${playerDisplay}`}>
+                  <Player
+                    post={onPlay || ""}
+                    playerDisplay={setPlayerDisplay}
+                    playerAction={playerAction}
                   />
-                  <Route path="/register" element={<Signup />} />
-                </Routes>
-              </div>
-              <div className={`flex-auto h-24 ${playerDisplay}`}>
-                <Player
-                  post={onPlay || ""}
-                  playerDisplay={setPlayerDisplay}
-                  playerAction={playerAction}
-                />
+                </div>
               </div>
             </div>
-          </div>
-        </main>
+          </main>
         </div>
       </div>
     </div>
