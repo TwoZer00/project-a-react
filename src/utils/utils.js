@@ -37,16 +37,16 @@ const auth = getAuth();
 const db = getFirestore(firebase);
 
 export function stringToDate(string) {
-  //console.log(new Date(string));
+  //console.log(string*1000);
   let date = new Date(1616258233000);
 
   if (string && string !== "") {
     date = new Date(string * 1000);
   }
-
-  // console.log(new Date("1616258233000"));
+  // console.log(date.toDateString());
   return `${date.toDateString()}`;
 }
+// eslint-disable-next-line no-extend-native
 String.prototype.toHHMMSS = function () {
   var sec_num = parseInt(this, 10); // don't forget the second param
   var hours = Math.floor(sec_num / 3600);
@@ -106,7 +106,7 @@ export function daysAgo(date) {
   var secondsDifference = Math.floor(difference / 1000);
 
   if (daysDifference > 30) {
-    return new Date(date).toDateString();
+    return new Date(date.seconds * 1000).toDateString();
   } else if (daysDifference > 0) {
     return daysDifference + " day/s ago";
   } else if (hoursDifference > 0) {

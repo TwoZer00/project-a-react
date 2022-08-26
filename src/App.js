@@ -22,6 +22,8 @@ import { MenuSettings } from "./components/navigation/MenuSettings";
 import { Feed } from "./components/Feed";
 import EmailVerify from "./EmailVerify";
 import Signup from "./components/Signup";
+import EmailConfigurations from "./EmailConfigurations";
+import PlayerA from "./components/PlayerA";
 
 export function App() {
   const auth = getAuth();
@@ -93,7 +95,7 @@ export function App() {
               user={user}
               logoutFunction={logout}
               setDark={setDark}
-            ></Menu>
+            />
           </header>
           <main className={`h-screen w-screen relative pt-[4rem]`}>
             <div className="h-full">
@@ -102,7 +104,7 @@ export function App() {
                   <Routes>
                     <Route
                       path="/emailRedirect"
-                      element={<EmailVerify auth={auth} />}
+                      element={<EmailConfigurations auth={auth} />}
                     />
                     <Route
                       exact
@@ -155,11 +157,14 @@ export function App() {
                   </Routes>
                 </div>
                 <div className={`flex-auto h-24 ${playerDisplay}`}>
-                  <Player
-                    post={onPlay || ""}
-                    playerDisplay={setPlayerDisplay}
-                    playerAction={playerAction}
-                  />
+                  {onPlay && (
+                    <Player
+                      post={onPlay || ""}
+                      playerDisplay={setPlayerDisplay}
+                      playerAction={playerAction}
+                    />
+                  )}
+                  {/* <PlayerA post={onPlay} /> */}
                 </div>
               </div>
             </div>
