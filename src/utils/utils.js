@@ -2,6 +2,7 @@ import { async } from "@firebase/util";
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  setPersistence,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
@@ -312,6 +313,7 @@ export function logout() {
 }
 
 export async function loginUsernamePassword(email, password) {
+  // setPersistence(auth, browserSessionPersistence);
   return await signInWithEmailAndPassword(auth, email, password);
 }
 export function CustomLink({ children, to, className, ...props }) {
@@ -322,11 +324,10 @@ export function CustomLink({ children, to, className, ...props }) {
     <>
       <Link
         //style={{ textDecoration: match ? "underline" : "none" }}
-        className={`${
-          match
+        className={`${match
             ? "dark:bg-white/20 bg-white"
             : "group:bg-gray-200 hover:bg-gray-100/20"
-        } ${className}`}
+          } ${className}`}
         to={to}
         {...props}
       >
