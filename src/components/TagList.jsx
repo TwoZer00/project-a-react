@@ -2,7 +2,7 @@ import { Chip } from '@mui/material';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 
-export default function TagList() {
+export default function TagList({ id }) {
     const [tags, setTags] = useState();
     useEffect(() => {
         const loadTags = async () => {
@@ -21,7 +21,10 @@ export default function TagList() {
 async function getTags() {
     const tagsArray = [];
     const db = getFirestore();
-    const tagsRef = collection(db, 'tag');
+    let tagsRef = collection(db, 'tags');
+    // if (id) {
+    //     tagsRef = collection(db, 'tags', id);
+    // }
     const tags = await getDocs(tagsRef);
     tags.docs.forEach(doc => {
         tagsArray.push(doc.data());

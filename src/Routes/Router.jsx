@@ -3,6 +3,9 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "../Pages/Home";
 import Init from "../Pages/Init";
 import Profile from "../Pages/Profile";
+import Login from "../Pages/Login";
+import Register from "../Pages/Register";
+import Upload from "../Pages/Upload";
 
 export const router = createBrowserRouter([
     {
@@ -14,17 +17,25 @@ export const router = createBrowserRouter([
                 element: <Home />,
             },
             {
-                path: "profile",
+                path: "user",
                 element: <Profile />,
                 children: [{
                     path: ":id",
                     element: <Profile />
                 }]
+            },
+            {
+                path: "upload",
+                element: <Upload />
             }
         ]
     },
     {
         path: "/login",
-        element: <Typography variant="h1" >Login</Typography>,
+        element: <Login />,
+    },
+    {
+        path: "/register",
+        element: <Register />
     }
 ]);

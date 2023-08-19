@@ -72,7 +72,7 @@ export default function PlayerInDrawer({ open, audio }) {
                         <SkipPreviousOutlined />
                     </IconButton>
                 }
-                <IconButton onClick={handlePlay} >
+                <IconButton onClick={handlePlay} disabled={!audio} >
                     {
                         !isPlaying ?
                             <PlayArrowOutlined /> :

@@ -1,0 +1,266 @@
+import { Autocomplete, Box, Button, Chip, CssBaseline, FormControl, InputLabel, LinearProgress, MenuItem, Select, Stack, TextField, ToggleButton, createFilterOptions } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import { theme } from './Init';
+import { collection, doc, getDocs, getFirestore, serverTimestamp, setDoc, writeBatch } from 'firebase/firestore';
+import { MuiFileInput } from 'mui-file-input';
+import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import { getAuth } from 'firebase/auth';
+
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { Css } from '@mui/icons-material';
+
+const filter = createFilterOptions();
+export default function Upload() {
+    const [initData, setInitData] = useOutletContext();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [tags, setTags] = useState([]);
+    const [genre, setGenre] = useState([]);
+    const [value, setValue] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const formRef = useRef();
+    useEffect(() => {
+        const loadTags = async () => {
+            const temp = await getTags();
+            setTags(temp)
+        }
+
+        const loadGenre = async () => {
+            const temp = await getGenre();
+            setGenre(temp)
+        }
+        loadGenre();
+        loadTags();
+    }, []);
+    // useEffect(() => {
+    //     if (initData?.user === null) {
+    //         navigate("/login", { state: { from: location } })
+    //     }
+    // }, [getAuth().currentUser]);
+
+
+
+    const [age, setAge] = useState('');
+
+    const handleChange = (event) => {
+        setAge(event.target.value);
+    };
+
+    const [valuea, setValuea] = useState(null)
+
+    const handleChangeF = (newValue) => {
+        setValuea(newValue)
+    }
+
+    const [tagInput, setTagInput] = useState([]);
+    const [uploadingProgress, setUploadingProgress] = useState();
+    const handleSubmit = async () => {
+        // const tempInitData = { ...initData }
+        setInitData((val) => {
+            return { ...val, loading: { state: "loading", progress: uploadingProgress } }
+        })
+        const postRef = doc(collection(getFirestore(), "post"));
+        const form = formRef.current;
+        const formData = new FormData(form);
+        const post = {
+            title: formData.get("title"),
+            desc: formData.get("desc"),
+            genre: formData.get("genre"),
+            nsfw: form.nsfw.checked,
+            creationTime: serverTimestamp(),
+            user: doc(getFirestore(), "user", getAuth().currentUser.uid)
+        }
+
+
+        await uploadFile(valuea, postRef, getAuth().currentUser.uid, setInitData, post, tagInput)
+        const tempInitData = { ...initData };
+        delete tempInitData.loading
+        setInitData(tempInitData);
+        // console.log(postRef.id, post, valuea, tagInput);
+    }
+    return (
+        <>
+            {/* <LinearProgress value={uploadingProgress} sx={{}} /> */}
+            <Stack gap={1} ref={formRef} component={"form"} sx={{ height: "100%" }}>
+                <Stack direction={"row"} gap={2} >
+                    <TextField label={"Title"} type='text' sx={{ flex: 1 }} name='title' />
+                    <NSFWToggleButton />
+                </Stack>
+                <Stack direction={"row"} gap={2}>
+                    <Autocomplete
+                        sx={{ flex: 1 }}
+                        multiple
+                        id="tags"
+                        options={tags.map((option) => option.title)}
+                        freeSolo
+                        renderTags={(value, getTagProps) =>
+                            value.map((option, index) => (
+                                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                            ))
+                        }
+                        onChange={(event, value, reason) => {
+                            setTagInput([...value])
+                        }}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant="outlined"
+                                label="Tags"
+                                placeholder="Tag"
+                            />
+                        )}
+                    />
+                    <FormControl sx={{ width: "100px" }}>
+                        <InputLabel id="demo-simple-select-label">Genre</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            label="Genre"
+                            value={age}
+                            name='genre'
+                            onChange={handleChange}
+                        >
+                            {genre.length > 0 && genre.map((item, index) => <MenuItem key={index + "a"} value={item.title}>{item.title}</MenuItem>)}
+                            {/* <MenuItem value={10}>Ten</MenuItem>
+                        <MenuItem value={20}>Twenty</MenuItem>
+                        <MenuItem value={30}>Thirty</MenuItem> */}
+                        </Select>
+                    </FormControl>
+                </Stack>
+                <TextField label={"Description"} multiline rows={4} type='text' name='desc' />
+                <MuiFileInput getSizeText={(value) => `${((value?.size) / Math.pow(1024, 2)).toFixed(2)} MB`} inputProps={{ accept: 'audio/*' }} value={valuea} onChange={handleChangeF} color='info' name='file' />
+                <Box sx={{ mt: "auto", height: "100%", display: "flex", alignItems: "self-end", justifyContent: "flex-end" }} >
+                    <Button variant='contained' onClick={handleSubmit}>
+                        Upload
+                    </Button>
+                </Box>
+            </Stack >
+        </>
+    )
+}
+
+function NSFWToggleButton() {
+    const [selected, setSelected] = useState(false);
+    return (
+        <>
+            <ToggleButton
+                value="checked"
+                selected={selected}
+                onChange={() => {
+                    setSelected(!selected);
+                }}
+                color='error'
+            // sx={{ borderColor: "" }}
+            >
+                NSFW
+            </ToggleButton>
+            <input type="checkbox" name='nsfw' checked={selected} hidden />
+        </>
+    )
+}
+
+async function getTags() {
+    const tags = []
+    const db = getFirestore();
+    const docs = await getDocs(collection(db, "tag"));
+    docs.size > 0 && docs.forEach((doc) => {
+        tags.push({ ...doc.data(), id: doc.id })
+    });
+    return tags;
+}
+
+async function getGenre() {
+    const tags = []
+    const db = getFirestore();
+    const docs = await getDocs(collection(db, "genre"));
+    docs.size > 0 && docs.forEach((doc) => {
+        tags.push({ ...doc.data() })
+    });
+    return tags;
+}
+
+async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) {
+
+    // Upload file and metadata to the object 'images/mountains.jpg'
+    const storageRef = ref(getStorage(), `audio/${userId}/${postRef.id}` + file.name);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    // Listen for state changes, errors, and completion of the upload.
+    //create a promise function with the uploadTask.on of firebase
+
+    uploadTask.on('state_changed',
+        (snapshot) => {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            uploadingProgress((val) => {
+                return { ...val, loading: { state: "loading", progress: progress } }
+            })
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+                case 'paused':
+                    console.log('Upload is paused');
+                    break;
+                case 'running':
+                    console.log('Upload is running');
+                    break;
+            }
+        },
+        (error) => {
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+                case 'storage/unauthorized':
+                    // User doesn't have permission to access the object
+                    break;
+                case 'storage/canceled':
+                    // User canceled the upload
+                    break;
+
+                // ...
+
+                case 'storage/unknown':
+                    // Unknown error occurred, inspect error.serverResponse
+                    break;
+            }
+        },
+        async () => {
+            uploadingProgress((val) => {
+                return { ...val, loading: { state: "loading" } }
+            })
+            // Upload completed successfully, now we can get the download URL
+            const url = (uploadTask.snapshot.ref).toString();
+            const tagsRef = createTagsReference(tags);
+            const genreRef = getGenreRef(post.genre)
+            post.genre = genreRef;
+            await uploadPost(post, postRef, url, tagsRef);
+            uploadingProgress((val) => {
+                const temp = { ...val };
+                delete temp.loading;
+                return temp;
+            })
+        }
+    );
+}
+
+function createTagsReference(tags) {
+    const tagRefs = [];
+    for (const tag of tags) {
+        const tagRef = doc(getFirestore(), 'tag', tag);
+        tagRefs.push(tagRef);
+    }
+    return tagRefs
+}
+
+function getGenreRef(genre) {
+    const genreRef = doc(getFirestore(), 'genre', genre)
+    return genreRef;
+}
+
+async function uploadPost(post, postRef, filePath, tags) {
+    const tempPost = { ...post, tags: tags, filePath: filePath }
+    const batch = writeBatch(getFirestore());
+    batch.set(postRef, tempPost);
+    tags.forEach((tag) => {
+        batch.set(tag, { title: (tag.path).substring((tag.path).lastIndexOf("/") + 1) });
+    });
+    await batch.commit();
+}

@@ -10,18 +10,27 @@ export default function Home() {
     const [data, setData] = useState();
 
     useEffect(() => {
+        // console.log(initData);
         const temp = { title: 'A PROJECT' }
-        const tempData = { ...initData }
-        tempData.main = { ...temp }
-        setInitData(tempData);
+        // const main = { ...initData }
+        // tempData.main = { ...temp }
+        // document.title = temp.title
+        // console.log(tempData);
+        setInitData((val) => {
+            return { ...val, main: temp }
+        });
     }, []);
     useEffect(() => {
-        document.title = initData?.main?.title
-    }, [initData])
+        document.title = `${initData?.postInPlay ?
+            initData?.main.title + ' - ' + initData?.postInPlay?.title
+            :
+            initData?.main?.title
+            }`
+    }, [initData?.main, initData?.postInPlay])
     useEffect(() => {
         const loadPost = async () => {
             const posts = await fetchPosts();
-            console.log(posts);
+            // console.log(posts);
             setData(posts);
         }
         loadPost();
@@ -31,9 +40,9 @@ export default function Home() {
             <div>
                 <TagList />
             </div>
-            <Grid container gap={2} >
+            <Grid container gap={2} direction={{ sm: "column", md: "row" }} >
                 {
-                    data?.map(item => <PostCard postData={item} />)
+                    data?.map(item => <PostCard key={item.id + "postCard"} postData={item} />)
                 }
             </Grid>
         </Stack>
@@ -44,7 +53,7 @@ async function fetchPosts() {
     let posts = [];
     const db = getFirestore();
     const postsRef = collection(db, 'post');
-    const q = query(postsRef, orderBy('date', 'desc'));
+    const q = query(postsRef, orderBy('creationTime', 'desc'));
     const post = await getDocs(q)
     post.forEach((doc) => {
         posts.push({ ...doc.data(), id: doc.id })

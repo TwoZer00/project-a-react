@@ -1,7 +1,13 @@
+import { where } from 'firebase/firestore';
+import { getDownloadURL, getStorage, ref } from '@firebase/storage';
+import { Person, Person2, Person4 } from '@mui/icons-material';
+import { Avatar, Box, CssBaseline, Paper, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { getAuth } from 'firebase/auth';
-import { collection, getDoc, getFirestore } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 export default function Profile() {
     const { id } = useParams();
@@ -9,28 +15,219 @@ export default function Profile() {
 
     useEffect(() => {
         const loadUserData = async (userId) => {
-            const temp = await fetchUserData(userId);
+            const data = await fetchUserData(userId);
+            let profileURL = ""
+            try {
+                profileURL = await getProfileImgUrl(userId);
+            }
+            catch (e) {
+                console.error(e);
+            }
+            const temp = { ...data, photoURL: profileURL };
+            setUserData(temp);
         }
-        if (!id) {
+        if (id) {
+            loadUserData(id)
+        }
+        // if (!id) {
+        //     console.log(getAuth()?.currentUser?.uid);
+        //     loadUserData(getAuth()?.currentUser?.uid);
+        // }
+        // else {
+        //     loadUserData(id);
+        // }
+    }, [])
+
+    useEffect(() => {
+        const loadUserData = async (userId) => {
+            const data = await fetchUserData(userId);
+            let profileURL = ""
+            try {
+                profileURL = await getProfileImgUrl(userId);
+            }
+            catch (e) {
+                console.error(e);
+            }
+            const temp = { ...data, photoURL: profileURL };
+            setUserData(temp);
+        }
+        if (getAuth().currentUser?.uid) {
             loadUserData(getAuth().currentUser.uid);
         }
-        else {
-            loadUserData(id);
+    }, [getAuth().currentUser])
+
+    const handleGender = (gender, fs) => {
+        let genderIcon = <Person4 sx={{ fontSize: fs }} />
+        switch (parseInt(gender)) {
+            case 0:
+                genderIcon = <Person2 sx={{ fontSize: fs }} />
+                return genderIcon;
+            case 1:
+                genderIcon = <Person sx={{ fontSize: fs }} />
+                return genderIcon;
+            default:
+                return genderIcon;
         }
-    }, [])
+    }
     return (
-        <div>Profile</div>
+        <>
+            <Box sx={{
+                width: "100%",
+                height: "250px",
+                borderRadius: 2,
+                backgroundColor: "primary.main",
+                position: "relative",
+                display: "flex",
+                justifyContent: "start",
+                alignItems: "flex-end",
+                padding: 1,
+            }}>
+                <Stack direction="row" spacing={2} alignItems={"flex-end"}>
+                    <Avatar src={userData?.photoURL} sx={{ width: "100px", height: "100px" }} />
+                    <Stack direction={"column"}>
+                        <Typography variant="h1" fontSize={24} fontWeight={400}>{userData?.username}</Typography>
+                        <Stack direction={"row"} spacing={1} alignItems={"center"}>
+                            <Typography variant="subtitle">{handleGender(userData?.gender, 14)}</Typography>
+                            <Typography variant="subtitle" fontSize={12}>User since {(new Date(userData?.creationTime)).toLocaleDateString({ year: 'numeric', month: 'long', day: 'numeric' })}</Typography>
+                        </Stack>
+                    </Stack>
+                </Stack>
+            </Box>
+            <Typography variant="subtitle">{userData?.desc}</Typography>
+            <Box>
+                {/* <CustomTabs /> */}
+                {/* <BasicTabs /> */}
+                <PostList userId={id} />
+            </Box>
+        </>
     )
 }
 
 async function fetchUserData(userId) {
     let userData = undefined;
     const db = getFirestore();
-    const userRef = collection(db, 'users');
-    const doc = await getDoc(userRef, userId);
-    if (doc.exists()) {
-        console.log(doc.data());
-        userData = { ...doc.data(), id: doc.id }
+    // const userRef = collection(db, 'users');
+    const docSnap = await getDoc(doc(db, 'user', userId));
+    if (docSnap.exists()) {
+        userData = { ...docSnap.data(), id: docSnap.id }
     }
+    // console.log(userData, userId);
     return userData;
+}
+
+async function getProfileImgUrl(id) {
+    const storage = getStorage();
+    const storageRef = ref(storage, `userPhotos/${id}/profileImage.jpg`);
+    const profileImgUrl = await getDownloadURL(storageRef);
+    return profileImgUrl;
+}
+
+function CustomTabs() {
+    const [value, setValue] = useState(0);
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    return (
+        <Tabs value={value} onChange={handleChange} aria-label="nav tabs example">
+            <LinkTab label="Page One" href="post" />
+            <LinkTab label="Page Two" href="/trash" />
+            <LinkTab label="Page Three" href="/spam" />
+        </Tabs>
+    )
+}
+
+
+function LinkTab(props) {
+    return (
+        <Tab
+            component={RouterLink}
+            onClick={(event) => {
+                // event.preventDefault();
+            }}
+            to={props.href}
+            {...props}
+        />
+    );
+}
+
+function CustomTabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+CustomTabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+function BasicTabs() {
+    const [value, setValue] = useState(0);
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    return (
+        <Box sx={{ width: '100%' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                    <Tab label="Item One" {...a11yProps(0)} />
+                    <Tab label="Item Two" {...a11yProps(1)} />
+                    <Tab label="Item Three" {...a11yProps(2)} />
+                </Tabs>
+            </Box>
+            <CustomTabPanel value={value} index={0}>
+                Item One
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+                Item Two
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={2}>
+                Item Three
+            </CustomTabPanel>
+        </Box>
+    );
+}
+
+function PostList({ userId }) {
+    const [posts, setPosts] = useState([]);
+    return (
+        <>
+            {
+                posts.map((post) => <Typography>{post.title}</Typography>)
+            }
+        </>
+    )
+}
+
+function getPosts(userId) {
+    const db = getFirestore();
+    const postsRef = getDocs(query(collection(db, 'posts'), where('userId', '==', userId)));
+    const posts = [];
+    return posts;
 }
