@@ -1,7 +1,7 @@
 import { doc } from 'firebase/firestore'
 import { getDoc, getFirestore } from 'firebase/firestore'
 import { PlayArrow } from '@mui/icons-material'
-import { Avatar, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Typography } from '@mui/material'
+import { Avatar, Box, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Typography } from '@mui/material'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
@@ -42,18 +42,20 @@ export default function PostCard({ postData }) {
         <>
             <Grid item width={{ xs: "100%", md: 300 }}>
                 <Card sx={{ width: "100%" }} >
-                    <CardHeader title={<Link component={RouterLink} to={`/user/${postData.userId}`} underline='hover'>{username}</Link>} avatar={<Avatar src={profileImgUrl} component={RouterLink} to={`/user/${postData.userId}`} />} subheader={(new Date(postData.creationTime.seconds * 1000)).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} />
-                    <CardContent>
-                        <Typography variant='subtitle1'>{((postData.genre).path).substring(postData.genre.path.lastIndexOf("/") + 1)}</Typography>
+                    <CardHeader title={<Link component={RouterLink} to={`/${postData.user.path}`} underline='hover'>{username}</Link>} avatar={<Avatar src={profileImgUrl} component={RouterLink} to={`/${(postData.user.path)}`} />} subheader={(new Date(postData.creationTime.seconds * 1000)).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} />
+                    <CardContent sx={{ paddingY: 0, display: "flex", flexDirection: "column", gap: 1 }}>
+                        <Link component={RouterLink} to={`/genre/${postData.genre.id}`} underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.genre).path).substring(postData.genre.path.lastIndexOf("/") + 1)}</Link>
                         <Stack direction={"row"} gap={1}>
-                            {postData.tags.map((tag, index) => <Chip key={index} label={(tag.path).substring(tag.path.lastIndexOf("/") + 1)} size='small' variant='outlined' component={RouterLink} to={`/tag/${tag.id}`} />)}
+                            {postData.tags.map((tag, index) => <Chip key={index} label={(tag.path).substring(tag.path.lastIndexOf("/") + 1)} clickable size='small' variant='outlined' component={RouterLink} to={`/tag/${tag.id}`} />)}
                         </Stack>
-                        <Typography variant="h5" component="div" >
-                            {postData.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" maxHeight={{ xs: 57, md: "fit-content" }} overflow="hidden">
-                            {postData.desc}
-                        </Typography>
+                        <Box>
+                            <Typography variant="h5" component="div" >
+                                {postData.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" maxHeight={{ xs: 57, md: "fit-content" }} overflow="hidden">
+                                {postData.desc}
+                            </Typography>
+                        </Box>
                     </CardContent>
                     <CardActions>
                         <IconButton onClick={handlePlayButton} >
