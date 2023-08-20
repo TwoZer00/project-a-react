@@ -37,150 +37,74 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
         setOpen(false);
     };
 
-    // useEffect(() => {
-    //     if(initData.loading){
-    //         setInitData({...initData,loading:{state:"loading",progress:0}})
-    //     }
-    // },[initData.loading])
-
     return (
-        <Box sx={{ display: 'flex', position: "relative" }}>
-            <CssBaseline />
-            <AppBar position="fixed" open={open}>
-                {loading || initData?.loading && <LinearProgress sx={{ position: "absolute", top: "0", width: "100vw" }} variant={initData.loading.progress ? "determinate" : "inderterminate"} value={initData.loading.progress ? initData.loading.progress : null} color='primary' />}
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{
-                            marginRight: 5,
-                            ...(open && { display: 'none' }),
-                        }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div" textAlign={"center"} flex={1}>
-                        {title}
-                    </Typography>
-                    <AvatarInMenu />
-                </Toolbar>
-            </AppBar>
-            <Drawer variant="permanent" open={open} sx={{ height: "100vh" }}>
-                <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                    </IconButton>
-                </DrawerHeader>
-                <Divider />
-                <List>
-                    {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? 'initial' : 'center',
-                                    px: 2.5,
-                                }}
-                            >
-                                <ListItemIcon
-                                    sx={{
-                                        minWidth: 0,
-                                        mr: open ? 3 : 'auto',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))} */}
-                    <ListItem disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            component={RouterLink}
-                            to="/"
+        <>
+            <Box sx={{ display: 'flex', position: "relative" }}>
+                <CssBaseline />
+                <AppBar position="fixed" open={open}>
+                    {(loading || initData?.loading) &&
+                        <LinearProgress sx={{ position: "absolute", top: "0", width: "100vw" }} variant={initData?.loading?.progress ? "determinate" : "indeterminate"} value={initData?.loading?.progress ? initData?.loading?.progress : undefined} color='primary' />
+                    }
+                    <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
                             sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}>
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}>
-                                <Home />
-                            </ListItemIcon>
-                            <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                {/* <Divider />
-                <List sx={{ height: "100%" }} >
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                                marginRight: 5,
+                                ...(open && { display: 'none' }),
+                            }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant="h6" noWrap component="div" textAlign={"center"} flex={1}>
+                            {title}
+                        </Typography>
+                        <AvatarInMenu />
+                    </Toolbar>
+                </AppBar>
+                <Drawer variant="permanent" open={open} sx={{ height: "100vh" }}>
+                    <DrawerHeader>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                        </IconButton>
+                    </DrawerHeader>
+                    <Divider />
+                    <List>
+                        <ListItem disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
+                                component={RouterLink}
+                                to="/"
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: open ? 'initial' : 'center',
                                     px: 2.5,
-                                }}
-                            >
+                                }}>
                                 <ListItemIcon
                                     sx={{
                                         minWidth: 0,
                                         mr: open ? 3 : 'auto',
                                         justifyContent: 'center',
-                                    }}
-                                >
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                    }}>
+                                    <Home />
                                 </ListItemIcon>
-                                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                                <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>
                         </ListItem>
-                    ))}
-                </List> */}
-                <List sx={{ height: "100%", display: "flex", flexDirection: "column" }} >
-                    <ListItem sx={{ mt: "auto" }}>
-                        <PlayerInDrawer open={open} audio={audio} data={data} />
-                    </ListItem>
-                </List>
-            </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 3, height: "100vh", display: "flex", flexDirection: "column", position: 'relative' }}>
-                <DrawerHeader />
-                {/* <Typography paragraph>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-                    enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-                    imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-                    Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-                    Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                    adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-                    nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-                    leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-                    feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-                    consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-                    sapien faucibus et molestie ac.
-                </Typography>
-                <Typography paragraph>
-                    Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
-                    eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
-                    neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
-                    tellus. Purus sit amet volutpat consequat mauris. Elementum eu facilisis
-                    sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-                    tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit
-                    gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-                    et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis
-                    tristique sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-                    eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-                    posuere sollicitudin aliquam ultrices sagittis orci a.
-                </Typography> */}
-                {!loading && outlet}
-            </Box>
-        </Box>
+                    </List>
+                    <List sx={{ height: "100%", display: "flex", flexDirection: "column" }} >
+                        <ListItem sx={{ mt: "auto" }}>
+                            <PlayerInDrawer open={open} audio={audio} data={data} />
+                        </ListItem>
+                    </List>
+                </Drawer>
+                <Box component="main" sx={{ flexGrow: 1, p: 3, height: "100vh", display: "flex", flexDirection: "column", position: 'relative' }}>
+                    <DrawerHeader />
+                    {!loading && outlet}
+                </Box >
+            </Box >
+        </>
     );
 }
 
