@@ -10,7 +10,7 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY,
     authDomain: "af-project-3d9e5.firebaseapp.com",
     databaseURL: "https://af-project-3d9e5.firebaseio.com",
     projectId: "af-project-3d9e5",

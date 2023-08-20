@@ -60,7 +60,6 @@ export default function Upload() {
         setInitData((val) => {
             return { ...val, loading: { state: "loading", progress: 0 } }
         })
-        // const postRef = doc(collection(getFirestore(), "post"));
         const form = formRef.current;
         const formData = new FormData(form);
         const post = {
@@ -72,7 +71,6 @@ export default function Upload() {
             user: doc(getFirestore(), "user", getAuth().currentUser.uid),
             visibility: formData.get('visibility')
         }
-        console.log(post);
         try {
             await uploadFile(valuea, postRef, getAuth().currentUser.uid, setInitData, post, tagInput)
         }
@@ -85,12 +83,11 @@ export default function Upload() {
             delete tempInitData.loading
             setInitData(tempInitData);
         }
-        // console.log(postRef.id, post, valuea, tagInput);
     }
     return (
         <>
             {/* <LinearProgress value={uploadingProgress} sx={{}} /> */}
-            <Backdrop open={initData.loading} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} />
+            <Backdrop open={!!initData?.loading} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} />
             <Stack gap={1} ref={formRef} component={"form"} sx={{ height: "100%" }}>
                 <Stack direction={"row"} gap={2} >
                     <TextField label={"Title"} type='text' sx={{ flex: 1 }} name='title' />
@@ -168,7 +165,7 @@ function NSFWToggleButton() {
             >
                 NSFW
             </ToggleButton>
-            <input type="checkbox" name='nsfw' checked={selected} hidden />
+            <input type="checkbox" name='nsfw' checked={selected} hidden readOnly />
         </>
     )
 }
@@ -288,7 +285,7 @@ function Visibility() {
     };
     return (
         <>
-            <input type="text" value={visibility} hidden name='visibility' />
+            <input type="text" value={visibility} hidden name='visibility' readOnly />
             <ToggleButtonGroup
                 color="primary"
                 value={visibility}

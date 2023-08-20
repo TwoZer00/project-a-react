@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, useOutletContext, useParams } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import PostCard from '../components/PostCard';
+import PostCard, { stringAvatar } from '../components/PostCard';
 
 export default function Profile() {
     const { id } = useParams();
@@ -83,7 +83,7 @@ export default function Profile() {
                     padding: 1,
                 }}>
                     <Stack direction="row" spacing={2} alignItems={"flex-end"}>
-                        <Avatar src={userData?.photoURL} sx={{ width: "100px", height: "100px" }} />
+                        <Avatar src={userData?.photoURL} {...stringAvatar(userData?.username, { width: 100, height: 100 })} />
                         <Stack direction={"column"}>
                             <Typography variant="h1" fontSize={24} fontWeight={400}>{userData?.username}</Typography>
                             <Stack direction={"row"} spacing={1} alignItems={"center"}>

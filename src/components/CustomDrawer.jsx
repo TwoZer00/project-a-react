@@ -205,8 +205,8 @@ const AvatarInMenu = () => {
         , [getAuth().currentUser])
     return (
         <div>
-            {auth && <IconButton component={RouterLink} to={"/upload"} color='primary'>
-                <AddCircle />
+            {auth && <IconButton component={RouterLink} to={"/upload"} color='inherit'>
+                <Upload />
             </IconButton>}
             {!auth ?
                 <Button component={RouterLink} to={"/login"} variant="outlined" startIcon={<AccountCircleOutlined />} sx={{ borderRadius: 9 }} color='inherit'>
@@ -219,6 +219,7 @@ const AvatarInMenu = () => {
                     aria-haspopup="true"
                     onClick={handleMenu}
                     color="inherit"
+                    disableRipple
                 >
                     <AccountCircle />
                 </IconButton>
