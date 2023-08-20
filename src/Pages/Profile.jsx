@@ -1,41 +1,38 @@
-import { where } from 'firebase/firestore';
+import { orderBy, where } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref } from '@firebase/storage';
 import { Person, Person2, Person4 } from '@mui/icons-material';
-import { Avatar, Box, CssBaseline, Paper, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Avatar, Box, CssBaseline, Grid, Paper, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { getAuth } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useOutletContext, useParams } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import PostCard from '../components/PostCard';
 
 export default function Profile() {
     const { id } = useParams();
     const [userData, setUserData] = useState();
-
+    const [initData, setInitData] = useOutletContext();
     useEffect(() => {
         const loadUserData = async (userId) => {
             const data = await fetchUserData(userId);
             let profileURL = ""
             try {
-                profileURL = await getProfileImgUrl(userId);
+                profileURL = await getProfileImgUrl(data.profileImg);
             }
             catch (e) {
                 console.error(e);
             }
-            const temp = { ...data, photoURL: profileURL };
-            setUserData(temp);
+            // const temp = { ...data, photoURL: profileURL };
+            setUserData(data);
         }
         if (id) {
             loadUserData(id)
         }
-        // if (!id) {
-        //     console.log(getAuth()?.currentUser?.uid);
-        //     loadUserData(getAuth()?.currentUser?.uid);
-        // }
-        // else {
-        //     loadUserData(id);
-        // }
+        const temp = { ...initData }
+        temp.main = { title: "PROFILE" };
+        setInitData(temp);
     }, [])
 
     useEffect(() => {
@@ -43,13 +40,15 @@ export default function Profile() {
             const data = await fetchUserData(userId);
             let profileURL = ""
             try {
-                profileURL = await getProfileImgUrl(userId);
+                profileURL = await getProfileImgUrl(data.profileImg);
             }
             catch (e) {
-                console.error(e);
+                if (e.code !== "storage/object-not-found") {
+                    console.error(e.code);
+                }
             }
-            const temp = { ...data, photoURL: profileURL };
-            setUserData(temp);
+            // const temp = { ...data, photoURL: profileURL };
+            setUserData(data);
         }
         if (getAuth().currentUser?.uid) {
             loadUserData(getAuth().currentUser.uid);
@@ -71,33 +70,36 @@ export default function Profile() {
     }
     return (
         <>
-            <Box sx={{
-                width: "100%",
-                height: "250px",
-                borderRadius: 2,
-                backgroundColor: "primary.main",
-                position: "relative",
-                display: "flex",
-                justifyContent: "start",
-                alignItems: "flex-end",
-                padding: 1,
-            }}>
-                <Stack direction="row" spacing={2} alignItems={"flex-end"}>
-                    <Avatar src={userData?.photoURL} sx={{ width: "100px", height: "100px" }} />
-                    <Stack direction={"column"}>
-                        <Typography variant="h1" fontSize={24} fontWeight={400}>{userData?.username}</Typography>
-                        <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                            <Typography variant="subtitle">{handleGender(userData?.gender, 14)}</Typography>
-                            <Typography variant="subtitle" fontSize={12}>User since {(new Date(userData?.creationTime)).toLocaleDateString({ year: 'numeric', month: 'long', day: 'numeric' })}</Typography>
+            <Box>
+                <Box sx={{
+                    width: "100%",
+                    height: "250px",
+                    borderRadius: 2,
+                    backgroundColor: "primary.main",
+                    position: "relative",
+                    display: "flex",
+                    justifyContent: "start",
+                    alignItems: "flex-end",
+                    padding: 1,
+                }}>
+                    <Stack direction="row" spacing={2} alignItems={"flex-end"}>
+                        <Avatar src={userData?.photoURL} sx={{ width: "100px", height: "100px" }} />
+                        <Stack direction={"column"}>
+                            <Typography variant="h1" fontSize={24} fontWeight={400}>{userData?.username}</Typography>
+                            <Stack direction={"row"} spacing={1} alignItems={"center"}>
+                                <Typography variant="subtitle">{handleGender(userData?.gender, 14)}</Typography>
+                                <Typography variant="subtitle" fontSize={12}>User since {(new Date(userData?.creationTime.seconds * 1000)).toLocaleDateString({ year: 'numeric', month: 'long', day: 'numeric' })}</Typography>
+                            </Stack>
+                            <Typography variant="subtitle" fontSize={12} sx={{ ":first-letter": { textTransform: "capitalize" } }} >{userData?.description}</Typography>
                         </Stack>
                     </Stack>
-                </Stack>
-            </Box>
-            <Typography variant="subtitle">{userData?.desc}</Typography>
-            <Box>
-                {/* <CustomTabs /> */}
-                {/* <BasicTabs /> */}
-                <PostList userId={id} />
+                </Box>
+                <Typography variant="subtitle">{userData?.desc}</Typography>
+                <Grid container py={2} spacing={2}>
+                    {/* <CustomTabs /> */}
+                    {/* <BasicTabs /> */}
+                    <PostList userId={id || getAuth().currentUser?.uid} />
+                </Grid>
             </Box>
         </>
     )
@@ -118,7 +120,14 @@ async function fetchUserData(userId) {
 async function getProfileImgUrl(id) {
     const storage = getStorage();
     const storageRef = ref(storage, `userPhotos/${id}/profileImage.jpg`);
-    const profileImgUrl = await getDownloadURL(storageRef);
+    let profileImgUrl = ""
+    try {
+        if (id) {
+            profileImgUrl = await getDownloadURL(storageRef);
+        }
+    } catch (error) {
+        console.log(error.code);
+    }
     return profileImgUrl;
 }
 
@@ -137,7 +146,6 @@ function CustomTabs() {
         </Tabs>
     )
 }
-
 
 function LinkTab(props) {
     return (
@@ -216,18 +224,34 @@ function BasicTabs() {
 
 function PostList({ userId }) {
     const [posts, setPosts] = useState([]);
+    useEffect(() => {
+        const loadPosts = async () => {
+            const posts = await getPosts(userId);
+            setPosts(posts);
+        }
+        loadPosts();
+    }, [])
     return (
         <>
             {
-                posts.map((post) => <Typography>{post.title}</Typography>)
+                posts.map((post) => <PostCard key={post.id} postData={post} />)
             }
         </>
     )
 }
 
-function getPosts(userId) {
-    const db = getFirestore();
-    const postsRef = getDocs(query(collection(db, 'posts'), where('userId', '==', userId)));
+async function getPosts(userId) {
     const posts = [];
+    const db = getFirestore();
+    const userRef = doc(db, 'user', userId);
+    const postsRef = collection(db, 'post');
+    let q = query(postsRef, where('user', '==', userRef));
+    if (userId !== getAuth().currentUser?.uid) {
+        q = query(postsRef, where('user', '==', userRef), where('visibility', '==', "public"));
+    }
+    const postsArr = await getDocs(q);
+    postsArr.forEach((doc) => {
+        posts.push({ ...doc.data(), id: doc.id });
+    })
     return posts;
 }

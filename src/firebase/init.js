@@ -22,12 +22,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = getFirestore();
-connectFirestoreEmulator(db, '127.0.0.1', 8080);
-connectAuthEmulator(auth, "http://127.0.0.1:9099");
-const storage = getStorage();
 if (location.hostname === "localhost") {
+    const auth = getAuth();
+    const db = getFirestore();
+    const storage = getStorage();
+    connectFirestoreEmulator(db, '127.0.0.1', 8080);
+    connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
     // Point to the Storage emulator running on localhost.
     connectStorageEmulator(storage, "127.0.0.1", 9199);
 } 

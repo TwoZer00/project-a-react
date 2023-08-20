@@ -145,7 +145,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                 </List> */}
                 <List sx={{ height: "100%", display: "flex", flexDirection: "column" }} >
                     <ListItem sx={{ mt: "auto" }}>
-                        <PlayerInDrawer open={open} audio={audio} />
+                        <PlayerInDrawer open={open} audio={audio} data={data} />
                     </ListItem>
                 </List>
             </Drawer>
@@ -281,21 +281,11 @@ const AvatarInMenu = () => {
         , [getAuth().currentUser])
     return (
         <div>
-            {/* <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-            >
-                <AccountCircle />
-            </IconButton> */}
             {auth && <IconButton component={RouterLink} to={"/upload"} color='primary'>
                 <AddCircle />
             </IconButton>}
             {!auth ?
-                <Button component={RouterLink} to={"/login"} variant="outlined" startIcon={<AccountCircleOutlined />} sx={{ borderRadius: 9 }} color='secondary'>
+                <Button component={RouterLink} to={"/login"} variant="outlined" startIcon={<AccountCircleOutlined />} sx={{ borderRadius: 9 }} color='inherit'>
                     Sign in
                 </Button>
                 :
@@ -341,11 +331,11 @@ const AvatarInMenuLoggedMenuItems = ({ handleClose }) => {
     }
     const handleProfile = () => {
         handleClose();
-        navigate('/user');
+        navigate(`/user/${getAuth().currentUser?.uid}`);
     }
     return (
         <>
-            <MenuItem onClick={handleProfile}  >Profile</MenuItem>
+            <MenuItem onClick={handleProfile}>Profile</MenuItem>
             <MenuItem onClick={handleClose} >My account</MenuItem>
             <MenuItem onClick={handleClose} >Settings</MenuItem>
             <MenuItem onClick={handleLogout} >Logout</MenuItem>

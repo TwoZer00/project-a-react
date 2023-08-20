@@ -1,5 +1,5 @@
 import { Grid, Stack } from '@mui/material';
-import { collection, getDocs, getFirestore, orderBy, query } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, orderBy, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import PostCard from '../components/PostCard';
@@ -40,7 +40,7 @@ export default function Home() {
             <div>
                 <TagList />
             </div>
-            <Grid container gap={2} direction={{ sm: "column", md: "row" }} >
+            <Grid container gap={2} direction={{ xs: "column", md: "row" }} >
                 {
                     data?.map(item => <PostCard key={item.id + "postCard"} postData={item} />)
                 }
@@ -53,7 +53,7 @@ async function fetchPosts() {
     let posts = [];
     const db = getFirestore();
     const postsRef = collection(db, 'post');
-    const q = query(postsRef, orderBy('creationTime', 'desc'));
+    const q = query(postsRef, where('visibility', '==', 'public'), orderBy('creationTime', 'desc'));
     const post = await getDocs(q)
     post.forEach((doc) => {
         posts.push({ ...doc.data(), id: doc.id })

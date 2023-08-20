@@ -7,7 +7,7 @@ import styled from '@emotion/styled'
 import { Female, Man, PedalBike, Person, Person2, Person3, Person4, Woman } from '@mui/icons-material'
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
 
 export default function Register() {
     const [error, setError] = useState({});

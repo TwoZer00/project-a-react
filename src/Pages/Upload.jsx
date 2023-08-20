@@ -1,13 +1,13 @@
-import { Autocomplete, Box, Button, Chip, CssBaseline, FormControl, InputLabel, LinearProgress, MenuItem, Select, Stack, TextField, ToggleButton, createFilterOptions } from '@mui/material'
+import { Alert, Autocomplete, Backdrop, Box, Button, Chip, CssBaseline, FormControl, InputLabel, LinearProgress, Link, MenuItem, Select, Snackbar, Stack, TextField, ToggleButton, ToggleButtonGroup, Tooltip, createFilterOptions } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import { theme } from './Init';
 import { collection, doc, getDocs, getFirestore, serverTimestamp, setDoc, writeBatch } from 'firebase/firestore';
 import { MuiFileInput } from 'mui-file-input';
-import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import { useLocation, useNavigate, useOutletContext, Link as RouterLink } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { Css } from '@mui/icons-material';
+import { Css, PlaylistRemove, Public, PublicOff } from '@mui/icons-material';
 
 const filter = createFilterOptions();
 export default function Upload() {
@@ -53,13 +53,14 @@ export default function Upload() {
     }
 
     const [tagInput, setTagInput] = useState([]);
-    const [uploadingProgress, setUploadingProgress] = useState();
+    const [uploadState, setUploadState] = useState();
+    const [postRef, setPostRef] = useState(doc(collection(getFirestore(), "post")));
     const handleSubmit = async () => {
-        // const tempInitData = { ...initData }
+        setUploadState("uploading")
         setInitData((val) => {
-            return { ...val, loading: { state: "loading", progress: uploadingProgress } }
+            return { ...val, loading: { state: "loading", progress: 0 } }
         })
-        const postRef = doc(collection(getFirestore(), "post"));
+        // const postRef = doc(collection(getFirestore(), "post"));
         const form = formRef.current;
         const formData = new FormData(form);
         const post = {
@@ -68,22 +69,32 @@ export default function Upload() {
             genre: formData.get("genre"),
             nsfw: form.nsfw.checked,
             creationTime: serverTimestamp(),
-            user: doc(getFirestore(), "user", getAuth().currentUser.uid)
+            user: doc(getFirestore(), "user", getAuth().currentUser.uid),
+            visibility: formData.get('visibility')
         }
-
-
-        await uploadFile(valuea, postRef, getAuth().currentUser.uid, setInitData, post, tagInput)
-        const tempInitData = { ...initData };
-        delete tempInitData.loading
-        setInitData(tempInitData);
+        console.log(post);
+        try {
+            await uploadFile(valuea, postRef, getAuth().currentUser.uid, setInitData, post, tagInput)
+        }
+        catch (error) {
+            console.error(error);
+        }
+        finally {
+            setUploadState('finished')
+            const tempInitData = { ...initData };
+            delete tempInitData.loading
+            setInitData(tempInitData);
+        }
         // console.log(postRef.id, post, valuea, tagInput);
     }
     return (
         <>
             {/* <LinearProgress value={uploadingProgress} sx={{}} /> */}
+            <Backdrop open={initData.loading} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} />
             <Stack gap={1} ref={formRef} component={"form"} sx={{ height: "100%" }}>
                 <Stack direction={"row"} gap={2} >
                     <TextField label={"Title"} type='text' sx={{ flex: 1 }} name='title' />
+                    <Visibility />
                     <NSFWToggleButton />
                 </Stack>
                 <Stack direction={"row"} gap={2}>
@@ -121,20 +132,23 @@ export default function Upload() {
                             onChange={handleChange}
                         >
                             {genre.length > 0 && genre.map((item, index) => <MenuItem key={index + "a"} value={item.title}>{item.title}</MenuItem>)}
-                            {/* <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem> */}
                         </Select>
                     </FormControl>
                 </Stack>
                 <TextField label={"Description"} multiline rows={4} type='text' name='desc' />
                 <MuiFileInput getSizeText={(value) => `${((value?.size) / Math.pow(1024, 2)).toFixed(2)} MB`} inputProps={{ accept: 'audio/*' }} value={valuea} onChange={handleChangeF} color='info' name='file' />
                 <Box sx={{ mt: "auto", height: "100%", display: "flex", alignItems: "self-end", justifyContent: "flex-end" }} >
-                    <Button variant='contained' onClick={handleSubmit}>
+                    <Button variant='contained' onClick={handleSubmit} disabled={initData.loading} >
                         Upload
                     </Button>
                 </Box>
             </Stack >
+            <Snackbar open={uploadState === 'finished'} autoHideDuration={6000} onClose={() => { setUploadState() }}>
+                <Alert severity="success" sx={{ width: '100%' }}>
+                    This is a success message!
+                    <Button component={RouterLink} to={`/${postRef.path}`} underline='hover' color="inherit" >View post</Button>
+                </Alert>
+            </Snackbar>
         </>
     )
 }
@@ -263,4 +277,42 @@ async function uploadPost(post, postRef, filePath, tags) {
         batch.set(tag, { title: (tag.path).substring((tag.path).lastIndexOf("/") + 1) });
     });
     await batch.commit();
+}
+
+function Visibility() {
+    const [visibility, setVisibility] = useState('public');
+
+    const handleChange = (event, newVisibility) => {
+        setVisibility(newVisibility);
+
+    };
+    return (
+        <>
+            <input type="text" value={visibility} hidden name='visibility' />
+            <ToggleButtonGroup
+                color="primary"
+                value={visibility}
+                exclusive
+                onChange={handleChange}
+                aria-label="Platform"
+                name="visibility"
+            >
+                <ToggleButton value="public">
+                    <Tooltip disableFocusListener title='Everyone can watch'>
+                        <Public />
+                    </Tooltip>
+                </ToggleButton>
+                <ToggleButton value="private">
+                    <Tooltip disableFocusListener title="No one can watch">
+                        <PublicOff />
+                    </Tooltip>
+                </ToggleButton>
+                <ToggleButton value="unlisted">
+                    <Tooltip disableFocusListener title="Just the one with link" >
+                        <PlaylistRemove />
+                    </Tooltip>
+                </ToggleButton>
+            </ToggleButtonGroup>
+        </>
+    )
 }

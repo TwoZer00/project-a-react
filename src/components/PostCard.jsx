@@ -1,7 +1,7 @@
 import { doc } from 'firebase/firestore'
 import { getDoc, getFirestore } from 'firebase/firestore'
-import { PlayArrow } from '@mui/icons-material'
-import { Avatar, Box, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Typography } from '@mui/material'
+import { Pause, PlayArrow, PlaylistRemove, Public, PublicOff, StopRounded, Visibility } from '@mui/icons-material'
+import { Avatar, Box, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
@@ -11,22 +11,30 @@ export default function PostCard({ postData }) {
     const [profileImgUrl, setProfileImgUrl] = useState();
     const [username, setUsername] = useState();
     const handlePlayButton = async () => {
-        const audioUrl = await getAudioUrl(postData.filePath);
-        const postInPlay = {
-            title: postData.title,
-            desc: postData.desc,
-            id: postData.id,
-            userId: postData.userId,
-            audioUrl
+        if (initData?.postInPlay?.isAudioInProgress && postData.id === initData.postInPlay.id) {
+            const temp = { ...initData }
+            temp.postInPlay.isAudioInProgress = [false, "change"]
+            setInitData(temp);
         }
-        const temp = { ...initData, postInPlay }
-        setInitData(temp);
+        else {
+            const audioUrl = await getAudioUrl(postData.filePath);
+            const postInPlay = {
+                title: postData.title,
+                desc: postData.desc,
+                id: postData.id,
+                userId: postData.userId,
+                isAudioInProgress: [false],
+                audioUrl
+            }
+            const temp = { ...initData, postInPlay }
+            setInitData(temp);
+        }
     }
 
 
     useEffect(() => {
         const handleProfileImage = async () => {
-            const profileImgUrl = await getProfileImgUrl(postData.userId);
+            const profileImgUrl = await getProfileImgUrl(postData.profilePath);
             setProfileImgUrl(profileImgUrl);
         }
         const handleUsername = async () => {
@@ -35,31 +43,45 @@ export default function PostCard({ postData }) {
         }
         handleUsername();
         handleProfileImage();
-
     }, [])
-
     return (
         <>
-            <Grid item width={{ xs: "100%", md: 300 }}>
-                <Card sx={{ width: "100%" }} >
-                    <CardHeader title={<Link component={RouterLink} to={`/${postData.user.path}`} underline='hover'>{username}</Link>} avatar={<Avatar src={profileImgUrl} component={RouterLink} to={`/${(postData.user.path)}`} />} subheader={(new Date(postData.creationTime.seconds * 1000)).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} />
+            <Grid item xs="auto" maxWidth={{ xs: "100%" }}>
+                <Card>
+                    <CardHeader
+                        title={<Link component={RouterLink} to={`/${postData.user.path}`} underline='hover'>{username}</Link>}
+                        avatar={<Avatar src={profileImgUrl} component={RouterLink} to={`/${(postData.user.path)}`} />}
+                        subheader={
+                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
+                                <Tooltip title={visibilityText(postData.visibility)}>
+                                    <IconButton disableRipple size='small' color='inherit' sx={{ padding: 0 }} >
+                                        <VisibilityIcon visibility={postData.visibility} />
+                                    </IconButton>
+                                </Tooltip>
+                                {(new Date(postData.creationTime.seconds * 1000)).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                            </Box>
+                        }
+                    />
                     <CardContent sx={{ paddingY: 0, display: "flex", flexDirection: "column", gap: 1 }}>
-                        <Link component={RouterLink} to={`/genre/${postData.genre.id}`} underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.genre).path).substring(postData.genre.path.lastIndexOf("/") + 1)}</Link>
-                        <Stack direction={"row"} gap={1}>
-                            {postData.tags.map((tag, index) => <Chip key={index} label={(tag.path).substring(tag.path.lastIndexOf("/") + 1)} clickable size='small' variant='outlined' component={RouterLink} to={`/tag/${tag.id}`} />)}
+                        <Link component={RouterLink} to={`genre/${postData.genre.id}`} relative='path' underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.genre).path).substring(postData.genre.path.lastIndexOf("/") + 1)}</Link>
+                        <Stack direction={"row"} gap={1} width={"100%"} overflow={'auto'} >
+                            {postData.tags.map((tag, index) => <Chip key={index} label={(tag.path).substring(tag.path.lastIndexOf("/") + 1)} clickable size='small' variant='outlined' component={RouterLink} to={`tag/${tag.id}`} relative='path' />)}
                         </Stack>
-                        <Box>
-                            <Typography variant="h5" component="div" >
-                                {postData.title}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" maxHeight={{ xs: 57, md: "fit-content" }} overflow="hidden">
+                        <Box maxWidth={"100%"}>
+                            <Stack direction={"row"}>
+                                <Typography variant="h5" component="div" flex={1} >
+                                    {postData.title}
+                                </Typography>
+                                {postData.nsfw && <Chip size='small' color='error' label={'NSFW'} variant='outlined' />}
+                            </Stack>
+                            <Typography variant="body2" color="text.secondary" overflow={"hidden"} maxWidth={{ xs: "200px", md: "40ch" }} textOverflow={'ellipsis'} whiteSpace={'break-spaces'}>
                                 {postData.desc}
                             </Typography>
                         </Box>
                     </CardContent>
                     <CardActions>
                         <IconButton onClick={handlePlayButton} >
-                            <PlayArrow />
+                            {initData?.postInPlay?.id === postData.id && initData?.postInPlay?.isAudioInProgress[0] ? <Pause /> : <PlayArrow />}
                         </IconButton>
                         <Button variant="text" size='small' color='info' component={RouterLink} to={`/post/${postData.id}`} >View</Button>
                     </CardActions>
@@ -79,7 +101,14 @@ async function getAudioUrl(filePath) {
 async function getProfileImgUrl(id) {
     const storage = getStorage();
     const storageRef = ref(storage, `userPhotos/${id}/profileImage.jpg`);
-    const profileImgUrl = await getDownloadURL(storageRef);
+    let profileImgUrl = ''
+    try {
+        if (id) {
+            await getDownloadURL(storageRef);
+        }
+    } catch (error) {
+        console.log(error.code);
+    }
     return profileImgUrl;
 }
 
@@ -91,3 +120,25 @@ async function getUsername(user) {
     return username;
 }
 
+
+function VisibilityIcon({ visibility }) {
+    switch (visibility) {
+        case "private":
+            return <PublicOff />
+        case "unlisted":
+            return <PlaylistRemove />
+        default:
+            return <Public />
+    }
+}
+
+function visibilityText(visibility) {
+    switch (visibility) {
+        case "private":
+            return "No one can watch the post and play the audio";
+        case "unlisted":
+            return "The ones with the link can watch the post and play the audio";
+        default:
+            return "Everyone can watch the post and play the audio";
+    }
+}

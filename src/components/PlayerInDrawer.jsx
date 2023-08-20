@@ -2,8 +2,10 @@ import { PauseOutlined, PlayArrowOutlined, SkipNextOutlined, SkipPreviousOutline
 import { Box, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
-export default function PlayerInDrawer({ open, audio }) {
+export default function PlayerInDrawer({ open, audio, data }) {
+    const [initData, setInitData] = data;
     const audioRef = useRef();
     const [audioProgress, setAudioProgress] = useState(0);
     const [progressTime, setProgressTime] = useState(0);
@@ -13,9 +15,23 @@ export default function PlayerInDrawer({ open, audio }) {
         if (audioRef.current.paused) {
             audioRef.current.play();
             setIsPlaying(true);
+            setInitData((value) => {
+                const temp = { ...value }
+                if (temp?.postInPlay) {
+                    temp.postInPlay.isAudioInProgress = [true];
+                }
+                return temp;
+            })
         } else {
             audioRef.current.pause();
             setIsPlaying(false);
+            setInitData((value) => {
+                const temp = { ...value }
+                if (temp?.postInPlay) {
+                    temp.postInPlay.isAudioInProgress = [false];
+                }
+                return temp;
+            })
         }
     }
     const handleProgress = () => {
@@ -26,6 +42,13 @@ export default function PlayerInDrawer({ open, audio }) {
         setIsPlaying(false);
         setAudioProgress(0);
         audioRef.current.currentTime = 0;
+        setInitData((value) => {
+            const temp = { ...value }
+            if (temp?.postInPlay) {
+                temp.postInPlay.isAudioInProgress = [false];
+            }
+            return temp;
+        })
     }
     const handleLoaded = () => {
         const duration = audioRef.current.duration;
@@ -34,7 +57,15 @@ export default function PlayerInDrawer({ open, audio }) {
         audioRef.current.play();
         setIsPlaying(true);
         setProgressTime(audioRef.current.currentTime);
+        setInitData((value) => {
+            const temp = { ...value }
+            if (temp?.postInPlay) {
+                temp.postInPlay.isAudioInProgress = [true];
+            }
+            return temp;
+        })
     }
+
     useEffect(() => {
         const loadUsername = async () => {
             const user = await fetchUsername(audio?.userId);
@@ -45,9 +76,13 @@ export default function PlayerInDrawer({ open, audio }) {
             loadUsername();
         }
     }, [audio?.userId])
+
     useEffect(() => {
-        handleEnded()
-    }, [audio])
+        if (initData?.postInPlay?.isAudioInProgress[1]) {
+            handlePlay()
+        }
+    }, [initData?.postInPlay?.isAudioInProgress[1]]);
+
     return (
         <Stack direction="column" width={"100%"} sx={{ placeSelf: "end" }} gap={1}>
             <div>
