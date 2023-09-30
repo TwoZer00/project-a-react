@@ -266,11 +266,15 @@ const AvatarInMenuLoggedMenuItems = ({ handleClose }) => {
         handleClose();
         navigate(`/user/${getAuth().currentUser?.uid}`);
     }
+    const handleSettings = () => {
+        handleClose();
+        navigate("/settings");
+    }
     return (
         <>
             <MenuItem onClick={handleProfile}>Profile</MenuItem>
             <MenuItem onClick={handleClose} >My account</MenuItem>
-            <MenuItem component={RouterLink} to={"/settings"} >Settings</MenuItem>
+            <MenuItem onClick={handleSettings}>Settings</MenuItem>
             <MenuItem onClick={handleLogout} >Logout</MenuItem>
         </>
     )
