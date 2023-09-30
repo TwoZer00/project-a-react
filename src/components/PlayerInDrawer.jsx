@@ -83,6 +83,19 @@ export default function PlayerInDrawer({ open, audio, data }) {
         }
     }, [initData?.postInPlay?.isAudioInProgress[1]]);
 
+    const toHHMMSS = (secs) => {
+        const sec_num = parseInt(secs, 10);
+        const hours = Math.floor(sec_num / 3600);
+        const minutes = Math.floor((sec_num % 3600) / 60);
+        const seconds = sec_num % 60;
+
+        const formatValue = (value) => (value < 10 ? `0${value}` : value);
+
+        const timeArray = [hours, minutes, seconds].map(formatValue);
+
+        return timeArray.filter((v, i) => v !== "00" || i > 0).join(":");
+    };
+
     return (
         <Stack direction="column" width={"100%"} sx={{ placeSelf: "end" }} gap={1}>
             <div>
@@ -93,11 +106,12 @@ export default function PlayerInDrawer({ open, audio, data }) {
                 <Box>
                     <LinearProgress variant="determinate" value={audioProgress} color='secondary' sx={{ width: "100%" }} style={{ borderRadius: "1rem" }} />
                     <Stack direction={"row"} justifyContent={"space-between"} >
-                        <Typography>{audio && (audioRef.current.currentTime / 60).toLocaleString(undefined, {
+                        {/* <Typography>{audio && (audioRef.current.currentTime / 60).toLocaleString(undefined, {
                             minimumFractionDigits: 1,
                             maximumFractionDigits: 1
-                        })}</Typography>
-                        <Typography>{audio && (audioRef?.current.duration / 60).toLocaleString(undefined, { maximumFractionDigits: 1 })}</Typography>
+                        })}</Typography>*/}
+                        <Typography>{audio && toHHMMSS(audioRef.current.currentTime)}</Typography>
+                        <Typography>{audio && toHHMMSS(audioRef?.current.duration)}</Typography>
                     </Stack>
                 </Box>)}
             <Stack direction={open ? "row" : "column"} justifyContent={"center"} alignItems={"center"} width={"100%"} >

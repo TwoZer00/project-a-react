@@ -6,11 +6,19 @@ import Profile from "../Pages/Profile";
 import Login from "../Pages/Login";
 import Register from "../Pages/Register";
 import Upload from "../Pages/Upload";
+import Post from "../Pages/Post";
+import { getPostData } from "../firebase/utills";
+import { getAuth } from "firebase/auth";
+import { app } from '../firebase/init';
+import Settings from "../Pages/Settings";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <Init />,
+        loader: async () => {
+            return getAuth(app)
+        },
         children: [
             {
                 path: "",
@@ -27,6 +35,17 @@ export const router = createBrowserRouter([
             {
                 path: "upload",
                 element: <Upload />
+            },
+            {
+                path: "post/:id",
+                element: <Post />,
+                loader: async ({ params }) => {
+                    return getPostData(params.id);
+                }
+            },
+            {
+                path: 'settings',
+                element: <Settings />
             }
         ]
     },

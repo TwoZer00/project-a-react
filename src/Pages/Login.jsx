@@ -35,7 +35,6 @@ export default function Login() {
         }
         // setError(tempE);
         if (Object.keys({ ...tempE.email, ...tempE.password }).length === 0) {
-            console.log(data);
             try {
                 await signInWithEmailAndPassword(getAuth(), data.email, data.password);
                 console.log(location.state?.from?.pathname);

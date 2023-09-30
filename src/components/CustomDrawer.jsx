@@ -4,7 +4,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import { Button, LinearProgress, Menu, MenuItem, Stack } from '@mui/material';
+import { Button, Container, LinearProgress, Menu, MenuItem, Stack } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -23,6 +23,7 @@ import React, { useEffect, useState } from 'react';
 import PlayerInDrawer from './PlayerInDrawer';
 import { Link as RouterLink, useNavigate, useOutletContext } from 'react-router-dom'
 import { getAuth, signOut } from 'firebase/auth';
+import UserAvatar from './UserAvatar';
 
 export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const theme = useTheme();
@@ -61,7 +62,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                         <Typography variant="h6" noWrap component="div" textAlign={"center"} flex={1}>
                             {title}
                         </Typography>
-                        <AvatarInMenu />
+                        <AvatarInMenu username={initData?.user?.username} avatarURL={initData?.user?.avatarURL} />
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open} sx={{ height: "100vh" }}>
@@ -176,13 +177,12 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
-const AvatarInMenu = () => {
+const AvatarInMenu = ({ username, avatarURL }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [auth, setAuth] = useState(getAuth().currentUser);
     const handleChange = (event) => {
         setAuth(event.target.checked);
     };
-
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -221,7 +221,8 @@ const AvatarInMenu = () => {
                     color="inherit"
                     disableRipple
                 >
-                    <AccountCircle />
+                    {/* <AccountCircle /> */}
+                    <UserAvatar username={username} url={auth.photoURL || avatarURL} width={35} height={35} />
                 </IconButton>
             }
             {auth && <Menu
@@ -238,6 +239,13 @@ const AvatarInMenu = () => {
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                slotProps={
+                    {
+                        paper: {
+                            elevation: 4,
+                        }
+                    }
+                }
             >
                 {
                     <AvatarInMenuLoggedMenuItems handleClose={handleClose} />
@@ -262,7 +270,7 @@ const AvatarInMenuLoggedMenuItems = ({ handleClose }) => {
         <>
             <MenuItem onClick={handleProfile}>Profile</MenuItem>
             <MenuItem onClick={handleClose} >My account</MenuItem>
-            <MenuItem onClick={handleClose} >Settings</MenuItem>
+            <MenuItem component={RouterLink} to={"/settings"} >Settings</MenuItem>
             <MenuItem onClick={handleLogout} >Logout</MenuItem>
         </>
     )

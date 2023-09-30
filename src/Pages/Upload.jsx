@@ -193,7 +193,7 @@ async function getGenre() {
 async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) {
 
     // Upload file and metadata to the object 'images/mountains.jpg'
-    const storageRef = ref(getStorage(), `audio/${userId}/${postRef.id}` + file.name);
+    const storageRef = ref(getStorage(), `audio/${userId}/${postRef.id}/` + file.name);
     const uploadTask = uploadBytesResumable(storageRef, file);
     // Listen for state changes, errors, and completion of the upload.
     //create a promise function with the uploadTask.on of firebase
@@ -255,7 +255,7 @@ async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) 
 function createTagsReference(tags) {
     const tagRefs = [];
     for (const tag of tags) {
-        const tagRef = doc(getFirestore(), 'tag', tag);
+        const tagRef = doc(getFirestore(), 'tag', encodeURIComponent(tag));
         tagRefs.push(tagRef);
     }
     return tagRefs
@@ -271,7 +271,7 @@ async function uploadPost(post, postRef, filePath, tags) {
     const batch = writeBatch(getFirestore());
     batch.set(postRef, tempPost);
     tags.forEach((tag) => {
-        batch.set(tag, { title: (tag.path).substring((tag.path).lastIndexOf("/") + 1) });
+        batch.set(tag, { title: (tag.path).substring((tag.path).lastIndexOf("/") + 1), urlPath: encodeURIComponent((tag.path).substring((tag.path).lastIndexOf("/") + 1)) });
     });
     await batch.commit();
 }

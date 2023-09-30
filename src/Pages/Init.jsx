@@ -3,6 +3,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import CustomDrawer from '../components/CustomDrawer';
+import { getUserData } from '../firebase/utills';
+import { doc, getFirestore } from 'firebase/firestore';
 
 
 
@@ -13,16 +15,17 @@ export default function Init() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        onAuthStateChanged(getAuth(), (user) => {
+        onAuthStateChanged(getAuth(), async (user) => {
             if (user) {
                 const temp = {
                     uid: user.uid,
                     email: user.email
                 }
+                const userData = await getUserData(doc(getFirestore(), 'user', user.uid));
                 const tempData = { ...initData };
-                tempData.user = temp;
+                tempData.user = userData;
                 setInitData((val) => {
-                    return { ...val, user: temp };
+                    return { ...val, user: userData };
                 });
             }
             else {

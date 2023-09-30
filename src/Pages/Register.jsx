@@ -98,8 +98,8 @@ function validatePassword(passwords, error) {
     }
 }
 
-function CustomToggleButton(props) {
-    const [gender, setGender] = useState('male');
+export function CustomToggleButton(props) {
+    const [gender, setGender] = useState(props.value || 'male');
 
     const handleGender = (event, newGender) => {
         setGender(newGender);
@@ -126,7 +126,7 @@ function CustomToggleButton(props) {
     );
 }
 
-function genderToNumber(gender) {
+export function genderToNumber(gender) {
     switch (gender) {
         case 'male':
             return 1;

@@ -5,11 +5,14 @@ import { Avatar, Box, Button, Card, CardActionArea, CardActions, CardContent, Ca
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
+import { getUserData } from '../firebase/utills'
+import UserAvatar from './UserAvatar'
 
 export default function PostCard({ postData }) {
     const [initData, setInitData] = useOutletContext();
     const [profileImgUrl, setProfileImgUrl] = useState();
     const [username, setUsername] = useState("");
+    const [user, setUser] = useState()
     const handlePlayButton = async () => {
         if (initData?.postInPlay?.isAudioInProgress && postData.id === initData.postInPlay.id) {
             const temp = { ...initData }
@@ -33,24 +36,20 @@ export default function PostCard({ postData }) {
 
 
     useEffect(() => {
-        const handleProfileImage = async () => {
-            const profileImgUrl = await getProfileImgUrl(postData.profilePath);
-            setProfileImgUrl(profileImgUrl);
+        const fetchUser = async () => {
+            const userData = await getUserData(postData.user);
+            setUser(userData);
         }
-        const handleUsername = async () => {
-            const username = await getUsername(postData.user);
-            setUsername(username);
-        }
-        handleUsername();
-        handleProfileImage();
+        fetchUser();
     }, [])
     return (
         <>
             <Grid item xs="auto" maxWidth={{ xs: "100%" }}>
                 <Card>
                     <CardHeader
-                        title={<Link component={RouterLink} to={`/${postData.user.path}`} underline='hover'>{username}</Link>}
-                        avatar={<Avatar src={profileImgUrl} component={RouterLink} to={`/${(postData.user.path)}`} {...stringAvatar(username)} />}
+                        title={<Link component={RouterLink} to={`/${postData.user.path}`} underline='hover'>{user?.username}</Link>}
+                        // avatar={<Avatar src={user?.avatarURL} component={RouterLink} to={`/${(postData.user.path)}`} {...stringAvatar(username)} />}
+                        avatar={<UserAvatar url={user?.avatarURL} username={user?.username} />}
                         subheader={
                             <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
                                 <Tooltip title={visibilityText(postData.visibility)}>
@@ -63,9 +62,9 @@ export default function PostCard({ postData }) {
                         }
                     />
                     <CardContent sx={{ paddingY: 0, display: "flex", flexDirection: "column", gap: 1 }}>
-                        <Link component={RouterLink} to={`genre/${postData.genre.id}`} relative='path' underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.genre).path).substring(postData.genre.path.lastIndexOf("/") + 1)}</Link>
+                        <Link component={RouterLink} to={`/genre/${postData.genre.id}`} relative='path' underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.genre).path).substring(postData.genre.path.lastIndexOf("/") + 1)}</Link>
                         <Stack direction={"row"} gap={1} width={"100%"} overflow={'auto'} >
-                            {postData.tags.map((tag, index) => <Chip key={index} label={(tag.path).substring(tag.path.lastIndexOf("/") + 1)} clickable size='small' variant='outlined' component={RouterLink} to={`tag/${tag.id}`} relative='path' />)}
+                            {postData.tags.map((tag, index) => <Chip key={index} label={decodeURIComponent((tag.path).substring(tag.path.lastIndexOf("/") + 1))} clickable size='small' variant='outlined' component={RouterLink} to={`/${tag.path}`} relative='path' />)}
                         </Stack>
                         <Box maxWidth={"100%"}>
                             <Stack direction={"row"}>
@@ -126,8 +125,10 @@ export function stringAvatar(name = "", size = { width: 50, height: 50 }) {
 
 
 async function getAudioUrl(filePath) {
+    console.log(filePath);
     const storage = getStorage();
     const storageRef = ref(storage, `${filePath}`);
+    console.log(storageRef);
     const audioUrl = await getDownloadURL(storageRef);
     return audioUrl;
 }
