@@ -1,4 +1,4 @@
-import { AccountCircle, AccountCircleOutlined, AddCircle, AddCircleOutline, Delete, Home, Mic, Send, Upload } from '@mui/icons-material';
+import { AccountCircle, AccountCircleOutlined, AddCircle, AddCircleOutline, Delete, Home, Mic, MoreVert, Send, Upload } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MailIcon from '@mui/icons-material/Mail';
@@ -24,6 +24,7 @@ import PlayerInDrawer from './PlayerInDrawer';
 import { Link as RouterLink, useNavigate, useOutletContext } from 'react-router-dom'
 import { getAuth, signOut } from 'firebase/auth';
 import UserAvatar from './UserAvatar';
+import DrawerMenu from './DrawerMenu';
 
 export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const theme = useTheme();
@@ -204,14 +205,20 @@ const AvatarInMenu = ({ username, avatarURL }) => {
     }
         , [getAuth().currentUser])
     return (
-        <div>
+        <Stack direction={"row"}>
             {auth && <IconButton component={RouterLink} to={"/upload"} color='inherit'>
                 <Upload />
             </IconButton>}
-            {!auth ?
-                <Button component={RouterLink} to={"/login"} variant="outlined" startIcon={<AccountCircleOutlined />} sx={{ borderRadius: 9 }} color='inherit'>
-                    Sign in
-                </Button>
+            <DrawerMenu auth={auth} username={username} avatarURL={avatarURL} logout={logout} />
+            {/* {!auth ?
+                <>
+                    <Button component={RouterLink} to={"/login"} variant="outlined" startIcon={<AccountCircleOutlined />} sx={{ borderRadius: 9 }} color='inherit'>
+                        Sign in
+                    </Button>
+                    <IconButton>
+                        <MoreVert />
+                    </IconButton>
+                </>
                 :
                 <IconButton
                     aria-label="account of current user"
@@ -221,11 +228,10 @@ const AvatarInMenu = ({ username, avatarURL }) => {
                     color="inherit"
                     disableRipple
                 >
-                    {/* <AccountCircle /> */}
                     <UserAvatar username={username} url={auth.photoURL || avatarURL} width={35} height={35} />
                 </IconButton>
-            }
-            {auth && <Menu
+            } */}
+            {/* {auth && <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
                 anchorOrigin={{
@@ -250,8 +256,8 @@ const AvatarInMenu = ({ username, avatarURL }) => {
                 {
                     <AvatarInMenuLoggedMenuItems handleClose={handleClose} />
                 }
-            </Menu>}
-        </div>
+            </Menu>} */}
+        </Stack>
     )
 }
 
@@ -268,12 +274,16 @@ const AvatarInMenuLoggedMenuItems = ({ handleClose }) => {
     }
     const handleSettings = () => {
         handleClose();
-        navigate("/settings");
+        navigate("/settings/preferences");
+    }
+    const handleMyAccount = () => {
+        handleClose();
+        navigate("/settings/profile");
     }
     return (
         <>
             <MenuItem onClick={handleProfile}>Profile</MenuItem>
-            <MenuItem onClick={handleClose} >My account</MenuItem>
+            <MenuItem onClick={handleMyAccount}>My account</MenuItem>
             <MenuItem onClick={handleSettings}>Settings</MenuItem>
             <MenuItem onClick={handleLogout} >Logout</MenuItem>
         </>

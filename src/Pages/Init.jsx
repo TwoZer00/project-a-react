@@ -34,26 +34,51 @@ export default function Init() {
                     navigate('/login', { state: { from: location.pathname } });
                 }
                 setInitData((val) => {
-                    return { ...val, user: null };
+                    const temp = { ...val };
+                    delete temp.user;
+                    // temp.preferences.nsfw = undefined
+                    return temp
                 });
             }
             setLoading(false);
         });
+        if (localStorage.getItem('preferences')) {
+            const tempTheme = createTheme({
+                palette: {
+                    ...paletteTemp.palette,
+                    mode: JSON.parse(localStorage.getItem('preferences')).selectedTheme === "default" ? isDarkModeEnabled() ? "dark" : "light" : JSON.parse(localStorage.getItem('preferences')).selectedTheme
+                }
+            });
+            const preferences = { theme: tempTheme }
+            preferences.nsfw = JSON.parse(localStorage.getItem('preferences')).nsfw;
+            preferences.selectedTheme = JSON.parse(localStorage.getItem('preferences')).selectedTheme;
+            console.log(preferences);
+            setInitData((val) => {
+                return { ...val, preferences };
+            });
+        }
     }, [])
+    useEffect(() => {
+        if (initData?.preferences) {
+            const tempPrefs = { ...initData?.preferences }
+            delete tempPrefs.theme;
+            localStorage.setItem("preferences", JSON.stringify(tempPrefs))
+        }
+    }, [initData?.preferences])
     return (
         <>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={initData?.preferences?.theme || theme}>
                 <CustomDrawer loading={loading} title={initData?.main?.title} audio={initData?.postInPlay} data={[initData, setInitData]} outlet={<Outlet context={[initData, setInitData]} />} />
             </ThemeProvider>
         </>
     )
 }
 
-function isDarkModeEnabled() {
+export function isDarkModeEnabled() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
-export const theme = createTheme({
+export let theme = createTheme({
     palette: {
         mode: isDarkModeEnabled() ? 'dark' : 'light',
         primary: {
@@ -64,3 +89,14 @@ export const theme = createTheme({
         }
     }
 })
+
+export const paletteTemp = {
+    palette: {
+        primary: {
+            main: "#8E02B1"
+        },
+        info: {
+            main: "#FFF"
+        }
+    }
+}

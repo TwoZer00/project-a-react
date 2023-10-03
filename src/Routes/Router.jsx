@@ -11,6 +11,8 @@ import { getPostData } from "../firebase/utills";
 import { getAuth } from "firebase/auth";
 import { app } from '../firebase/init';
 import Settings from "../Pages/Settings";
+import EditProfile from "../Pages/EditProfile";
+import Preferences from "../Pages/Preferences";
 
 export const router = createBrowserRouter([
     {
@@ -45,7 +47,17 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'settings',
-                element: <Settings />
+                element: <Settings />,
+                children: [{
+                    path: 'profile',
+                    element: <EditProfile />
+                }
+                    ,
+                {
+                    path: 'preferences',
+                    element: <Preferences />
+                }
+                ]
             }
         ]
     },

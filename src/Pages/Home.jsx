@@ -29,8 +29,7 @@ export default function Home() {
     }, [initData?.main, initData?.postInPlay])
     useEffect(() => {
         const loadPost = async () => {
-            const posts = await fetchPosts();
-            // console.log(posts);
+            const posts = await fetchPosts(!!initData?.preferences?.nsfw);
             setData(posts);
         }
         loadPost();
@@ -49,11 +48,11 @@ export default function Home() {
     )
 }
 
-async function fetchPosts() {
+async function fetchPosts(nsfw = false) {
     let posts = [];
     const db = getFirestore();
     const postsRef = collection(db, 'post');
-    const q = query(postsRef, where('visibility', '==', 'public'), orderBy('creationTime', 'desc'));
+    const q = query(postsRef, where('visibility', '==', 'public'), where('nsfw', '==', nsfw), orderBy('creationTime', 'desc'));
     const post = await getDocs(q)
     post.forEach((doc) => {
         posts.push({ ...doc.data(), id: doc.id })

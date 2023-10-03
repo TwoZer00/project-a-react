@@ -62,27 +62,28 @@ export default function PostCard({ postData }) {
                         }
                     />
                     <CardContent sx={{ paddingY: 0, display: "flex", flexDirection: "column", gap: 1 }}>
+                        {/* {postData.nsfw && <Typography sx={{ width: "fit-content", letterSpacing: 2, fontWeight: "bolder", fontSize: "12px" }} color='error'>NSFW</Typography>} */}
                         <Link component={RouterLink} to={`/genre/${postData.genre.id}`} relative='path' underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.genre).path).substring(postData.genre.path.lastIndexOf("/") + 1)}</Link>
                         <Stack direction={"row"} gap={1} width={"100%"} overflow={'auto'} >
                             {postData.tags.map((tag, index) => <Chip key={index} label={decodeURIComponent((tag.path).substring(tag.path.lastIndexOf("/") + 1))} clickable size='small' variant='outlined' component={RouterLink} to={`/${tag.path}`} relative='path' />)}
                         </Stack>
-                        <Box maxWidth={"100%"}>
-                            <Stack direction={"row"}>
+                        <Stack direction={"column"} gap={1} maxWidth={"100%"}>
+                            <Stack direction={"column"}>
                                 <Typography variant="h5" component="div" flex={1} >
                                     {postData.title}
                                 </Typography>
-                                {postData.nsfw && <Chip size='small' color='error' label={'NSFW'} variant='outlined' />}
                             </Stack>
                             <Typography variant="body2" color="text.secondary" overflow={"hidden"} maxWidth={{ xs: "200px", md: "40ch" }} textOverflow={'ellipsis'} whiteSpace={'break-spaces'}>
                                 {postData.desc}
                             </Typography>
-                        </Box>
+                        </Stack>
+                        {postData.nsfw && <Typography sx={{ width: "fit-content", letterSpacing: 2, fontWeight: "400", fontSize: "12px" }} color='error'>NSFW</Typography>}
                     </CardContent>
                     <CardActions>
                         <IconButton onClick={handlePlayButton} >
                             {initData?.postInPlay?.id === postData.id && initData?.postInPlay?.isAudioInProgress[0] ? <Pause /> : <PlayArrow />}
                         </IconButton>
-                        <Button variant="text" size='small' color='info' component={RouterLink} to={`/post/${postData.id}`} >View</Button>
+                        <Button variant="text" size='small' component={RouterLink} to={`/post/${postData.id}`} >View</Button>
                     </CardActions>
                 </Card>
             </Grid >
@@ -110,6 +111,7 @@ function stringToColor(string) {
 }
 
 export function stringAvatar(name = "", size = { width: 50, height: 50 }) {
+    // console.log(size);
     return {
         sx: {
             bgcolor: stringToColor(name),

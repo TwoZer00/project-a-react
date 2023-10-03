@@ -14,6 +14,7 @@ export default function UserAvatar({ username, url, ...props }) {
             fetchAvatar()
         }
     }, [url])
+    // console.log(props.width, props.height);
     return (
         <Avatar src={avatarURL} {...stringAvatar(username, { width: props.width || 40, height: props.height || 40 })} />
     )
