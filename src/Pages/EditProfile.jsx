@@ -29,13 +29,6 @@ export default function EditProfile() {
         }
     }, [image])
 
-    useEffect(() => {
-        if (!user) {
-            navigate("/preferences");
-        }
-    }
-        , [user])
-
     const fileToUrl = (file, targetElement) => {
         const reader = new FileReader();
         reader.onload = function (e) {

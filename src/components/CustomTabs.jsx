@@ -12,10 +12,12 @@ import {
     matchPath,
     useLocation,
     Outlet,
+    useNavigate,
 } from 'react-router-dom';
 import { StaticRouter } from 'react-router-dom/server';
 import { Stack } from '@mui/material';
 import { getAuth } from 'firebase/auth';
+import { useEffect } from 'react';
 
 function Router(props) {
     const { children } = props;
@@ -55,9 +57,16 @@ function MyTabs() {
     // Then the order should be ['users/add', 'users/edit', 'users'].
     const routeMatch = useRouteMatch(['settings/preferences', 'settings/profile', 'settings']);
     const currentTab = routeMatch?.pattern?.path === 'settings' ? 'settings/preferences' : routeMatch?.pattern?.path;
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (!getAuth().currentUser && currentTab !== "settings/preferences") {
+            navigate("..")
+        }
+    }, [getAuth().currentUser])
     return (
         <Tabs value={currentTab} centered>
             <Tab label="Preferences" value="settings/preferences" to="preferences" component={Link} />
+            {/* <Tab label="Profile" value="settings/profile" to="profile" component={Link} /> */}
             {getAuth().currentUser && <Tab label="Profile" value="settings/profile" to="profile" component={Link} />}
         </Tabs>
     );

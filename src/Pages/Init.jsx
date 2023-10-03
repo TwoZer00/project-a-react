@@ -29,10 +29,10 @@ export default function Init() {
                 });
             }
             else {
-                const allowPages = ['/login', '/register', '/', '/user'];
-                if (!allowPages.includes((location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1)))) {
-                    navigate('/login', { state: { from: location.pathname } });
-                }
+                // const allowPages = ['/login', '/register', '/', '/user', '/settings'];
+                // if (!allowPages.includes((location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1)))) {
+                //     navigate('/login', { state: { from: location.pathname } });
+                // }
                 setInitData((val) => {
                     const temp = { ...val };
                     delete temp.user;
