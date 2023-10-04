@@ -38,12 +38,12 @@ export default function Preferences() {
                     <Typography variant="caption">Set theme of app(setted as navigator by default)</Typography>
                 </Stack>
                 <FormControl sx={{ flexGrow: 0 }} >
-                    <InputLabel id="demo-simple-select-label">Theme</InputLabel>
+                    {/* <InputLabel id="demo-simple-select-label">Theme</InputLabel> */}
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={initData?.preferences?.selectedTheme || 'default'}
-                        label="Theme"
+                        // label="Theme"
                         sx={{ width: 'fit-content' }}
                         onChange={(event) => {
                             const temp = { ...initData }
