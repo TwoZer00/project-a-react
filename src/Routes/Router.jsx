@@ -21,6 +21,7 @@ export const router = createBrowserRouter([
         loader: async () => {
             return getAuth(app)
         },
+        errorElement: <Typography>Error</Typography>,
         children: [
             {
                 path: "",

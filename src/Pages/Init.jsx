@@ -1,7 +1,7 @@
 import { ThemeProvider, createTheme } from '@mui/material';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import CustomDrawer from '../components/CustomDrawer';
 import { getUserData } from '../firebase/utills';
 import { doc, getFirestore } from 'firebase/firestore';
@@ -9,13 +9,14 @@ import { doc, getFirestore } from 'firebase/firestore';
 
 
 export default function Init() {
+    const auth = useLoaderData();
     const [initData, setInitData] = useState();
     const [title, setTitle] = useState('a project');
     const location = useLocation();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        onAuthStateChanged(getAuth(), async (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const temp = {
                     uid: user.uid,
