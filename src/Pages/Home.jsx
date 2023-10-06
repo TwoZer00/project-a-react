@@ -52,7 +52,14 @@ async function fetchPosts(nsfw = false) {
     let posts = [];
     const db = getFirestore();
     const postsRef = collection(db, 'post');
-    const q = query(postsRef, where('visibility', '==', 'public'), where('nsfw', '==', nsfw), orderBy('creationTime', 'desc'));
+    let q;
+    if (nsfw) {
+        q = query(postsRef, where('visibility', '==', 'public'), orderBy('creationTime', 'desc'));
+    }
+    else {
+        q = query(postsRef, where('visibility', '==', 'public'), where('nsfw', '==', false), orderBy('creationTime', 'desc'));
+    }
+    // const q = query(postsRef, where('visibility', '==', 'public'), where('nsfw', '==', nsfw), orderBy('creationTime', 'desc'));
     const post = await getDocs(q)
     post.forEach((doc) => {
         posts.push({ ...doc.data(), id: doc.id })

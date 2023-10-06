@@ -17,12 +17,14 @@ export default function Init() {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         onAuthStateChanged(auth, async (user) => {
+            console.log(user);
             if (user) {
                 const temp = {
                     uid: user.uid,
                     email: user.email
                 }
                 const userData = await getUserData(doc(getFirestore(), 'user', user.uid));
+                console.log(doc(getFirestore(), 'user', user.uid).path);
                 const tempData = { ...initData };
                 tempData.user = userData;
                 setInitData((val) => {

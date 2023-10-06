@@ -13,6 +13,9 @@ import { app } from '../firebase/init';
 import Settings from "../Pages/Settings";
 import EditProfile from "../Pages/EditProfile";
 import Preferences from "../Pages/Preferences";
+import Tags from "../Pages/Tags";
+import Genre from "../Pages/Genre";
+import Category from "../Pages/Category";
 
 export const router = createBrowserRouter([
     {
@@ -59,6 +62,18 @@ export const router = createBrowserRouter([
                     element: <Preferences />
                 }
                 ]
+            },
+            {
+                path: "tags/:tags",
+                element: <Tags />
+            },
+            {
+                path: "genre/:genre",
+                element: <Genre />
+            },
+            {
+                path: "category/:category",
+                element: <Category />
             }
         ]
     },

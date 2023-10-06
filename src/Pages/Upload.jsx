@@ -16,6 +16,7 @@ export default function Upload() {
     const location = useLocation();
     const [tags, setTags] = useState([]);
     const [genre, setGenre] = useState([]);
+    const [category, setCategory] = useState([]);
     const [value, setValue] = useState(null);
     const [loading, setLoading] = useState(false);
     const formRef = useRef();
@@ -29,18 +30,16 @@ export default function Upload() {
             const temp = await getGenre();
             setGenre(temp)
         }
-        loadGenre();
+        const loadCategory = async () => {
+            const temp = await getCategory();
+            setCategory(temp)
+        }
+        loadCategory();
+        // loadGenre();
         loadTags();
     }, []);
-    // useEffect(() => {
-    //     if (initData?.user === null) {
-    //         navigate("/login", { state: { from: location } })
-    //     }
-    // }, [getAuth().currentUser]);
 
-
-
-    const [age, setAge] = useState('');
+    const [categoryVal, setCategoryVal] = useState('');
 
     const handleChange = (event) => {
         setAge(event.target.value);
@@ -65,7 +64,7 @@ export default function Upload() {
         const post = {
             title: formData.get("title"),
             desc: formData.get("desc"),
-            genre: formData.get("genre"),
+            category: formData.get("category"),
             nsfw: form.nsfw.checked,
             creationTime: serverTimestamp(),
             user: doc(getFirestore(), "user", getAuth().currentUser.uid),
@@ -95,40 +94,42 @@ export default function Upload() {
                     <NSFWToggleButton />
                 </Stack>
                 <Stack direction={"row"} gap={2}>
-                    <Autocomplete
-                        sx={{ flex: 1 }}
-                        multiple
-                        id="tags"
-                        options={tags.map((option) => option.title)}
-                        freeSolo
-                        renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-                            ))
-                        }
-                        onChange={(event, value, reason) => {
-                            setTagInput([...value])
-                        }}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant="outlined"
-                                label="Tags"
-                                placeholder="Tag"
-                            />
-                        )}
-                    />
-                    <FormControl sx={{ width: "100px" }}>
-                        <InputLabel id="demo-simple-select-label">Genre</InputLabel>
+                    <Box flex={"1 1 auto"} >
+                        <Autocomplete
+                            fullWidth
+                            multiple
+                            id="tags"
+                            options={tags.map((option) => option.title)}
+                            freeSolo
+                            renderTags={(value, getTagProps) =>
+                                value.map((option, index) => (
+                                    <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                                ))
+                            }
+                            onChange={(event, value, reason) => {
+                                setTagInput([...value])
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    label="Tags"
+                                    placeholder="Tag"
+                                />
+                            )}
+                        />
+                    </Box>
+                    <FormControl sx={{ flex: "none", width: '15ch' }}>
+                        <InputLabel id="demo-simple-select-label">Category</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            label="Genre"
-                            value={age}
-                            name='genre'
+                            label="Category"
+                            value={categoryVal}
+                            name='category'
                             onChange={handleChange}
                         >
-                            {genre.length > 0 && genre.map((item, index) => <MenuItem key={index + "a"} value={item.title}>{item.title}</MenuItem>)}
+                            {category.length > 0 && category.map((item, index) => <MenuItem key={index + "a"} value={item.title}>{item.title}</MenuItem>)}
                         </Select>
                     </FormControl>
                 </Stack>
@@ -189,6 +190,15 @@ async function getGenre() {
     });
     return tags;
 }
+async function getCategory() {
+    const tags = []
+    const db = getFirestore();
+    const docs = await getDocs(collection(db, "category"));
+    docs.size > 0 && docs.forEach((doc) => {
+        tags.push({ ...doc.data() })
+    });
+    return tags;
+}
 
 async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) {
 
@@ -240,8 +250,8 @@ async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) 
             // Upload completed successfully, now we can get the download URL
             const url = (uploadTask.snapshot.ref).toString();
             const tagsRef = createTagsReference(tags);
-            const genreRef = getGenreRef(post.genre)
-            post.genre = genreRef;
+            const categoryRef = getCategoryRef(post.category)
+            post.category = categoryRef;
             await uploadPost(post, postRef, url, tagsRef);
             uploadingProgress((val) => {
                 const temp = { ...val };
@@ -264,6 +274,10 @@ function createTagsReference(tags) {
 function getGenreRef(genre) {
     const genreRef = doc(getFirestore(), 'genre', genre)
     return genreRef;
+}
+function getCategoryRef(category) {
+    const categoryRef = doc(getFirestore(), 'category', category)
+    return categoryRef;
 }
 
 async function uploadPost(post, postRef, filePath, tags) {

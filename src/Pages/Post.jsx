@@ -31,7 +31,10 @@ export default function Post() {
             {/* <Stack direction={"row"} >
                 <Link component={RouterLink} to={`/user/${user?.id}`} underline='hover' variant='caption' >{user?.username}</Link>
             </Stack> */}
-            <Typography variant="body1" fontSize={16} textTransform={"capitalize"} >{postData.genre.id}</Typography>
+            <Link component={RouterLink} to={`${postData.category}`} underline='hover' variant='body1' textTransform={"uppercase"} >
+                {postData.category.id}
+            </Link>
+            {/* <Typography variant="body1" fontSize={16} textTransform={"capitalize"} >{postData.category.id}</Typography> */}
             <Stack direction={"row"} gap={1}>
                 <Typography variant="h1" component="h1" sx={{ fontSize: '2.5rem', fontWeight: 'bold', width: "100%", ":first-letter": { textTransform: "capitalize" } }}>
                     {postData.title}

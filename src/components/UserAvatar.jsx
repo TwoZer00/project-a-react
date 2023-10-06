@@ -10,12 +10,11 @@ export default function UserAvatar({ username, url, ...props }) {
             const temp = await getAvatarImage(url)
             setAvatarURL(temp)
         }
-        if (url) {
+        if (url && url.includes("gs://")) {
             fetchAvatar()
         }
     }, [url])
-    // console.log(props.width, props.height);
     return (
-        <Avatar src={avatarURL} {...stringAvatar(username, { width: props.width || 40, height: props.height || 40 })} />
+        <Avatar src={(url && url.includes("gs://")) ? avatarURL : url} {...stringAvatar(username, { width: props.width || 40, height: props.height || 40 })} />
     )
 }
