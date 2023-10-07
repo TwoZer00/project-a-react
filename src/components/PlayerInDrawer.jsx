@@ -63,22 +63,13 @@ export default function PlayerInDrawer({ open, audio, data }) {
             if (temp?.postInPlay) {
                 temp.postInPlay.isAudioInProgress = [true];
             }
+            let history = [];
+            if (temp.history) history = [...temp.history]
+            history.unshift(audio);
+            temp.history = history;
             return temp;
         })
     }
-
-    // useEffect(() => {
-    //     const loadUsername = async () => {
-    //         const temp = await get
-    //         // const user = await fetchUsername(audio?.userId);
-    //         // console.log(user);
-    //         setUsername(user);
-    //     }
-    //     if (audio) {
-    //         loadUsername();
-    //     }
-    // }, [audio?.userId])
-
     useEffect(() => {
         if (initData?.postInPlay?.isAudioInProgress[1]) {
             handlePlay()
@@ -130,7 +121,7 @@ export default function PlayerInDrawer({ open, audio, data }) {
             <Stack direction={open ? "row" : "column"} justifyContent={"center"} alignItems={"center"} width={"100%"} >
                 {
                     open &&
-                    <IconButton>
+                    <IconButton disabled>
                         <SkipPreviousOutlined />
                     </IconButton>
                 }
@@ -143,7 +134,7 @@ export default function PlayerInDrawer({ open, audio, data }) {
                 </IconButton>
                 {
                     open &&
-                    <IconButton>
+                    <IconButton disabled>
                         <SkipNextOutlined />
                     </IconButton>
                 }

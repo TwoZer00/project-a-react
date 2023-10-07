@@ -25,7 +25,7 @@ export default function PostCard({ postData }) {
                 title: postData.title,
                 desc: postData.desc,
                 id: postData.id,
-                userId: postData.userId,
+                userId: postData.user.id,
                 isAudioInProgress: [false],
                 audioUrl,
                 username: user.username,

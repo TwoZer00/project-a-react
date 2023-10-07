@@ -47,7 +47,7 @@ export default function Upload() {
     const [categoryVal, setCategoryVal] = useState('');
 
     const handleChange = (event) => {
-        setAge(event.target.value);
+        setCategoryVal(event.target.value);
     };
 
     const [valuea, setValuea] = useState(null)
