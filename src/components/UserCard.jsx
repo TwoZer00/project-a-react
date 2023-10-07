@@ -6,7 +6,7 @@ import { stringAvatar } from './PostCard';
 
 export default function UserCard(props) {
     useEffect(() => {
-        console.log(props.data);
+        // console.log(props.data);
     }, []);
     return (
         <Box>

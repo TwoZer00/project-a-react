@@ -27,7 +27,7 @@ export async function getUserData(userRef) {
 export async function getAudioUrl(path) {
     const storage = getStorage();
     const storageRef = ref(storage, path);
-    console.log(storageRef);
+    // console.log(storageRef);
     const url = await getDownloadURL(storageRef);
     return url;
 }
@@ -44,7 +44,7 @@ export async function updateUser(id, user) {
         await updateDoc(userRef, user);
         return user;
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return undefined;
     }
 }
@@ -57,7 +57,12 @@ export async function getAvatarImage(refpath) {
     // console.log("Getting avatar image");
     const storage = getStorage();
     const storageRef = ref(storage, refpath);
-    const url = await getDownloadURL(storageRef);
+    let url;
+    try {
+        url = await getDownloadURL(storageRef);
+    } catch (error) {
+        console.log(error);
+    }
     // console.log("Avatar image fetched");
     return url;
 }

@@ -3,6 +3,7 @@ import { Box, IconButton, LinearProgress, Stack, Typography } from '@mui/materia
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import AudioCover from './AudioCover';
 
 export default function PlayerInDrawer({ open, audio, data }) {
     const [initData, setInitData] = data;
@@ -66,16 +67,17 @@ export default function PlayerInDrawer({ open, audio, data }) {
         })
     }
 
-    useEffect(() => {
-        const loadUsername = async () => {
-            const user = await fetchUsername(audio?.userId);
-            console.log(user);
-            setUsername(user);
-        }
-        if (audio) {
-            loadUsername();
-        }
-    }, [audio?.userId])
+    // useEffect(() => {
+    //     const loadUsername = async () => {
+    //         const temp = await get
+    //         // const user = await fetchUsername(audio?.userId);
+    //         // console.log(user);
+    //         setUsername(user);
+    //     }
+    //     if (audio) {
+    //         loadUsername();
+    //     }
+    // }, [audio?.userId])
 
     useEffect(() => {
         if (initData?.postInPlay?.isAudioInProgress[1]) {
@@ -95,16 +97,27 @@ export default function PlayerInDrawer({ open, audio, data }) {
 
         return timeArray.filter((v, i) => v !== "00" || i > 0).join(":");
     };
-
+    const handleClick = (e) => {
+        let start = 0;
+        if (e.clientX > 15) {
+            start = e.clientX - 15;
+        }
+        const eq = (start * e.target.clientWidth) / (222 - 15);
+        const eqTime = (eq * audioRef.current.duration) / (222 - 15);
+        const eqPorcentage = ((eq * 100) / (222 - 15))
+        audioRef.current.currentTime = Math.round(eqTime);
+        setAudioProgress(eqPorcentage);
+    }
     return (
         <Stack direction="column" width={"100%"} sx={{ placeSelf: "end" }} gap={1}>
             <div>
-                {open && <Typography textAlign={"center"} fontSize={"14px"} textOverflow={"ellipsis"} overflow={"hidden"} >{audio?.title}</Typography>}
-                {open && <Typography textAlign={"center"} fontSize={"10px"}>{username}</Typography>}
+                {(open && audio?.coverUrl || audio?.cover) && <AudioCover url={audio?.coverUrl || audio?.cover} />}
+                {open && <Typography textAlign={"center"} fontSize={"16px"} textOverflow={"ellipsis"} overflow={"hidden"}>{audio?.title}</Typography>}
+                {open && <Typography textAlign={"center"} fontSize={"12px"}>{audio?.username}</Typography>}
             </div>
             {open && (
                 <Box>
-                    <LinearProgress variant="determinate" value={audioProgress} color='secondary' sx={{ width: "100%" }} style={{ borderRadius: "1rem" }} />
+                    <LinearProgress variant="determinate" value={audioProgress} color='secondary' sx={{ width: "100%" }} style={{ borderRadius: "1rem" }} onClick={handleClick} />
                     <Stack direction={"row"} justifyContent={"space-between"} >
                         {/* <Typography>{audio && (audioRef.current.currentTime / 60).toLocaleString(undefined, {
                             minimumFractionDigits: 1,

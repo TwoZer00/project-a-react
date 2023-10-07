@@ -38,12 +38,17 @@ export default function EditProfile() {
     }
 
     const handleChanges = async (event) => {
+        setInitData((val) => {
+            const temp = { ...val };
+            temp.main.loading = true;
+            return temp;
+        })
         event.preventDefault();
-        console.log(event.target.gender.value);
+        // console.log(event.target.gender.value);
         let tempImageUrl;
         if (image) {
             tempImageUrl = await postProfileImage(user.id, image);
-            console.log(tempImageUrl);
+            // console.log(tempImageUrl);
         }
         const tempUser = { ...user };
         tempUser.gender = event.target.gender.value;
@@ -57,6 +62,11 @@ export default function EditProfile() {
             setInitData(temp);
             setUser(updatedUser);
         }
+        setInitData((val) => {
+            const temp = { ...val };
+            delete temp.main.loading;
+            return temp;
+        })
 
     }
     if (initData?.user) {
@@ -65,8 +75,8 @@ export default function EditProfile() {
                 <Stack direction={"column"} component={"form"} height={"100%"} onSubmit={handleChanges} >
                     <Stack direction={"column"} gap={2}>
                         <Stack direction={"row"} gap={2} alignItems={"center"}>
-                            <UserAvatar url={user.avatarURL || imageUrl} username={user.username} width={150} height={150} />
-                            <InputFileField file={image} label={"Change Profile Picture"} setFile={setImage} accept={"image/*"} filesize={1.5} />
+                            <UserAvatar url={imageUrl || user.avatarURL} username={user.username} width={150} height={150} />
+                            <InputFileField file={image} label={"Change Profile Picture"} setFile={setImage} accept={"image/*"} filesize={.50} />
                         </Stack>
                         <Stack direction={"column"} gap={2} sx={{ width: "100%" }}>
                             <Stack direction={"row"} gap={2}>

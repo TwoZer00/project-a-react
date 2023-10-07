@@ -27,7 +27,9 @@ export default function PostCard({ postData }) {
                 id: postData.id,
                 userId: postData.userId,
                 isAudioInProgress: [false],
-                audioUrl
+                audioUrl,
+                username: user.username,
+                cover: postData.coverURL || user.avatarURL
             }
             const temp = { ...initData, postInPlay }
             setInitData(temp);
@@ -130,10 +132,10 @@ export function stringAvatar(name = "", size = { width: 50, height: 50 }) {
 
 
 async function getAudioUrl(filePath) {
-    console.log(filePath);
+    // console.log(filePath);
     const storage = getStorage();
     const storageRef = ref(storage, `${filePath}`);
-    console.log(storageRef);
+    // console.log(storageRef);
     const audioUrl = await getDownloadURL(storageRef);
     return audioUrl;
 }

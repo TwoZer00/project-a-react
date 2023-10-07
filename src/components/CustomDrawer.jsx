@@ -45,7 +45,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                 <CssBaseline />
                 <AppBar position="fixed" open={open}>
                     {(loading || initData?.loading) &&
-                        <LinearProgress sx={{ position: "absolute", top: "0", width: "100vw" }} variant={initData?.loading?.progress ? "determinate" : "indeterminate"} value={initData?.loading?.progress ? initData?.loading?.progress : undefined} color='primary' />
+                        <LinearProgress sx={{ position: "absolute", top: "0", width: "100vw" }} variant={initData?.loading?.progress ? "determinate" : "indeterminate"} value={initData?.loading?.progress} color='primary' />
                     }
                     <Toolbar>
                         <IconButton
@@ -60,7 +60,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="h6" noWrap component="div" textAlign={"center"} flex={1}>
+                        <Typography variant="h1" noWrap textAlign={"center"} flex={1} textTransform={"uppercase"} fontSize={20} letterSpacing={1} fontWeight={500}>
                             {title}
                         </Typography>
                         <AvatarInMenu username={initData?.user?.username} avatarURL={initData?.user?.avatarURL} />
@@ -205,59 +205,12 @@ const AvatarInMenu = ({ username, avatarURL }) => {
     }
         , [getAuth().currentUser])
     return (
-        <Stack direction={"row"}>
+        <>
             {auth && <IconButton component={RouterLink} to={"/upload"} color='inherit'>
                 <Upload />
             </IconButton>}
             <DrawerMenu auth={auth} username={username} avatarURL={avatarURL} logout={logout} />
-            {/* {!auth ?
-                <>
-                    <Button component={RouterLink} to={"/login"} variant="outlined" startIcon={<AccountCircleOutlined />} sx={{ borderRadius: 9 }} color='inherit'>
-                        Sign in
-                    </Button>
-                    <IconButton>
-                        <MoreVert />
-                    </IconButton>
-                </>
-                :
-                <IconButton
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    onClick={handleMenu}
-                    color="inherit"
-                    disableRipple
-                >
-                    <UserAvatar username={username} url={auth.photoURL || avatarURL} width={35} height={35} />
-                </IconButton>
-            } */}
-            {/* {auth && <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-                slotProps={
-                    {
-                        paper: {
-                            elevation: 4,
-                        }
-                    }
-                }
-            >
-                {
-                    <AvatarInMenuLoggedMenuItems handleClose={handleClose} />
-                }
-            </Menu>} */}
-        </Stack>
+        </>
     )
 }
 

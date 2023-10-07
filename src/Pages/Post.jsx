@@ -23,7 +23,7 @@ export default function Post() {
             loadUser(postData.user);
         }
         const temp = { ...initData }
-        temp.main = { title: postData.title }
+        temp.main = { title: "post" }
         setInitData(temp)
     }, [])
     return (

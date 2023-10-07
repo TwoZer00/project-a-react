@@ -10,7 +10,7 @@ export default function PlayButton(props) {
     const { id } = props.post;
     // console.log(audioPath);
     const handleClick = async () => {
-        console.log(audioPath);
+        // console.log(audioPath);
         if (initData?.postInPlay?.isAudioInProgress && id === initData.postInPlay.id) {
             const temp = { ...initData }
             temp.postInPlay.isAudioInProgress = [false, "change"]
@@ -18,14 +18,15 @@ export default function PlayButton(props) {
         }
         else {
             const url = await getAudioUrl(audioPath);
-            console.log(url);
             const postInPlay = {
                 title: props.post.title,
                 desc: props.post.desc,
                 id: props.post.id,
                 userId: props.user.id,
                 isAudioInProgress: [false],
-                audioUrl: url
+                audioUrl: url,
+                username: props.user.username,
+                cover: props.post.coverURL || props.user.avatarURL
             }
             const temp = { ...initData, postInPlay }
             setInitData(temp);

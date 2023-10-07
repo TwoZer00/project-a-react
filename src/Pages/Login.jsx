@@ -37,7 +37,7 @@ export default function Login() {
         if (Object.keys({ ...tempE.email, ...tempE.password }).length === 0) {
             try {
                 await signInWithEmailAndPassword(getAuth(), data.email, data.password);
-                console.log(location.state?.from?.pathname);
+                // console.log(location.state?.from?.pathname);
                 location.state?.from?.pathname ? navigate(location.state.from.pathname, { replace: true }) : navigate("/user");
             } catch (error) {
                 console.error(error);

@@ -34,6 +34,11 @@ export default function Upload() {
             const temp = await getCategory();
             setCategory(temp)
         }
+        setInitData((val) => {
+            const temp = { ...val };
+            temp.main.title = "upload";
+            return temp;
+        })
         loadCategory();
         // loadGenre();
         loadTags();
@@ -215,13 +220,13 @@ async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) 
             uploadingProgress((val) => {
                 return { ...val, loading: { state: "loading", progress: progress } }
             })
-            console.log('Upload is ' + progress + '% done');
+            // console.log('Upload is ' + progress + '% done');
             switch (snapshot.state) {
                 case 'paused':
-                    console.log('Upload is paused');
+                    // console.log('Upload is paused');
                     break;
                 case 'running':
-                    console.log('Upload is running');
+                    // console.log('Upload is running');
                     break;
             }
         },

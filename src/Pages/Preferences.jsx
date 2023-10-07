@@ -51,7 +51,7 @@ export default function Preferences() {
                             preferences.selectedTheme = event.target.value === 'default' ? "default" : event.target.value;
                             // console.log({ ...paletteTemp.palette, mode });
                             preferences.theme = createTheme({ palette: { ...paletteTemp.palette, mode: preferences.selectedTheme === "default" ? isDarkModeEnabled() ? "dark" : "light" : preferences.selectedTheme } })
-                            console.log(preferences);
+                            // console.log(preferences);
                             setInitData({ ...temp, preferences })
                         }}
                     >

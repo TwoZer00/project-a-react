@@ -1,9 +1,9 @@
 import { ThemeProvider, createTheme } from '@mui/material';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from 'react';
 import { Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import CustomDrawer from '../components/CustomDrawer';
-import { getUserData } from '../firebase/utills';
+import { getAvatarImage, getUserData } from '../firebase/utills';
 import { doc, getFirestore } from 'firebase/firestore';
 
 
@@ -17,14 +17,15 @@ export default function Init() {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         onAuthStateChanged(auth, async (user) => {
-            console.log(user);
+            // console.log(user);
             if (user) {
                 const temp = {
                     uid: user.uid,
                     email: user.email
                 }
                 const userData = await getUserData(doc(getFirestore(), 'user', user.uid));
-                console.log(doc(getFirestore(), 'user', user.uid).path);
+                userData.avatarURL = await getAvatarImage(userData.avatarURL);
+                // console.log(doc(getFirestore(), 'user', user.uid).path);
                 const tempData = { ...initData };
                 tempData.user = userData;
                 setInitData((val) => {
@@ -32,14 +33,9 @@ export default function Init() {
                 });
             }
             else {
-                // const allowPages = ['/login', '/register', '/', '/user', '/settings'];
-                // if (!allowPages.includes((location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1)))) {
-                //     navigate('/login', { state: { from: location.pathname } });
-                // }
                 setInitData((val) => {
                     const temp = { ...val };
                     delete temp.user;
-                    // temp.preferences.nsfw = undefined
                     return temp
                 });
             }
@@ -55,11 +51,17 @@ export default function Init() {
             const preferences = { theme: tempTheme }
             preferences.nsfw = JSON.parse(localStorage.getItem('preferences')).nsfw;
             preferences.selectedTheme = JSON.parse(localStorage.getItem('preferences')).selectedTheme;
-            console.log(preferences);
+            // console.log(preferences);
             setInitData((val) => {
                 return { ...val, preferences };
             });
         }
+        setInitData((val) => {
+            const temp = { ...val }
+            const main = { "title": "a project" }
+            temp.main = { ...main };
+            return temp;
+        })
     }, [])
     useEffect(() => {
         if (initData?.preferences) {

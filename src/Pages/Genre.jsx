@@ -11,7 +11,7 @@ export default function Genre() {
     const handleGenre = async () => {
         const temp = await getPostFromGenre(genre);
         setPosts(temp);
-        console.log(temp);
+        // console.log(temp);
     }
 
     useEffect(() => {
