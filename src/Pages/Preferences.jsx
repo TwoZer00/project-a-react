@@ -15,7 +15,7 @@ export default function Preferences() {
     )
     return (
         <Stack direction={'column'} gap={2} >
-            <Stack direction={'row'} >
+            <Stack direction={'row'}>
                 <Stack direction={'column'} sx={{ width: "100%" }} >
                     <Typography variant="body1">NSFW</Typography>
                     <Typography variant="caption">Show NSFW post(must be considered of legal age in your place of residence)</Typography>
@@ -33,11 +33,11 @@ export default function Preferences() {
             </Stack >
             <Divider />
             <Stack direction={'row'}>
-                <Stack direction={'column'} sx={{ width: "100%" }} >
+                <Stack direction={'column'} sx={{ width: "100%" }} flex={"1 1 auto"} >
                     <Typography variant="body1">Theme</Typography>
                     <Typography variant="caption">Set theme of app(setted as navigator by default)</Typography>
                 </Stack>
-                <FormControl sx={{ flexGrow: 0 }} >
+                <FormControl sx={{ flexGrow: 0, flex: "none" }}>
                     {/* <InputLabel id="demo-simple-select-label">Theme</InputLabel> */}
                     <Select
                         labelId="demo-simple-select-label"

@@ -1,14 +1,17 @@
 import { AccountCircle, AccountCircleOutlined, Logout, MoreVert, PersonAdd, Settings } from '@mui/icons-material';
-import { Avatar, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useState } from 'react'
 import React from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import UserAvatar from './UserAvatar';
+import { useTheme } from '@emotion/react';
 
 export default function DrawerMenu({ auth, username, avatarURL, logout }) {
+    const theme = useTheme();
     const [menuState, setMenuState] = useState(false)
     const [anchorEl, setAnchorEl] = useState();
+    const matches = useMediaQuery(theme.breakpoints.up('sm'));
     const navigate = useNavigate();
     const open = Boolean(anchorEl);
     const handleMenu = (event) => {
@@ -19,8 +22,8 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
     }
     return (
         <Stack direction={"row"} gap={1}>
-            {!auth && <Button component={RouterLink} to={"/login"} variant="outlined" startIcon={<AccountCircleOutlined />} sx={{ borderRadius: 9 }} color='inherit'>
-                Sign in
+            {!auth && <Button component={RouterLink} to={"/login"} variant="outlined" startIcon={<AccountCircleOutlined />} sx={{ borderRadius: 9, '.MuiButton-startIcon': { padding: `${!matches && "0"}`, margin: `${!matches && "0"}` }, padding: `${!matches && "0"}` }} color='inherit'>
+                {matches && "Sign in"}
             </Button>}
             {auth ?
                 <IconButton
