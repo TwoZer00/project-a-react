@@ -1,8 +1,13 @@
-# React + Vite
+# A project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![Netlify Status](https://api.netlify.com/api/v1/badges/3f3ae7a4-3b98-47eb-9e51-7fa99ffda8f4/deploy-status)](https://app.netlify.com/sites/dapper-tanuki-bfa3a1/deploys)
 
-Currently, two official plugins are available:
+### _A project_ a web app developed using javascript(React and Vite) and MaterialUI also using firebase as backend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+__Work is still in progress.__
+
+Another way to share any kind of audio. Create your profile and start share your audios.
+
+### Example credentials
+
+- _Pending_
