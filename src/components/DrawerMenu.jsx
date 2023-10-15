@@ -1,4 +1,4 @@
-import { AccountCircle, AccountCircleOutlined, Logout, MoreVert, PersonAdd, Settings } from '@mui/icons-material';
+import { AccountCircle, AccountCircleOutlined, Dashboard, Logout, MoreVert, PersonAdd, Settings } from '@mui/icons-material';
 import { Avatar, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useState } from 'react'
 import React from 'react'
@@ -94,6 +94,12 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                         <Settings fontSize="small" />
                     </ListItemIcon>
                     Settings
+                </MenuItem>
+                <MenuItem component={RouterLink} to={"dashboard"} disabled >
+                    <ListItemIcon>
+                        <Dashboard fontSize="small" />
+                    </ListItemIcon>
+                    Dashboard
                 </MenuItem>
                 {auth &&
                     <MenuItem onClick={() => { logout(); handleClose() }}>

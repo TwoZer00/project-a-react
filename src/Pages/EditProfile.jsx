@@ -8,6 +8,7 @@ import { genderToText } from '../utils';
 import UserAvatar from '../components/UserAvatar';
 import InputFileField from '../components/InputFileField';
 import { postProfileImage, updateUser } from '../firebase/utills';
+import CustomNotification, { SlideTransition } from '../components/CustomNotification';
 
 export default function EditProfile() {
     const [initData, setInitData] = useOutletContext();
@@ -15,6 +16,7 @@ export default function EditProfile() {
     const [image, setImage] = useState();
     const [imageUrl, setImageUrl] = useState(initData?.user?.avatarURL || undefined);
     const navigate = useNavigate();
+    const [notFlag, setNotFlag] = useState();
     useEffect(() => {
         const temp = { ...initData };
         temp.main = { title: "Edit profile" }
@@ -44,11 +46,9 @@ export default function EditProfile() {
             return temp;
         })
         event.preventDefault();
-        // console.log(event.target.gender.value);
         let tempImageUrl;
         if (image) {
             tempImageUrl = await postProfileImage(user.id, image);
-            // console.log(tempImageUrl);
         }
         const tempUser = { ...user };
         tempUser.gender = event.target.gender.value;
@@ -67,7 +67,7 @@ export default function EditProfile() {
             delete temp.main.loading;
             return temp;
         })
-
+        setNotFlag({ open: true, Transition: SlideTransition });
     }
     if (initData?.user) {
         return (
@@ -118,6 +118,7 @@ export default function EditProfile() {
                         </Button>
                     </Box>
                 </Stack>
+                <CustomNotification msg={"Profile updated"} val={notFlag} setFlag={setNotFlag} />
             </>
         )
     }

@@ -44,3 +44,7 @@ export default function CustomNotification({ val, setFlag, msg, type }) {
         )
     }
 }
+
+export function SlideTransition(props) {
+    return <Slide {...props} direction="up" />;
+}
