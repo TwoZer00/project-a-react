@@ -70,6 +70,12 @@ export default function Init() {
             localStorage.setItem("preferences", JSON.stringify(tempPrefs))
         }
     }, [initData?.preferences])
+    useEffect(() => {
+        if (initData?.main?.title) {
+            document.title = initData?.main?.title;
+        }
+    }, [initData?.main?.title])
+
     return (
         <>
             <ThemeProvider theme={initData?.preferences?.theme || theme}>

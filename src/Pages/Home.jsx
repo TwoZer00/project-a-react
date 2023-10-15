@@ -11,7 +11,8 @@ export default function Home() {
 
     useEffect(() => {
         // console.log(initData);
-        const temp = { title: 'A PROJECT' }
+        const temp = { ...initData }
+        temp.title = "A project";
         // const main = { ...initData }
         // tempData.main = { ...temp }
         // document.title = temp.title

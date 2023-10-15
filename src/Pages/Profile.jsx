@@ -16,6 +16,7 @@ export default function Profile() {
     const [userData, setUserData] = useState();
     const [initData, setInitData] = useOutletContext();
     useEffect(() => {
+        const temp = { ...initData }
         const loadUserData = async (userId) => {
             const data = await fetchUserData(userId);
             let profileURL = ""
@@ -27,34 +28,36 @@ export default function Profile() {
             }
             // const temp = { ...data, photoURL: profileURL };
             setUserData(data);
+            temp.main = { title: `${data.username}'s profile` };
+            setInitData(temp);
         }
         if (id) {
             loadUserData(id)
         }
-        const temp = { ...initData }
-        temp.main = { title: "PROFILE" };
-        setInitData(temp);
-    }, [])
-
-    useEffect(() => {
-        const loadUserData = async (userId) => {
-            const data = await fetchUserData(userId);
-            let profileURL = ""
-            try {
-                profileURL = await getProfileImgUrl(data.profileImg);
-            }
-            catch (e) {
-                if (e.code !== "storage/object-not-found") {
-                    console.error(e.code);
-                }
-            }
-            // const temp = { ...data, photoURL: profileURL };
-            setUserData(data);
-        }
-        if (getAuth().currentUser?.uid) {
+        else if (!id && getAuth().currentUser) {
             loadUserData(getAuth().currentUser.uid);
         }
-    }, [getAuth().currentUser])
+    }, [])
+
+    // useEffect(() => {
+    //     const loadUserData = async (userId) => {
+    //         const data = await fetchUserData(userId);
+    //         let profileURL = ""
+    //         try {
+    //             profileURL = await getProfileImgUrl(data.profileImg);
+    //         }
+    //         catch (e) {
+    //             if (e.code !== "storage/object-not-found") {
+    //                 console.error(e.code);
+    //             }
+    //         }
+    //         // const temp = { ...data, photoURL: profileURL };
+    //         setUserData(data);
+    //     }
+    //     if (getAuth().currentUser?.uid) {
+    //         loadUserData(getAuth().currentUser.uid);
+    //     }
+    // }, [getAuth().currentUser])
 
     const handleGender = (gender, fs) => {
         let genderIcon = <Person4 sx={{ fontSize: fs }} />
