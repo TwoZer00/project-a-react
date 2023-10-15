@@ -73,7 +73,8 @@ export default function Upload() {
             nsfw: form.nsfw.checked,
             creationTime: serverTimestamp(),
             user: doc(getFirestore(), "user", getAuth().currentUser.uid),
-            visibility: formData.get('visibility')
+            visibility: formData.get('visibility'),
+            plays: 0
         }
         try {
             await uploadFile(valuea, postRef, getAuth().currentUser.uid, setInitData, post, tagInput)

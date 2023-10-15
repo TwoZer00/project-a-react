@@ -1,4 +1,4 @@
-import { doc, getFirestore, getDoc, query, where, orderBy } from 'firebase/firestore';
+import { doc, getFirestore, getDoc, query, where, orderBy, increment } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
 import { getDownloadURL } from 'firebase/storage';
 import { updateDoc } from 'firebase/firestore';
@@ -84,7 +84,6 @@ export async function getPostFromGenre(genre) {
     const posts = postsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
     return posts;
 }
-
 export async function getPostFromCategory(category) {
     const db = getFirestore();
     const postsRef = collection(db, "post");
@@ -94,4 +93,11 @@ export async function getPostFromCategory(category) {
     const posts = postsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
     return posts;
 }
+
+export async function setPlay(postId) {
+    const db = getFirestore();
+    const postRef = doc(db, "post", postId);
+    const docSnap = await updateDoc(postRef, { plays: increment(1) });
+}
+
 

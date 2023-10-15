@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Button } from '@mui/material'
+import { Button, IconButton } from '@mui/material'
 import React from 'react'
 import { useOutletContext } from 'react-router-dom';
 import { getAudioUrl } from '../firebase/utills';
+import { Pause, PlayArrow } from '@mui/icons-material';
 
 export default function PlayButton(props) {
     const [initData, setInitData] = useOutletContext();
@@ -43,9 +44,20 @@ export default function PlayButton(props) {
         }
     }, [initData?.postInPlay?.isAudioInProgress]);
 
-    return (
-        <>
-            <Button variant="contained" color="primary" size="small" onClick={handleClick}>{isPlaying ? "pause" : "play"}</Button>
-        </>
-    )
+    if (props.variant === 'icon') {
+        return (
+            <>
+                <IconButton onClick={handleClick} >
+                    {isPlaying ? <Pause /> : <PlayArrow />}
+                </IconButton>
+            </>
+        )
+    }
+    else {
+        return (
+            <>
+                <Button variant="contained" color="primary" size="small" onClick={handleClick}>{isPlaying ? "pause" : "play"}</Button>
+            </>
+        )
+    }
 }

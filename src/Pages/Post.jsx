@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLoaderData, useOutletContext, Link as RouterLink } from 'react-router-dom';
 import Typography from '@mui/material/Typography'
 import { getUserData } from '../firebase/utills';
-import { Chip, Link, Stack, capitalize } from '@mui/material';
+import { Box, Chip, Link, Stack, capitalize } from '@mui/material';
 import VisibilityIcon from '../components/VisibilityIcon';
 import PlayButton from '../components/PlayButton';
 import UserCard from '../components/UserCard';
@@ -35,10 +35,15 @@ export default function Post() {
                 {postData.category.id}
             </Link>
             {/* <Typography variant="body1" fontSize={16} textTransform={"capitalize"} >{postData.category.id}</Typography> */}
-            <Stack direction={"row"} gap={1}>
-                <Typography variant="h1" component="h1" sx={{ fontSize: '2.5rem', fontWeight: 'bold', width: "100%", ":first-letter": { textTransform: "capitalize" } }}>
-                    {postData.title}
-                </Typography>
+            <Stack direction={"row"} gap={1} alignItems={"center"}>
+                <Box sx={{ width: "100%" }}>
+                    <Typography variant="h1" component="h1" sx={{ fontSize: '2.5rem', fontWeight: 'bold', width: "100%", ":first-letter": { textTransform: "capitalize" } }}>
+                        {postData.title}
+                    </Typography>
+                    <Typography variant='body'>
+                        Plays: {(postData?.plays)}
+                    </Typography>
+                </Box>
                 <VisibilityIcon visibility={postData.visibility} fontSize="small" />
             </Stack>
             <Stack direction={"row"} gap={1} alignItems={"flex-end"}>

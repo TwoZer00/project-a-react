@@ -4,6 +4,8 @@ import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import AudioCover from './AudioCover';
+import { getAvatarImage, getUserData, setPlay } from '../firebase/utills';
+import PlayButton from './PlayButton';
 
 export default function PlayerInDrawer({ open, audio, data }) {
     const [initData, setInitData] = data;
@@ -12,6 +14,8 @@ export default function PlayerInDrawer({ open, audio, data }) {
     const [progressTime, setProgressTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [username, setUsername] = useState();
+    const [played, setPlayed] = useState(false);
+    const [user, setUser] = useState();
     const handlePlay = () => {
         if (audioRef.current.paused) {
             audioRef.current.play();
@@ -38,6 +42,8 @@ export default function PlayerInDrawer({ open, audio, data }) {
     const handleProgress = () => {
         const temp = audioRef.current.currentTime / audioRef.current.duration;
         setAudioProgress(temp * 100);
+        setPlayed(true);
+        updatePositionState();
     }
     const handleEnded = () => {
         setIsPlaying(false);
@@ -51,11 +57,11 @@ export default function PlayerInDrawer({ open, audio, data }) {
             return temp;
         })
     }
-    const handleLoaded = () => {
+    const handleLoaded = async () => {
         const duration = audioRef.current.duration;
-        setAudioProgress(0);
         audioRef.current.currentTime = 0;
         audioRef.current.play();
+        console.log(audioRef.current.playbackRate);
         setIsPlaying(true);
         setProgressTime(audioRef.current.currentTime);
         setInitData((value) => {
@@ -69,12 +75,78 @@ export default function PlayerInDrawer({ open, audio, data }) {
             temp.history = history;
             return temp;
         })
+        if ("mediaSession" in navigator) {
+            const cover = await getAvatarImage(user?.avatarURL || audio?.cover);
+            console.log(cover);
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: `${audio?.title}`,
+                artist: audio?.username,
+                artwork: [{
+                    src: `${cover}`,
+                    sizes: "96x96",
+                    type: "image/png",
+                }],
+            });
+        }
+
     }
     useEffect(() => {
         if (initData?.postInPlay?.isAudioInProgress[1]) {
             handlePlay()
         }
     }, [initData?.postInPlay?.isAudioInProgress[1]]);
+
+    navigator.mediaSession.setActionHandler("play", () => {
+        audioRef.current.play();
+        setIsPlaying((val) => {
+            return !val
+        });
+        setInitData((value) => {
+            const temp = { ...value }
+            if (temp?.postInPlay) {
+                temp.postInPlay.isAudioInProgress = [true];
+            }
+            return temp;
+        })
+    });
+    navigator.mediaSession.setActionHandler("pause", () => {
+        audioRef.current.pause();
+        setIsPlaying((val) => {
+            return !val
+        });
+        setInitData((value) => {
+            const temp = { ...value }
+            if (temp?.postInPlay) {
+                temp.postInPlay.isAudioInProgress = [false];
+            }
+            return temp;
+        })
+    });
+    useEffect(() => {
+        const fetchPlay = async () => {
+            const temp = await setPlay(audio?.id);
+        }
+        if (played) {
+            fetchPlay();
+        }
+    }, [played])
+    function updatePositionState() {
+        navigator.mediaSession.setPositionState({
+            duration: audioRef.current.duration,
+            playbackRate: audioRef.current.playbackRate,
+            position: audioRef.current.currentTime,
+        });
+    }
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const temp = await getUserData(doc(getFirestore(), "user", audio?.userId));
+            setUser(temp);
+        }
+        if (audio?.userId) {
+            fetchUserData();
+        }
+    }, [audio]);
 
     const toHHMMSS = (secs) => {
         const sec_num = parseInt(secs, 10);
@@ -127,9 +199,9 @@ export default function PlayerInDrawer({ open, audio, data }) {
                 }
                 <IconButton onClick={handlePlay} disabled={!audio} >
                     {
-                        !isPlaying ?
-                            <PlayArrowOutlined /> :
-                            <PauseOutlined />
+                        initData?.postInPlay?.isAudioInProgress[0] && audio.id === initData?.postInPlay?.id ?
+                            <PauseOutlined /> :
+                            <PlayArrowOutlined />
                     }
                 </IconButton>
                 {

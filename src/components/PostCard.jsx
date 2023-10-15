@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
 import { getUserData } from '../firebase/utills'
 import UserAvatar from './UserAvatar'
+import PlayButton from './PlayButton'
 
 export default function PostCard({ postData }) {
     const [initData, setInitData] = useOutletContext();
@@ -35,11 +36,6 @@ export default function PostCard({ postData }) {
             setInitData(temp);
         }
     }
-
-    const tagToParams = (tag) => {
-        // return `/tag/=${}`;
-    }
-
     useEffect(() => {
         const fetchUser = async () => {
             const userData = await getUserData(postData.user);
@@ -84,10 +80,12 @@ export default function PostCard({ postData }) {
                         </Stack>
                         {postData.nsfw && <Typography sx={{ width: "fit-content", letterSpacing: 2, fontWeight: "400", fontSize: "12px" }} color='error'>NSFW</Typography>}
                     </CardContent>
-                    <CardActions>
-                        <IconButton onClick={handlePlayButton} >
-                            {initData?.postInPlay?.id === postData.id && initData?.postInPlay?.isAudioInProgress[0] ? <Pause /> : <PlayArrow />}
-                        </IconButton>
+                    <CardActions sx={{ display: "flex", flexDirection: "row" }} >
+                        {/* <IconButton onClick={handlePlayButton} >
+                            {initData?.postInPlay?.id === postData.id && initData?.postInPlay?.isAudioInProgress ? <Pause /> : <PlayArrow />}
+                        </IconButton> */}
+                        <PlayButton post={postData} user={user} variant="icon" />
+                        <Typography>{(postData?.plays).toLocaleString(Navigator.language, { style: "decimal" })}</Typography>
                         <Button variant="text" size='small' component={RouterLink} to={`/post/${postData.id}`} >View</Button>
                     </CardActions>
                 </Card>
