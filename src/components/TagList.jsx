@@ -21,7 +21,7 @@ export default function TagList({ id }) {
 async function getTags() {
     const tagsArray = [];
     const db = getFirestore();
-    let tagsRef = collection(db, 'tags');
+    let tagsRef = collection(db, 'tag');
     // if (id) {
     //     tagsRef = collection(db, 'tags', id);
     // }

@@ -55,7 +55,7 @@ export default function Post() {
                 </Stack>
             </Stack>
             <Stack direction={"row"} gap={1}>
-                {postData.tags.map(tag => <Chip component={RouterLink} to={`/${tag.path}`} clickable key={tag.id} label={decodeURIComponent(tag.id)} variant="outlined" size="small" />)}
+                {postData?.tags?.map(tag => <Chip component={RouterLink} to={`/${tag.path}`} clickable key={tag.id} label={decodeURIComponent(tag.id)} variant="outlined" size="small" />)}
             </Stack>
             <Typography variant="body1">{postData.desc}</Typography>
             <PlayButton post={postData} user={user} />

@@ -3,7 +3,6 @@ import { collection, getDocs, getFirestore, orderBy, query, where } from 'fireba
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import PostCard from '../components/PostCard';
-import TagList from '../components/TagList';
 
 export default function Home() {
     const [initData, setInitData] = useOutletContext();
@@ -37,9 +36,9 @@ export default function Home() {
     }, []);
     return (
         <Stack direction={"column"} gap={2} >
-            <div>
+            {/* <div>
                 <TagList />
-            </div>
+            </div> */}
             <Grid container gap={2} direction={{ xs: "column", md: "row" }} >
                 {
                     data?.map(item => <PostCard key={item.id + "postCard"} postData={item} />)
