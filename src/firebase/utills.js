@@ -104,4 +104,14 @@ export async function setUser(userId, user) {
     return setDoc(userRef, { ...user, creationTime: (new Date(getAuth().currentUser.metadata.creationTime)) });
 }
 
+export async function getCategories() {
+    const db = getFirestore();
+    const categoriesRef = collection(db, "category");
+    const categoriesSnapshot = await getDocs(categoriesRef);
+    const categories = categoriesSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
+    // console.log(categories);
+    return categories;
+}
+
+
 

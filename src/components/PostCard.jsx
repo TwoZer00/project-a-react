@@ -63,7 +63,7 @@ export default function PostCard({ postData }) {
                     />
                     <CardContent sx={{ paddingY: 0, display: "flex", flexDirection: "column", gap: 1 }}>
                         {/* {postData.nsfw && <Typography sx={{ width: "fit-content", letterSpacing: 2, fontWeight: "bolder", fontSize: "12px" }} color='error'>NSFW</Typography>} */}
-                        <Link component={RouterLink} to={`/category/${postData.category.id}`} relative='path' underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.category).path).substring(postData.category.path.lastIndexOf("/") + 1)}</Link>
+                        <Link component={RouterLink} to={`/categories/${postData.category.id}`} relative='path' underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.category).path).substring(postData.category.path.lastIndexOf("/") + 1)}</Link>
                         <Stack direction={"row"} gap={1} width={"100%"} overflow={'auto'} >
                             {postData.tags.map((tag, index) => <Chip key={index} label={decodeURIComponent((tag.path).substring(tag.path.lastIndexOf("/") + 1))} clickable size='small' variant='outlined' component={RouterLink} to={`/tags/${(tag.path).substring(tag.path.lastIndexOf("/") + 1)}`} relative='path' />)}
                         </Stack>

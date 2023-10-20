@@ -1,16 +1,7 @@
-import { Alert, Fade, Slide, Snackbar } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import { Alert, Slide, Snackbar } from '@mui/material';
+import React from 'react';
 
 export default function CustomNotification({ val, setFlag, msg, type }) {
-    // const [state, setState] = useState({
-    //     open: false,
-    //     Transition: SlideTransition,
-    // });
-
-    // function SlideTransition(props) {
-    //     return <Slide {...props} direction="up" onExiting={() => { console.log("hellowa"); }} />;
-    // }
-
     const handleClose = () => {
         setFlag({
             ...val,
@@ -27,6 +18,7 @@ export default function CustomNotification({ val, setFlag, msg, type }) {
                 TransitionComponent={val?.Transition}
                 message={msg}
                 key={val?.Transition.name}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             />
         )
     }
@@ -38,6 +30,7 @@ export default function CustomNotification({ val, setFlag, msg, type }) {
                 onClose={handleClose}
                 TransitionComponent={val?.Transition}
                 key={val?.Transition.name}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
                 <Alert severity={type}>{msg}</Alert>
             </Snackbar>

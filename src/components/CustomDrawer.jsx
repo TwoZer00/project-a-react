@@ -1,8 +1,8 @@
-import { Home, Upload } from '@mui/icons-material';
+import { Category, Home, Upload } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
-import { LinearProgress, MenuItem } from '@mui/material';
+import { LinearProgress, MenuItem, Tooltip } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -72,24 +72,46 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                     <Divider />
                     <List>
                         <ListItem disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                                component={RouterLink}
-                                to="/"
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? 'initial' : 'center',
-                                    px: 2.5,
-                                }}>
-                                <ListItemIcon
+                            <Tooltip title="Home" placement="right" >
+                                <ListItemButton
+                                    component={RouterLink}
+                                    to="/"
                                     sx={{
-                                        minWidth: 0,
-                                        mr: open ? 3 : 'auto',
-                                        justifyContent: 'center',
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
                                     }}>
-                                    <Home />
-                                </ListItemIcon>
-                                <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
-                            </ListItemButton>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                        }}>
+                                        <Home />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </Tooltip>
+                            <Tooltip title="Categories" placement="right">
+                                <ListItemButton
+                                    component={RouterLink}
+                                    to="/categories"
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
+                                    }}>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                        }}>
+                                        <Category />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Categories" sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </Tooltip>
                         </ListItem>
                     </List>
                     <List sx={{ height: "100%", display: "flex", flexDirection: "column" }} >

@@ -1,21 +1,22 @@
 import { Typography } from "@mui/material";
+import { getAuth } from "firebase/auth";
 import { createBrowserRouter } from "react-router-dom";
+import Categories from "../Pages/Categories";
+import Category from "../Pages/Category";
+import EditProfile from "../Pages/EditProfile";
+import Genre from "../Pages/Genre";
 import Home from "../Pages/Home";
 import Init from "../Pages/Init";
-import Profile from "../Pages/Profile";
 import Login from "../Pages/Login";
-import Register from "../Pages/Register";
-import Upload from "../Pages/Upload";
 import Post from "../Pages/Post";
-import { getPostData } from "../firebase/utills";
-import { getAuth } from "firebase/auth";
-import { app } from '../firebase/init';
-import Settings from "../Pages/Settings";
-import EditProfile from "../Pages/EditProfile";
 import Preferences from "../Pages/Preferences";
+import Profile from "../Pages/Profile";
+import Register from "../Pages/Register";
+import Settings from "../Pages/Settings";
 import Tags from "../Pages/Tags";
-import Genre from "../Pages/Genre";
-import Category from "../Pages/Category";
+import Upload from "../Pages/Upload";
+import { app } from '../firebase/init';
+import { getCategories, getPostData } from "../firebase/utills";
 
 export const router = createBrowserRouter([
     {
@@ -72,8 +73,17 @@ export const router = createBrowserRouter([
                 element: <Genre />
             },
             {
-                path: "category/:category",
-                element: <Category />
+                path: "categories",
+                element: <Categories />,
+                loader: async () => {
+                    return getCategories();
+                },
+                children: [
+                    {
+                        path: ":category",
+                        element: <Category />
+                    }
+                ]
             }
         ]
     },
