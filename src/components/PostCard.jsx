@@ -75,7 +75,7 @@ export default function PostCard({ postData }) {
                                     {postData.title}
                                 </Typography>
                             </Stack>
-                            <Typography variant="body2" color="text.secondary" overflow={"hidden"} maxWidth={{ xs: "200px", md: "40ch" }} textOverflow={'ellipsis'} whiteSpace={'break-spaces'}>
+                            <Typography variant="body2" color="text.secondary" overflow={"hidden"} maxWidth={{ md: "40ch" }} maxHeight={{ sx: "300px" }} textOverflow={'ellipsis'} whiteSpace={'break-spaces'}>
                                 {postData.desc}
                             </Typography>
                         </Stack>
