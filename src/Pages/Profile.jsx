@@ -1,14 +1,13 @@
-import { orderBy, where } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref } from '@firebase/storage';
 import { Person, Person2, Person4 } from '@mui/icons-material';
-import { Avatar, Box, CssBaseline, Grid, Paper, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { getAuth } from 'firebase/auth';
-import { collection, doc, getDoc, getDocs, getFirestore, query } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
-import { Outlet, useOutletContext, useParams } from 'react-router-dom';
-import { Link as RouterLink } from 'react-router-dom';
+import { collection, doc, getDoc, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import moment from 'moment';
 import PropTypes from 'prop-types';
-import PostCard, { stringAvatar } from '../components/PostCard';
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink, useOutletContext, useParams } from 'react-router-dom';
+import PostCard from '../components/PostCard';
 import UserAvatar from '../components/UserAvatar';
 
 export default function Profile() {
@@ -93,7 +92,7 @@ export default function Profile() {
                             <Typography variant="h1" fontSize={24} fontWeight={400}>{userData?.username}</Typography>
                             <Stack direction={"row"} spacing={1} alignItems={"center"}>
                                 <Typography variant="subtitle">{handleGender(userData?.gender, 14)}</Typography>
-                                <Typography variant="subtitle" fontSize={12}>User since {(new Date(userData?.creationTime.seconds * 1000)).toLocaleDateString({ year: 'numeric', month: 'long', day: 'numeric' })}</Typography>
+                                <Typography variant="subtitle" fontSize={12}>User since {moment(new Date(userData?.creationTime.seconds ? userData?.creationTime.seconds * 1000 : userData?.creationTime)).format("MMMM Do YYYY")}</Typography>
                             </Stack>
                             <Typography variant="subtitle" fontSize={12} sx={{ ":first-letter": { textTransform: "capitalize" } }} >{userData?.description}</Typography>
                         </Stack>
