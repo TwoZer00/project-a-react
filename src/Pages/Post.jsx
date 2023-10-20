@@ -19,7 +19,7 @@ export default function Post() {
             setUser(data);
         }
         if (postData.user) {
-            loadUser(postData.user);
+            loadUser(postData.user.id);
         }
         const temp = { ...initData }
         temp.main = { title: "post" }

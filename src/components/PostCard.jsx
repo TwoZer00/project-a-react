@@ -2,6 +2,7 @@ import { PlaylistRemove, Public, PublicOff } from '@mui/icons-material'
 import { Box, Button, Card, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
 import { getDoc, getFirestore } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
+import moment from 'moment/moment'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
 import { getUserData } from '../firebase/utills'
@@ -57,7 +58,8 @@ export default function PostCard({ postData }) {
                                         <VisibilityIcon visibility={postData.visibility} />
                                     </IconButton>
                                 </Tooltip>
-                                {(new Date(postData.creationTime.seconds * 1000)).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                                {/* {moment(new Date(postData.creationTime.seconds * 1000)).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} */}
+                                <Tooltip title={moment(postData.creationTime.seconds * 1000).format("dddd, MMMM Do YYYY, h:mm:ss a")}><Typography variant="body1" >{moment.duration(moment(postData.creationTime.seconds * 1000).subtract(new Date())).humanize(true)}</Typography></Tooltip>
                             </Box>
                         }
                     />
