@@ -6,6 +6,7 @@ import PlayButton from '../components/PlayButton';
 import UserAvatar from '../components/UserAvatar';
 import VisibilityIcon from '../components/VisibilityIcon';
 import { getUserData } from '../firebase/utills';
+import { capitalizeFirstLetter } from '../utils';
 
 
 export default function Post() {
@@ -22,7 +23,7 @@ export default function Post() {
             loadUser(postData.user.id);
         }
         const temp = { ...initData }
-        temp.main = { title: "post" }
+        temp.main = { title: capitalizeFirstLetter(postData.title) }
         setInitData(temp)
     }, [])
     return (
