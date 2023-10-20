@@ -1,10 +1,8 @@
-import { AccountCircle, AccountCircleOutlined, AddCircle, AddCircleOutline, Delete, Home, Mic, MoreVert, Send, Upload } from '@mui/icons-material';
+import { Home, Upload } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import { Button, Container, LinearProgress, Menu, MenuItem, Stack } from '@mui/material';
+import { LinearProgress, MenuItem } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -19,12 +17,11 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { styled, useTheme } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
-import PlayerInDrawer from './PlayerInDrawer';
-import { Link as RouterLink, useNavigate, useOutletContext } from 'react-router-dom'
 import { getAuth, signOut } from 'firebase/auth';
-import UserAvatar from './UserAvatar';
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import DrawerMenu from './DrawerMenu';
+import PlayerInDrawer from './PlayerInDrawer';
 
 export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const theme = useTheme();

@@ -4,9 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import CustomDrawer from '../components/CustomDrawer';
 import { getAvatarImage, getUserData } from '../firebase/utills';
-import { doc, getFirestore } from 'firebase/firestore';
-
-
 
 export default function Init() {
     const auth = useLoaderData();
@@ -17,20 +14,23 @@ export default function Init() {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         onAuthStateChanged(auth, async (user) => {
-            // console.log(user);
             if (user) {
                 const temp = {
                     uid: user.uid,
                     email: user.email
                 }
-                const userData = await getUserData(doc(getFirestore(), 'user', user.uid));
-                userData.avatarURL = await getAvatarImage(userData.avatarURL);
-                // console.log(doc(getFirestore(), 'user', user.uid).path);
-                const tempData = { ...initData };
-                tempData.user = userData;
-                setInitData((val) => {
-                    return { ...val, user: userData };
-                });
+                let userData;
+                try {
+                    userData = await getUserData(user.uid);
+                    userData.avatarURL = await getAvatarImage(userData.avatarURL);
+                    const tempData = { ...initData };
+                    tempData.user = userData;
+                    setInitData((val) => {
+                        return { ...val, user: userData };
+                    });
+                } catch (error) {
+                    if (error.code == 101) navigate('settings/profile')
+                }
             }
             else {
                 setInitData((val) => {

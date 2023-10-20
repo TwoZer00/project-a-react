@@ -1,13 +1,13 @@
 import { ThemeProvider } from '@emotion/react'
-import React, { useState } from 'react'
-import { theme } from './Init'
-import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material'
-import { InputField } from './Login'
 import styled from '@emotion/styled'
-import { Female, Man, PedalBike, Person, Person2, Person3, Person4, Woman } from '@mui/icons-material'
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Man, PedalBike, Woman } from '@mui/icons-material'
+import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
+import React, { useState } from 'react'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { theme } from './Init'
+import { InputField } from './Login'
 
 export default function Register() {
     const [error, setError] = useState({});
@@ -105,24 +105,27 @@ export function CustomToggleButton(props) {
         setGender(newGender);
     }
     return (
-        <StyledToggleButtonGroup
-            value={gender}
-            exclusive
-            onChange={handleGender}
-            aria-label="Gender"
-        >
-            <ToggleButton value="male" aria-label="male">
-                <Man />
-            </ToggleButton>
-            <ToggleButton value="female" aria-label="female">
-                <Woman />
-            </ToggleButton>
-            <Divider flexItem orientation="vertical" sx={{ fontSize: "12px", mx: 1 }}>or</Divider>
-            <ToggleButton value="other" aria-label="other">
-                <PedalBike />
-            </ToggleButton>
-            <input type="number" hidden name='gender' value={genderToNumber(gender)} id='gender' />
-        </StyledToggleButtonGroup>
+        <>
+            <StyledToggleButtonGroup
+                // fullWidth
+                value={gender}
+                exclusive
+                onChange={handleGender}
+                aria-label="Gender"
+            >
+                <ToggleButton value="male" aria-label="male">
+                    <Man />
+                </ToggleButton>
+                <ToggleButton value="female" aria-label="female">
+                    <Woman />
+                </ToggleButton>
+                <Divider flexItem orientation="vertical" sx={{ fontSize: "12px", mx: 1 }}>or</Divider>
+                <ToggleButton value="other" aria-label="other">
+                    <PedalBike />
+                </ToggleButton>
+                <input type="number" hidden name='gender' value={genderToNumber(gender)} id='gender' />
+            </StyledToggleButtonGroup>
+        </>
     );
 }
 

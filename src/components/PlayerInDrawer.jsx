@@ -2,10 +2,8 @@ import { PauseOutlined, PlayArrowOutlined, SkipNextOutlined, SkipPreviousOutline
 import { Box, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import AudioCover from './AudioCover';
 import { getAvatarImage, getUserData, setPlay } from '../firebase/utills';
-import PlayButton from './PlayButton';
+import AudioCover from './AudioCover';
 
 export default function PlayerInDrawer({ open, audio, data }) {
     const [initData, setInitData] = data;
@@ -42,11 +40,12 @@ export default function PlayerInDrawer({ open, audio, data }) {
     const handleProgress = () => {
         const temp = audioRef.current.currentTime / audioRef.current.duration;
         setAudioProgress(temp * 100);
-        setPlayed(true);
         updatePositionState();
+        if (getCurrentPorcentage() > 30) setPlayed(true);
     }
     const handleEnded = () => {
         setIsPlaying(false);
+        setPlayed(false);
         setAudioProgress(0);
         audioRef.current.currentTime = 0;
         setInitData((value) => {
@@ -61,7 +60,6 @@ export default function PlayerInDrawer({ open, audio, data }) {
         const duration = audioRef.current.duration;
         audioRef.current.currentTime = 0;
         audioRef.current.play();
-        console.log(audioRef.current.playbackRate);
         setIsPlaying(true);
         setProgressTime(audioRef.current.currentTime);
         setInitData((value) => {
@@ -77,7 +75,6 @@ export default function PlayerInDrawer({ open, audio, data }) {
         })
         if ("mediaSession" in navigator) {
             const cover = await getAvatarImage(user?.avatarURL || audio?.cover);
-            console.log(cover);
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: `${audio?.title}`,
                 artist: audio?.username,
@@ -122,6 +119,10 @@ export default function PlayerInDrawer({ open, audio, data }) {
             return temp;
         })
     });
+
+    const getCurrentPorcentage = () => {
+        return (((100 * audioRef.current.currentTime) / audioRef.current.duration));
+    }
     useEffect(() => {
         const fetchPlay = async () => {
             const temp = await setPlay(audio?.id);
@@ -140,7 +141,7 @@ export default function PlayerInDrawer({ open, audio, data }) {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const temp = await getUserData(doc(getFirestore(), "user", audio?.userId));
+            const temp = await getUserData(audio?.userId);
             setUser(temp);
         }
         if (audio?.userId) {

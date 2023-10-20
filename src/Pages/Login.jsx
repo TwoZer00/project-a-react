@@ -1,11 +1,11 @@
-import { ThemeProvider } from '@emotion/react'
-import { Box, Button, CssBaseline, FormControl, FormHelperText, IconButton, Input, InputAdornment, InputLabel, LinearProgress, OutlinedInput, Paper, Stack, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import { theme } from './Init'
-import PropTypes from 'prop-types';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { ThemeProvider } from '@emotion/react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Box, Button, CssBaseline, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, LinearProgress, OutlinedInput, Paper, Stack, Typography } from '@mui/material';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { theme } from './Init';
 
 export default function Login() {
     const [error, setError] = useState({});
@@ -33,22 +33,23 @@ export default function Login() {
         else {
             delete tempE.password;
         }
-        // setError(tempE);
         if (Object.keys({ ...tempE.email, ...tempE.password }).length === 0) {
             try {
                 await signInWithEmailAndPassword(getAuth(), data.email, data.password);
-                // console.log(location.state?.from?.pathname);
-                location.state?.from?.pathname ? navigate(location.state.from.pathname, { replace: true }) : navigate("/user");
             } catch (error) {
                 console.error(error);
                 tempE.signin = error.message;
+                setError(tempE);
+            }
+            finally {
+                setLoading(false)
+                console.log(location.state);
+                location.state?.from?.pathname ? navigate(location.state.from.pathname, { replace: true }) : navigate("/user");
             }
         }
         else {
             tempE.signin = "Please fill all the fields";
         }
-        setError(tempE);
-        setLoading(false)
     }
     return (
         <>

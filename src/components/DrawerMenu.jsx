@@ -1,11 +1,9 @@
-import { AccountCircle, AccountCircleOutlined, Dashboard, Logout, MoreVert, PersonAdd, Settings } from '@mui/icons-material';
-import { Avatar, Box, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography, useMediaQuery } from '@mui/material';
-import { useState } from 'react'
-import React from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom';
-import { Link as RouterLink } from 'react-router-dom';
-import UserAvatar from './UserAvatar';
 import { useTheme } from '@emotion/react';
+import { AccountCircleOutlined, Dashboard, Logout, MoreVert, Settings } from '@mui/icons-material';
+import { Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography, useMediaQuery } from '@mui/material';
+import React, { useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import UserAvatar from './UserAvatar';
 
 export default function DrawerMenu({ auth, username, avatarURL, logout }) {
     const theme = useTheme();
@@ -34,7 +32,7 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                     color="inherit"
                     disableRipple
                 >
-                    <UserAvatar username={username} url={auth.photoURL || avatarURL} width={35} height={35} />
+                    <UserAvatar username={username || auth.email} url={auth.photoURL || avatarURL} width={35} height={35} />
                 </IconButton> :
                 <IconButton onClick={handleMenu} >
                     <MoreVert />
@@ -77,7 +75,7 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                 {auth &&
                     <MenuItem component={RouterLink} to={"/user"} sx={{ height: 60 }} >
                         <Stack direction={"row"} gap={1} sx={{ height: "100%" }} alignItems={"center"} >
-                            <UserAvatar username={username} url={auth.photoURL || avatarURL} />
+                            <UserAvatar username={username || auth.email} url={auth.photoURL || avatarURL} />
                             <Stack direction={"column"}>
                                 <Typography variant='body1'>{username}</Typography>
                                 <Typography variant="caption">{auth.email}</Typography>
@@ -95,12 +93,12 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                     </ListItemIcon>
                     Settings
                 </MenuItem>
-                <MenuItem component={RouterLink} to={"dashboard"} disabled >
+                {auth && <MenuItem component={RouterLink} to={"dashboard"} disabled >
                     <ListItemIcon>
                         <Dashboard fontSize="small" />
                     </ListItemIcon>
                     Dashboard
-                </MenuItem>
+                </MenuItem>}
                 {auth &&
                     <MenuItem onClick={() => { logout(); handleClose() }}>
                         <ListItemIcon>

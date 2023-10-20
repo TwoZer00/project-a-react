@@ -1,9 +1,7 @@
-import { doc, getFirestore, getDoc, query, where, orderBy, increment } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
-import { getDownloadURL } from 'firebase/storage';
-import { updateDoc } from 'firebase/firestore';
-import { getDocs } from 'firebase/firestore';
-import { collection } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { collection, doc, getDoc, getDocs, getFirestore, increment, orderBy, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { CustomError } from '../Errors/CustomError';
 export async function getPostData(id) {
     const db = getFirestore();
     const userRef = doc(db, "post", id);
@@ -15,13 +13,15 @@ export async function getPostData(id) {
         return null;
     }
 }
-export async function getUserData(userRef) {
+export async function getUserData(userId) {
+    const db = getFirestore();
+    const userRef = doc(db, "user", userId);
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
         return { ...userDoc.data(), id: userDoc.id };
     }
     else {
-        return null;
+        throw new CustomError("user not found");
     }
 }
 export async function getAudioUrl(path) {
@@ -93,11 +93,15 @@ export async function getPostFromCategory(category) {
     const posts = postsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
     return posts;
 }
-
 export async function setPlay(postId) {
     const db = getFirestore();
     const postRef = doc(db, "post", postId);
     const docSnap = await updateDoc(postRef, { plays: increment(1) });
+}
+export async function setUser(userId, user) {
+    const db = getFirestore();
+    const userRef = doc(db, "user", userId);
+    return setDoc(userRef, { ...user, creationTime: (new Date(getAuth().currentUser.metadata.creationTime)) });
 }
 
 

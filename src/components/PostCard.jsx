@@ -1,13 +1,12 @@
-import { doc } from 'firebase/firestore'
+import { PlaylistRemove, Public, PublicOff } from '@mui/icons-material'
+import { Box, Button, Card, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
 import { getDoc, getFirestore } from 'firebase/firestore'
-import { Pause, PlayArrow, PlaylistRemove, Public, PublicOff, StopRounded, Visibility } from '@mui/icons-material'
-import { Avatar, Box, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
 import { getUserData } from '../firebase/utills'
-import UserAvatar from './UserAvatar'
 import PlayButton from './PlayButton'
+import UserAvatar from './UserAvatar'
 
 export default function PostCard({ postData }) {
     const [initData, setInitData] = useOutletContext();
@@ -38,7 +37,7 @@ export default function PostCard({ postData }) {
     }
     useEffect(() => {
         const fetchUser = async () => {
-            const userData = await getUserData(postData.user);
+            const userData = await getUserData(postData.user.id);
             setUser(userData);
         }
         fetchUser();

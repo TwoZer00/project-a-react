@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useLoaderData, useOutletContext, Link as RouterLink } from 'react-router-dom';
-import Typography from '@mui/material/Typography'
-import { getUserData } from '../firebase/utills';
-import { Box, Chip, Link, Stack, capitalize } from '@mui/material';
-import VisibilityIcon from '../components/VisibilityIcon';
+import { Box, Chip, Link, Stack } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink, useLoaderData, useOutletContext } from 'react-router-dom';
 import PlayButton from '../components/PlayButton';
-import UserCard from '../components/UserCard';
 import UserAvatar from '../components/UserAvatar';
+import VisibilityIcon from '../components/VisibilityIcon';
+import { getUserData } from '../firebase/utills';
 
 
 export default function Post() {
