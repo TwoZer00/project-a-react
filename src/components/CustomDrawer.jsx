@@ -120,7 +120,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                         </ListItem>
                     </List>
                 </Drawer>
-                <Box component="main" sx={{ flexGrow: 1, height: "100vh", display: "flex", flexDirection: "column", position: 'relative', my: 2, px: 2, boxSizing: "border-box" }}>
+                <Box component="main" sx={{ flexGrow: 1, height: "100vh", display: "flex", flexDirection: "column", position: 'relative', px: 2, py: 2, overflow: "auto" }}>
                     <DrawerHeader />
                     {!loading && outlet}
                 </Box >

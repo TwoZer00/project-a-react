@@ -36,6 +36,7 @@ export default function Login() {
         if (Object.keys({ ...tempE.email, ...tempE.password }).length === 0) {
             try {
                 await signInWithEmailAndPassword(getAuth(), data.email, data.password);
+                location.state?.from?.pathname ? navigate(location.state.from.pathname, { replace: true }) : navigate("/user");
             } catch (error) {
                 console.error(error);
                 tempE.signin = error.message;
@@ -44,7 +45,6 @@ export default function Login() {
             finally {
                 setLoading(false)
                 console.log(location.state);
-                location.state?.from?.pathname ? navigate(location.state.from.pathname, { replace: true }) : navigate("/user");
             }
         }
         else {

@@ -78,11 +78,18 @@ export default function PlayerInDrawer({ open, audio, data }) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: `${audio?.title}`,
                 artist: audio?.username,
-                artwork: [{
-                    src: `${cover}`,
-                    sizes: "96x96",
-                    type: "image/png",
-                }],
+                artwork: [
+                    {
+                        src: `${cover}`,
+                        sizes: "512x512",
+                        type: "image/jpeg",
+                    },
+                    {
+                        src: `${cover}`,
+                        sizes: "30x30",
+                        type: "image/jpeg",
+                    },
+                ],
             });
         }
 
