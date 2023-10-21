@@ -15,7 +15,7 @@ export default function Post() {
     const [initData, setInitData] = useOutletContext();
     const [user, setUser] = useState();
     const postData = useLoaderData();
-    const [commentList, setCommentList] = useState(postData.comment);
+    const [commentList, setCommentList] = useState(postData?.comment);
 
     useEffect(() => {
         const loadUser = async (id) => {
