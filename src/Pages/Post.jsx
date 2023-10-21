@@ -2,6 +2,8 @@ import { Box, Chip, Link, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLoaderData, useOutletContext } from 'react-router-dom';
+import InputComment from '../components/Comments/InputComment';
+import List from '../components/Comments/List';
 import PlayButton from '../components/PlayButton';
 import UserAvatar from '../components/UserAvatar';
 import VisibilityIcon from '../components/VisibilityIcon';
@@ -13,6 +15,7 @@ export default function Post() {
     const [initData, setInitData] = useOutletContext();
     const [user, setUser] = useState();
     const postData = useLoaderData();
+    const [commentList, setCommentList] = useState(postData.comment);
 
     useEffect(() => {
         const loadUser = async (id) => {
@@ -60,6 +63,12 @@ export default function Post() {
             </Stack>
             <Typography variant="body1">{postData.desc}</Typography>
             <PlayButton post={postData} user={user} />
+            <Box paddingY={2}>
+                <InputComment post={postData} setCommentList={setCommentList} />
+            </Box>
+            <Box>
+                <List commentsList={commentList} />
+            </Box>
         </Stack>
     )
 }

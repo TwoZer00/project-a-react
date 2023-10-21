@@ -113,5 +113,23 @@ export async function getCategories() {
     return categories;
 }
 
+export async function getComment(id) {
+    const db = getFirestore();
+    const commentRef = doc(db, "comment", id);
+    const commentDoc = await getDoc(commentRef);
+    if (commentDoc.exists()) {
+        return { ...commentDoc.data(), id: commentDoc.id };
+    }
+    else {
+        return;
+    }
+}
+
+export async function getUsername(id) {
+    const temp = await getUserData(id);
+    return temp?.username;
+}
+
+
 
 

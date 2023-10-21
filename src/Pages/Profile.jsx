@@ -84,9 +84,9 @@ export default function Profile() {
                     justifyContent: "start",
                     alignItems: "flex-end",
                     padding: 1,
+                    color: "white"
                 }}>
                     <Stack direction="row" spacing={2} alignItems={"flex-end"}>
-                        {/* <Avatar src={userData?.photoURL} {...stringAvatar(userData?.username, { width: 100, height: 100 })} /> */}
                         {<UserAvatar url={userData?.avatarURL} username={userData?.username} width={100} height={100} />}
                         <Stack direction={"column"}>
                             <Typography variant="h1" fontSize={24} fontWeight={400}>{userData?.username}</Typography>

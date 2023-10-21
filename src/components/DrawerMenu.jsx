@@ -34,7 +34,7 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                 >
                     <UserAvatar username={username || auth.email} url={auth.photoURL || avatarURL} width={35} height={35} />
                 </IconButton> :
-                <IconButton onClick={handleMenu} >
+                <IconButton color='inherit' onClick={handleMenu} >
                     <MoreVert />
                 </IconButton>}
             <Menu
