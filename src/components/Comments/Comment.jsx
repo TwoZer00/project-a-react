@@ -19,7 +19,7 @@ export default function Comment({ id }) {
     }, [])
     return (
         <>
-            <Card variant='outlined' >
+            <Card variant='outlined' id={id} >
                 <CardContent>
                     <Stack direction={"column"}>
                         <Link component={RouterLink} underline='hover' to={`/user/${comment?.user.id}`}>{user?.username}</Link>

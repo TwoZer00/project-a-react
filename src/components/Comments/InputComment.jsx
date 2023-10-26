@@ -22,7 +22,8 @@ export default function InputComment({ post, setCommentList }) {
             content: commentContent,
             creationTime: new Date(),
             user: doc(db, "user", getAuth().currentUser.uid),
-            post: doc(db, "post", post.id)
+            post: doc(db, "post", post.id),
+            postOwned: doc(db, "user", post.user.id)
         }
         const batch = writeBatch(db);
         batch.update(postRef, { comment: arrayUnion(commentRef) })

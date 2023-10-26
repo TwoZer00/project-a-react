@@ -1,25 +1,34 @@
-import { Box, Divider, Paper, Stack, Typography } from '@mui/material';
+import { Box, Divider, List, ListItem, ListItemButton, ListItemText, ListSubheader, Paper, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { Link as RouterLink, useOutletContext } from 'react-router-dom';
+import CommentDashboard from '../../components/Comments/CommentDashboard';
+import { getComments } from '../../firebase/utills';
 import { countPlays } from '../../utils';
 
 export default function HomeDashboard() {
     const [posts, setPosts] = useState();
     const [user, postList] = useOutletContext();
     const [plays, setPlays] = useState();
+    const [comments, setComments] = useState();
     useEffect(() => {
         const fetchPosts = async () => {
             const [postLista, setPostLista] = postList;
             setPlays(countPlays(postLista));
             setPosts(postLista);
         }
+        const fetchComments = async () => {
+            const temp = await getComments(user.id);
+            console.log(temp.length);
+            setComments(temp);
+        }
         if (user?.id) {
             fetchPosts();
+            fetchComments();
         }
     }, [user]);
     return (
-        <Stack gap={2}>
-            <Box component={Paper} variant='outlined' >
+        <Stack gap={2} p={2} >
+            <Box component={Paper} variant='outlined' p={1}>
                 <Stack direction={"row"} justifyContent={"space-around"}>
                     <Box>
                         <Typography variant="h2" fontSize={24}>Posts</Typography>
@@ -32,14 +41,36 @@ export default function HomeDashboard() {
                     </Box>
                 </Stack>
             </Box>
-            <Box component={Paper} variant='outlined'>
+            <Box component={Paper} variant='outlined' p={1}>
                 <Typography variant="h2" fontSize={24}>Recent Posts</Typography>
                 <Box>
-                    {posts?.slice(0, 4).map((post) => (
-                        <Typography key={post.id} variant="body1">{post.title}</Typography>
-                    ))}
+                    <List subheader={<ListSubheader sx={{ display: "flex", gap: 1, }} ><Typography variant="subtitle1" flexGrow={1} >Title</Typography>
+                        <Typography variant="subtitle1">Plays</Typography>
+                        <Typography variant="subtitle1">Comments</Typography></ListSubheader>} >
+                        {posts?.slice(0, 4).map((post) => (
+                            <ListItem disablePadding>
+                                <ListItemButton key={post.id} component={RouterLink} to={`/dashboard/post/${post.id}`}>
+                                    <ListItemText primary={post.title} />
+                                    <Stack direction={"row"} gap={1}>
+                                        <Typography variant="subtitle1" sx={{ width: "5ch" }} align='right'>{post.plays}</Typography>
+                                        <Typography variant="subtitle1" sx={{ width: "8ch" }} align='right'>{post.comment ? post.comment.length : 0}</Typography>
+                                    </Stack>
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
                     {posts?.length === 0 && <Typography variant="body1">No posts</Typography>}
                 </Box>
+            </Box>
+            <Box component={Paper} variant='outlined' p={1}>
+                <Typography variant="h2" fontSize={24}>Latest comments</Typography>
+                <List>
+                    {
+                        comments?.length > 0 && comments?.slice(0, 4).map((item) => {
+                            return <CommentDashboard data={item} />;
+                        })
+                    }
+                </List>
             </Box>
         </Stack>
     )
