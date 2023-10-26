@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { collection, doc, getDoc, getDocs, getFirestore, increment, orderBy, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, increment, orderBy, query, setDoc, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { CustomError } from '../Errors/CustomError';
 export async function getPostData(id) {
@@ -109,7 +109,7 @@ export async function getCategories() {
     const categoriesRef = collection(db, "category");
     const categoriesSnapshot = await getDocs(categoriesRef);
     const categories = categoriesSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
-    // console.log(categories);
+    console.log(categories);
     return categories;
 }
 
@@ -130,6 +130,50 @@ export async function getUsername(id) {
     return temp?.username;
 }
 
+export async function getPostsUser(id, size) {
+    const db = getFirestore();
+    const postsRef = collection(db, "post");
+    const q = query(postsRef, where('user', '==', doc(db, "user", id)));
+    const postsSnapshot = await getDocs(q);
+    const posts = postsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
+    return posts;
+}
+
+export async function getTags() {
+    const db = getFirestore();
+    const tagsRef = collection(db, "tag");
+    const tagsSnapshot = await getDocs(tagsRef);
+    const tags = tagsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
+    console.log(tags);
+    return tags;
+}
+export async function getPostsUserCount(id) {
+    const posts = await getPostsUser(id);
+    return posts.length;
+}
+
+export async function updatePost(id, post, tags) {
+    const db = getFirestore();
+    const postRef = doc(db, "post", id);
+    const tagsRefs = createTagsRefs(tags);
+    const batch = writeBatch(db);
+    for (let tagRef of tagsRefs) {
+        const temp = {
+            title: decodeURI(tagRef.id),
+            urlPath: tagRef.path
+        }
+        batch.set(tagRef, temp);
+    }
+    const tempPost = { ...post, tags: tagsRefs };
+    batch.update(postRef, tempPost);
+    batch.commit();
+    return { ...tempPost, id: postRef.id };
+}
+
+export function createTagsRefs(tags) {
+    const tagsRefs = tags.map(tag => { return doc(getFirestore(), "tag", encodeURI(tag.trim())) });
+    return tagsRefs;
+}
 
 
 

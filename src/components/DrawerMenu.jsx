@@ -93,7 +93,7 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                     </ListItemIcon>
                     Settings
                 </MenuItem>
-                {auth && <MenuItem component={RouterLink} to={"dashboard"} disabled >
+                {auth && <MenuItem component={RouterLink} to={"dashboard"}>
                     <ListItemIcon>
                         <Dashboard fontSize="small" />
                     </ListItemIcon>

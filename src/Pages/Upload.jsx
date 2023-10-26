@@ -1,13 +1,12 @@
-import { Alert, Autocomplete, Backdrop, Box, Button, Chip, CssBaseline, FormControl, InputLabel, LinearProgress, Link, MenuItem, Select, Snackbar, Stack, TextField, ToggleButton, ToggleButtonGroup, Tooltip, createFilterOptions } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
-import { theme } from './Init';
-import { collection, doc, getDocs, getFirestore, serverTimestamp, setDoc, writeBatch } from 'firebase/firestore';
-import { MuiFileInput } from 'mui-file-input';
-import { useLocation, useNavigate, useOutletContext, Link as RouterLink } from 'react-router-dom';
+import { Alert, Autocomplete, Backdrop, Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, Snackbar, Stack, TextField, ToggleButton, ToggleButtonGroup, Tooltip, createFilterOptions } from '@mui/material';
 import { getAuth } from 'firebase/auth';
+import { collection, doc, getDocs, getFirestore, serverTimestamp, writeBatch } from 'firebase/firestore';
+import { MuiFileInput } from 'mui-file-input';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link as RouterLink, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { Css, PlaylistRemove, Public, PublicOff } from '@mui/icons-material';
+import { PlaylistRemove, Public, PublicOff } from '@mui/icons-material';
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 
 const filter = createFilterOptions();
 export default function Upload() {
@@ -157,8 +156,8 @@ export default function Upload() {
     )
 }
 
-function NSFWToggleButton() {
-    const [selected, setSelected] = useState(false);
+export function NSFWToggleButton({ val }) {
+    const [selected, setSelected] = useState(val || false);
     return (
         <>
             <ToggleButton
@@ -296,8 +295,8 @@ async function uploadPost(post, postRef, filePath, tags) {
     await batch.commit();
 }
 
-function Visibility() {
-    const [visibility, setVisibility] = useState('public');
+export function Visibility({ val }) {
+    const [visibility, setVisibility] = useState(val || 'public');
 
     const handleChange = (event, newVisibility) => {
         setVisibility(newVisibility);

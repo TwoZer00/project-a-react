@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useOutlet, useOutletContext, useParams, useSearchParams } from 'react-router-dom'
-import { getPostFromTags } from '../firebase/utills';
-import PostCard from '../components/PostCard';
 import { Stack } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useOutletContext, useParams } from 'react-router-dom';
+import PostCard from '../components/PostCard';
+import { getPostFromTags } from '../firebase/utills';
 
 export default function Tags() {
     const { tags } = useParams();
@@ -22,7 +22,8 @@ export default function Tags() {
     }, [tags])
 
     const handleTags = async () => {
-        const temp = tags.split(',');
+        const temp = tags.split(',').map((tag) => (tag));
+        console.log(temp);
         setPosts(await getPostFromTags(temp))
         setInitialData((val) => {
             const temp = { ...val };

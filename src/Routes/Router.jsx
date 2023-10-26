@@ -3,6 +3,10 @@ import { getAuth } from "firebase/auth";
 import { createBrowserRouter } from "react-router-dom";
 import Categories from "../Pages/Categories";
 import Category from "../Pages/Category";
+import Dashboard from "../Pages/Dashboard";
+import HomeDashboard from "../Pages/Dashboard/Home";
+import DashboardPost from "../Pages/Dashboard/Post";
+import PostListDashboard from "../Pages/Dashboard/Posts/List";
 import EditProfile from "../Pages/EditProfile";
 import Genre from "../Pages/Genre";
 import Home from "../Pages/Home";
@@ -94,5 +98,28 @@ export const router = createBrowserRouter([
     {
         path: "/register",
         element: <Register />
+    },
+    {
+        path: "/dashboard",
+        element: <Dashboard />,
+        loader: async () => {
+            return getAuth(app);
+        },
+        children: [
+            {
+                path: "",
+                element: <HomeDashboard />
+            },
+            {
+                path: "post",
+                element: <PostListDashboard />,
+                children: [
+                    {
+                        path: ":id",
+                        element: <DashboardPost />
+                    }
+                ]
+            }
+        ]
     }
 ]);
