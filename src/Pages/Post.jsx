@@ -1,7 +1,7 @@
 import { Box, Chip, Link, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useLoaderData, useOutletContext } from 'react-router-dom';
+import { Link as RouterLink, useLoaderData, useOutletContext, useSearchParams } from 'react-router-dom';
 import InputComment from '../components/Comments/InputComment';
 import List from '../components/Comments/List';
 import PlayButton from '../components/PlayButton';
@@ -16,7 +16,8 @@ export default function Post() {
     const [user, setUser] = useState();
     const postData = useLoaderData();
     const [commentList, setCommentList] = useState(postData?.comment || []);
-
+    let [searchParams, setSearchParams] = useSearchParams();
+    // console.log(searchParams.get("comment"));
     useEffect(() => {
         const loadUser = async (id) => {
             const data = await getUserData(id);
@@ -67,7 +68,7 @@ export default function Post() {
                 <InputComment post={postData} setCommentList={setCommentList} />
             </Box>
             <Box>
-                <List commentsList={commentList} />
+                <List commentsList={commentList} comment={searchParams.get("comment")} />
             </Box>
         </Stack>
     )

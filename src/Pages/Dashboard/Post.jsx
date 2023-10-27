@@ -7,7 +7,6 @@ import { getPostData } from '../../firebase/utills';
 
 export default function DashboardPost() {
     const { id } = useParams();
-    // const [postList, setPostList] = useOutletContext();
     const [post, setPost] = useState()
     const [newData, setNewData] = useState()
     const formRef = useRef();

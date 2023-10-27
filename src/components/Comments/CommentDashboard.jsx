@@ -24,13 +24,15 @@ export default function CommentDashboard({ data }) {
     }, [])
     return (
         <ListItem disablePadding>
-            <ListItemButton component={RouterLink} to={`/post/${data.post.id}/comment/${data.id}`}>
+            <ListItemButton component={RouterLink} to={`/post/${data.post.id}?comment=${data.id}`}>
                 <ListItemAvatar>
                     <UserAvatar username={user?.username} url={user?.avatarURL} />
                 </ListItemAvatar>
                 <ListItemText primary={user?.username} secondary={<Stack direction={"row"}>
                     <Typography variant="body2" mr={1}>Commented on: {post?.title}</Typography>
-                    <Typography variant="body2">"{data?.content}"</Typography>
+                    "<Typography variant="body2" maxWidth={"15"} textOverflow={'ellipsis'} whiteSpace={"nowrap"} overflow={"hidden"} >{data?.content}</Typography>"
+                    {/* <Box>
+                    </Box> */}
                     <Typography variant="body2" ml={1}>{moment.duration(moment(data?.creationTime.seconds * 1000).subtract(new Date())).humanize(true)}</Typography>
                 </Stack>} />
             </ListItemButton>

@@ -1,7 +1,8 @@
-import { Dashboard, ListAlt } from '@mui/icons-material';
+import { ArrowBack, Dashboard, ListAlt } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Tooltip } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -117,7 +118,7 @@ export default function DrawerDashboard({ user, postList }) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Mini variant drawer
+                        Dashboard
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -129,50 +130,81 @@ export default function DrawerDashboard({ user, postList }) {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
-                            component={RouterLink}
-                            to=""
-                        >
-                            <ListItemIcon
+                    <Tooltip title="Dashboard" placement='right-end' >
+                        <ListItem disablePadding sx={{ display: 'block' }}>
+                            <ListItemButton
                                 sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5,
                                 }}
+                                component={RouterLink}
+                                to=""
                             >
-                                <Dashboard />
-                            </ListItemIcon>
-                            <ListItemText primary="dashboard" sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
-                            component={RouterLink}
-                            to="post"
-                        >
-                            <ListItemIcon
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : 'auto',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Dashboard />
+                                </ListItemIcon>
+                                <ListItemText primary="dashboard" sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Tooltip>
+                    <Tooltip title="Posts" placement='right-end'>
+                        <ListItem disablePadding sx={{ display: 'block' }}>
+                            <ListItemButton
                                 sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5,
                                 }}
+                                component={RouterLink}
+                                to="post"
                             >
-                                <ListAlt />
-                            </ListItemIcon>
-                            <ListItemText primary="post" sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
-                        </ListItemButton>
-                    </ListItem>
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : 'auto',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <ListAlt />
+                                </ListItemIcon>
+                                <ListItemText primary="post" sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Tooltip>
+                </List>
+                <Divider />
+                <List sx={{ marginTop: "auto" }} >
+                    <Tooltip title="Go back app" placement='right'>
+                        <ListItem disablePadding sx={{ display: 'block' }}>
+                            <ListItemButton
+                                sx={{
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5,
+                                }}
+                                component={RouterLink}
+                                to="/"
+                            >
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : 'auto',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <ArrowBack />
+                                </ListItemIcon>
+                                <ListItemText primary="dashboard" sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Tooltip>
                 </List>
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>

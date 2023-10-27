@@ -16,14 +16,14 @@ export default function Comment({ id }) {
             setComment(temp)
         }
         fetchComment()
-    }, [])
+    }, [id])
     return (
         <>
             <Card variant='outlined' id={id} >
                 <CardContent>
                     <Stack direction={"column"}>
                         <Link component={RouterLink} underline='hover' to={`/user/${comment?.user.id}`}>{user?.username}</Link>
-                        <Typography variant="caption">{moment.duration(moment(new Date(comment?.creationTime.seconds * 1000)).subtract(new Date())).humanize(true)}</Typography>
+                        <Link variant="caption" component={RouterLink} to={`?comment=${id}`} underline='hover' color={"inherit"} >{moment.duration(moment(new Date(comment?.creationTime.seconds * 1000)).subtract(new Date())).humanize(true)}</Link>
                         <Typography variant="body">{comment?.content}</Typography>
                     </Stack>
                 </CardContent>
