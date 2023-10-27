@@ -1,5 +1,4 @@
-import { Alert, Autocomplete, Backdrop, Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, Snackbar, Stack, TextField, ToggleButton, ToggleButtonGroup, Tooltip, createFilterOptions } from '@mui/material';
-import { getAuth } from 'firebase/auth';
+import { Alert, Autocomplete, Backdrop, Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, Snackbar, Stack, TextField, ToggleButton, ToggleButtonGroup, Tooltip, Typography, createFilterOptions } from '@mui/material';
 import { collection, doc, getDocs, getFirestore, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { MuiFileInput } from 'mui-file-input';
 import React, { useEffect, useRef, useState } from 'react';
@@ -7,6 +6,9 @@ import { Link as RouterLink, useLocation, useNavigate, useOutletContext } from '
 
 import { PlaylistRemove, Public, PublicOff } from '@mui/icons-material';
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { CustomError } from '../Errors/CustomError';
+import { getLoggedUserRef } from '../firebase/utills';
+import { InputField } from './Login';
 
 const filter = createFilterOptions();
 export default function Upload() {
@@ -56,7 +58,8 @@ export default function Upload() {
     }
 
     const [tagInput, setTagInput] = useState([]);
-    const [uploadState, setUploadState] = useState();
+    const [uploadState, setUploadState] = useState([]);
+    const [error, setError] = useState({})
     const [postRef, setPostRef] = useState(doc(collection(getFirestore(), "post")));
     const handleSubmit = async () => {
         setUploadState("uploading")
@@ -65,24 +68,46 @@ export default function Upload() {
         })
         const form = formRef.current;
         const formData = new FormData(form);
-        const post = {
-            title: formData.get("title"),
-            desc: formData.get("desc"),
-            category: formData.get("category"),
-            nsfw: form.nsfw.checked,
-            creationTime: serverTimestamp(),
-            user: doc(getFirestore(), "user", getAuth().currentUser.uid),
-            visibility: formData.get('visibility'),
-            plays: 0
-        }
+        // console.log(form.checkValidity());
         try {
-            await uploadFile(valuea, postRef, getAuth().currentUser.uid, setInitData, post, tagInput)
+            if (!valuea) {
+                form.file.setCustomValidity("no file");
+            }
+            else {
+                form.file.setCustomValidity("");
+            }
+            if (!form.checkValidity()) {
+                let errors = { ...error }
+                Array.from(form.querySelectorAll("input")).forEach((item) => {
+                    const err = {};
+                    if (!item.checkValidity()) {
+                        err[item.name] = { message: `${item.validationMessage}` }
+                        errors = { ...errors, ...err }
+                    }
+                })
+                setError(errors)
+                throw new CustomError("input fields required empty")
+            }
+            else {
+                setError({})
+            }
+            const post = {
+                title: formData.get("title"),
+                desc: formData.get("desc"),
+                category: formData.get("category"),
+                nsfw: form.nsfw.checked,
+                creationTime: serverTimestamp(),
+                user: getLoggedUserRef(),
+                visibility: formData.get('visibility'),
+                plays: 0
+            }
+            await uploadFile(valuea, postRef, getLoggedUserRef().id, setInitData, post, tagInput)
+            setUploadState(['finished', 'success', "Post uploaded!"])
         }
         catch (error) {
-            console.error(error);
+            setUploadState(['finished', 'error', error.message])
         }
         finally {
-            setUploadState('finished')
             const tempInitData = { ...initData };
             delete tempInitData.loading
             setInitData(tempInitData);
@@ -94,7 +119,8 @@ export default function Upload() {
             <Backdrop open={!!initData?.loading} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} />
             <Stack gap={1} ref={formRef} component={"form"} sx={{ height: "100%" }}>
                 <Stack direction={"row"} gap={2} >
-                    <TextField label={"Title"} type='text' sx={{ flex: 1 }} name='title' />
+                    {/* <TextField label={"Title"} type='text' sx={{ flex: 1 }} name='title' /> */}
+                    <InputField label={"title"} type={"text"} name={"title"} error={error.title} />
                     <Visibility />
                     <NSFWToggleButton />
                 </Stack>
@@ -125,13 +151,15 @@ export default function Upload() {
                         />
                     </Box>
                     <FormControl sx={{ flex: "none", width: '15ch' }}>
-                        <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                        <InputLabel id="demo-simple-select-label" error={!!error.category}>Category</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="Category"
                             value={categoryVal}
                             name='category'
+                            required
+                            error={!!error.category}
                             onChange={handleChange}
                         >
                             {category.length > 0 && category.map((item, index) => <MenuItem key={index + "a"} value={item.title}>{item.title}</MenuItem>)}
@@ -139,17 +167,19 @@ export default function Upload() {
                     </FormControl>
                 </Stack>
                 <TextField label={"Description"} multiline rows={4} type='text' name='desc' />
-                <MuiFileInput getSizeText={(value) => `${((value?.size) / Math.pow(1024, 2)).toFixed(2)} MB`} inputProps={{ accept: 'audio/*' }} value={valuea} onChange={handleChangeF} color='info' name='file' />
+                <MuiFileInput error={!!error.file} getSizeText={(value) => `${((value?.size) / Math.pow(1024, 2)).toFixed(2)} MB`} inputProps={{ accept: 'audio/*' }} value={valuea} onChange={handleChangeF} color='info' name='file' />
                 <Box sx={{ mt: "auto", height: "100%", display: "flex", alignItems: "self-end", justifyContent: "flex-end" }} >
                     <Button variant='contained' onClick={handleSubmit} disabled={initData.loading} >
                         Upload
                     </Button>
                 </Box>
             </Stack >
-            <Snackbar open={uploadState === 'finished'} autoHideDuration={6000} onClose={() => { setUploadState() }}>
-                <Alert severity="success" sx={{ width: '100%' }}>
-                    This is a success message!
-                    <Button component={RouterLink} to={`/${postRef.path}`} underline='hover' color="inherit" >View post</Button>
+            <Snackbar open={uploadState[0] === 'finished'} autoHideDuration={6000} onClose={() => { setUploadState([]) }}>
+                <Alert severity={uploadState[1]} sx={{ width: '100%' }}>
+                    <Stack direction={"row"} alignItems={"center"}>
+                        <Typography variant="subtitle1" sx={{ ":first-letter": { textTransform: "uppercase" } }}>{uploadState[2]}</Typography>
+                        {uploadState[1] === 'success' && <Button component={RouterLink} to={`/${postRef.path}`} underline='hover' color="inherit" >View post</Button>}
+                    </Stack>
                 </Alert>
             </Snackbar>
         </>
@@ -206,7 +236,7 @@ async function getCategory() {
 }
 
 async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) {
-
+    if (!userId) throw new CustomError("No user found")
     // Upload file and metadata to the object 'images/mountains.jpg'
     const storageRef = ref(getStorage(), `audio/${userId}/${postRef.id}/` + file.name);
     const uploadTask = uploadBytesResumable(storageRef, file);

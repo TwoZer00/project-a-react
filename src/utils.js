@@ -26,6 +26,7 @@ export function countPlays(posts) {
 export const labels = {
     en: {
         'email': 'Email',
+        'register': 'Register',
         'password': 'Password',
         'login': 'Login',
         'dashboard': 'Dashboard',
@@ -54,6 +55,7 @@ export const labels = {
     es: {
         'email': 'Correo electrónico',
         'password': 'Contraseña',
+        'register': 'Registrarse',
         'login': 'Iniciar Sesión',
         'dashboard': 'Panel de Control',
         'logout': 'Cerrar Sesión',
@@ -77,6 +79,37 @@ export const labels = {
         'delete-sure-desc': 'Esta acción no se puede deshacer.',
         'delete': 'Eliminar',
         'edit': 'Editar',
+    }
+}
+
+export const firebaseErrorsMessages = {
+    en: {
+        'auth/email-already-in-use': 'Email already in use',
+        'auth/invalid-email': 'Invalid email',
+        'auth/user-not-found': 'User not found',
+        'auth/wrong-password': 'Wrong password',
+        'auth/too-many-requests': 'Too many requests',
+        'auth/user-disabled': 'User disabled',
+        'auth/operation-not-allowed': 'Operation not allowed',
+        'auth/weak-password': 'Weak password',
+        'auth/internal-error': 'Internal error',
+        'auth/invalid-phone-number': 'Invalid phone number',
+        'auth/invalid-verification-code': 'Invalid verification code',
+        'auth/missing-phone-number': 'Missing phone number',
+        'auth/missing-verification-code': 'Missing verification code',
+        'auth/credential-already-in-use': 'Credential already in use',
+        'auth/invalid-credential': 'Invalid credential',
+        'auth/operation-not-supported-in-this-environment': 'Operation not supported in this environment',
+        'auth/invalid-api-key': 'Invalid API key',
+        'auth/invalid-user-token': 'Invalid user token',
+        'auth/app-deleted': 'App deleted',
+    },
+    es: {
+        'auth/email-already-in-use': 'Email ya en uso',
+        'auth/invalid-email': 'Email invalido',
+        'auth/user-not-found': 'Usuario no encontrado',
+        'auth/wrong-password': 'Contraseña incorrecta',
+
     }
 }
 

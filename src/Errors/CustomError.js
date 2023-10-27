@@ -1,7 +1,7 @@
 export class CustomError extends Error {
-    constructor(message) {
-        super(message); // (1)
-        this.name = "NoUserFounded"; // (2)
-        this.code = 101;
+    constructor(message, code, name) {
+        super(message, code, name); // (1)
+        this.name = name; // (2)
+        this.code = code;
     }
 }

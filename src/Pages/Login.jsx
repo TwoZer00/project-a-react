@@ -5,6 +5,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { capitalizeFirstLetter, firebaseErrorsMessages, labels, windowLang } from '../utils';
 import { theme } from './Init';
 
 export default function Login() {
@@ -38,8 +39,8 @@ export default function Login() {
                 await signInWithEmailAndPassword(getAuth(), data.email, data.password);
                 location.state?.from?.pathname ? navigate(location.state.from.pathname, { replace: true }) : navigate("/user");
             } catch (error) {
-                console.error(error);
-                tempE.signin = error.message;
+                console.error(error.code);
+                tempE.signin = error.code;
                 setError(tempE);
             }
             finally {
@@ -60,16 +61,16 @@ export default function Login() {
                     <Box width={"100vw"} height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
                         <Stack component={Paper} variant='outlined' direction={"column"}>
                             <Stack component={"form"} variant='outlined' padding={2} gap={2} onSubmit={handleSubmit} noValidate >
-                                <InputField id='email' error={error?.email} label='Email' variant='outlined' required name='email' type='email' />
-                                <InputField id='password' error={error?.password} label='Password' variant='outlined' required type='password' name='password' />
+                                <InputField id='email' error={error?.email} label={labels[windowLang]['email']} variant='outlined' required name='email' type='email' />
+                                <InputField id='password' error={error?.password} label={labels[windowLang]['password']} variant='outlined' required type='password' name='password' />
                                 {/* <TextField id='email' label='Email' variant='outlined' required name='email' error={!!error.email} helperText={error.email} FormHelperTextProps={{ "error": !!error.email }} type='email' /> */}
                                 {/* <TextField id='password' label='Password' variant='outlined' required type='password' name='password' /> */}
                                 <Stack gap={2} direction={"row"} justifyContent={"space-between"} >
-                                    <Button variant='outlined' color='secondary' type='reset' component={RouterLink} to={"/register"} sx={{ flex: 1 }}>Register</Button>
-                                    <Button variant='contained' color='primary' type='submit' sx={{ flex: 1 }} >Login</Button>
+                                    <Button variant='outlined' color='secondary' type='reset' component={RouterLink} to={"/register"} sx={{ flex: 1 }}>{labels[windowLang]['register']}</Button>
+                                    <Button variant='contained' color='primary' type='submit' sx={{ flex: 1 }}>{labels[windowLang]['login']}</Button>
                                 </Stack>
                                 {/* <Typography variant="subtitle2" color="error" textAlign={"center"} >{error}</Typography> */}
-                                <Typography variant="subtitle2" color="error" textAlign={"center"} >{error.signin}</Typography>
+                                <Typography variant="subtitle2" color="error" textAlign={"center"} >{firebaseErrorsMessages[windowLang][error.signin]}</Typography>
                             </Stack>
                         </Stack>
                     </Box>
@@ -89,7 +90,7 @@ export function InputField(props) {
     };
     if (props.type === "password") {
         return (<FormControl variant="outlined">
-            <InputLabel htmlFor={props.id} error={!!props.error}>{props.label}</InputLabel>
+            <InputLabel htmlFor={props.id} error={!!props.error}>{capitalizeFirstLetter(props.label)}</InputLabel>
             <OutlinedInput
                 id={props.id}
                 type={showPassword ? 'text' : 'password'}
@@ -107,7 +108,7 @@ export function InputField(props) {
                 }
                 required name={props.name}
                 error={!!props.error}
-                label={props.label}
+                label={capitalizeFirstLetter(props.label)}
             />
             <FormHelperText error={!!props.error} sx={{ maxWidth: 200, textAlign: "justify" }}>{props.error}</FormHelperText>
         </FormControl>)
@@ -115,9 +116,9 @@ export function InputField(props) {
     else {
         return (
             <FormControl variant='outlined' fullWidth>
-                <InputLabel htmlFor={props.id} error={!!props.error}>{props.label}</InputLabel>
-                <OutlinedInput id={props.id} label={props.label} required name={props.name} type={props.type} error={!!props.error} {...props} />
-                <FormHelperText error={!!props.error} sx={{ textAlign: "justify" }}>{props.error}</FormHelperText>
+                <InputLabel htmlFor={props.id} error={!!props.error}>{capitalizeFirstLetter(props.label)}</InputLabel>
+                <OutlinedInput id={props.id} label={capitalizeFirstLetter(props.label)} required name={props.name} type={props.type} error={!!props.error} {...props} />
+                {!props.error?.message && <FormHelperText error={!!props.error} sx={{ textAlign: "justify" }}>{props.error}</FormHelperText>}
             </FormControl>
         )
     }

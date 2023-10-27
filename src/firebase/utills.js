@@ -185,5 +185,14 @@ export async function getComments(id) {
     return comments;
 }
 
+export function getLoggedUserRef() {
+    try {
+        const userRef = doc(getFirestore(), "user", getAuth().currentUser.uid);
+        return userRef;
+    } catch (error) {
+        throw new CustomError("User error, user may not be logged", 203);
+    }
+}
+
 
 
