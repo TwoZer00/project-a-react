@@ -191,5 +191,9 @@ export function getLoggedUserRef() {
     }
 }
 
-
+export async function deletePost(id) {
+    const db = getFirestore();
+    const postRef = doc(db, "post", id);
+    await updateDoc(postRef, { state: "deleted" });
+}
 
