@@ -44,7 +44,7 @@ export default function Post() {
                         {postData.title}
                     </Typography>
                     <Typography variant='body'>
-                        Plays: {(postData?.plays)}
+                        Plays: {(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}
                     </Typography>
                 </Box>
                 <VisibilityIcon visibility={postData.visibility} fontSize="small" />
