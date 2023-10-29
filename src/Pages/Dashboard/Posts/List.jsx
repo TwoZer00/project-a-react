@@ -15,7 +15,7 @@ export default function PostListDashboard() {
         { field: 'desc', headerName: labels[windowLang]['description'], flex: 1 },
         { field: 'visibility', headerName: labels[windowLang]['visibility'], flex: 1 },
         { field: 'category', headerName: labels[windowLang]['category'], valueFormatter: (params) => { return params.value.id } },
-        { field: 'tags', headerName: labels[windowLang]['tags'], sorteable: false, renderCell: (params) => <Stack direction={"row"} gap={1} py={1} sx={{ overflowX: "scroll", }} >{params.value.map((item) => <Chip label={decodeURI(item.id)} />)}</Stack>, flex: 1 },
+        { field: 'tags', headerName: labels[windowLang]['tags'], sorteable: false, renderCell: (params) => <Stack direction={"row"} gap={1} py={1} sx={{ overflowX: "scroll", }} >{params?.value?.map((item) => <Chip label={decodeURI(item.id)} />)}</Stack>, flex: 1 },
         { field: 'creationTime', headerName: labels[windowLang]["date"], flex: 1, valueFormatter: (params) => { return moment(params.value.seconds * 1000).format("DD/MM/YYYY") } }, ,
         { field: 'plays', headerName: labels[windowLang]["plays"], flex: 1, align: "right", type: 'number' },
         { field: "", headerName: null, flex: 1, renderCell: (params) => <MoreIconButton id={params.row.id} />, type: 'actions' },

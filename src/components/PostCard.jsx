@@ -84,10 +84,10 @@ export default function PostCard({ postData }) {
                     </CardContent>
                     <CardActions sx={{ display: "flex", flexDirection: "row", gap: 2 }} >
                         <PlayButton post={postData} user={user} variant="icon" />
-                        <Tooltip title={(postData?.comment?.length).toLocaleString(window.navigator.language, { style: "decimal" })}>
+                        <Tooltip title={(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal" })}>
                             <Stack direction={"row"} gap={1}>
                                 <Comment />
-                                <Typography>{(postData?.comment?.length).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
+                                <Typography>{(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
                             </Stack>
                         </Tooltip>
                         <Tooltip title={(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}>
