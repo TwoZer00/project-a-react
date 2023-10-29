@@ -37,15 +37,16 @@ export default function Login() {
         if (Object.keys({ ...tempE.email, ...tempE.password }).length === 0) {
             try {
                 await signInWithEmailAndPassword(getAuth(), data.email, data.password);
-                location.state?.from?.pathname ? navigate(location.state.from.pathname, { replace: true }) : navigate("/user");
+                // console.log(location.state?.from?.pathname);
+                location.state?.from?.pathname ? navigate(location.state.from.pathname, { replace: true }) : navigate("/user", { replace: true });
             } catch (error) {
-                console.error(error.code);
+                console.error(error);
                 tempE.signin = error.code;
                 setError(tempE);
             }
             finally {
                 setLoading(false)
-                console.log(location.state);
+                // console.log(location.state);
             }
         }
         else {
@@ -61,8 +62,8 @@ export default function Login() {
                     <Box width={"100vw"} height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
                         <Stack component={Paper} variant='outlined' direction={"column"}>
                             <Stack component={"form"} variant='outlined' padding={2} gap={2} onSubmit={handleSubmit} noValidate >
-                                <InputField id='email' error={error?.email} label={labels[windowLang]['email']} variant='outlined' required name='email' type='email' />
-                                <InputField id='password' error={error?.password} label={labels[windowLang]['password']} variant='outlined' required type='password' name='password' />
+                                <InputField id='email' required error={error?.email} label={labels[windowLang]['email']} variant='outlined' name='email' type='email' />
+                                <InputField id='password' required error={error?.password} label={labels[windowLang]['password']} variant='outlined' type='password' name='password' />
                                 {/* <TextField id='email' label='Email' variant='outlined' required name='email' error={!!error.email} helperText={error.email} FormHelperTextProps={{ "error": !!error.email }} type='email' /> */}
                                 {/* <TextField id='password' label='Password' variant='outlined' required type='password' name='password' /> */}
                                 <Stack gap={2} direction={"row"} justifyContent={"space-between"} >
@@ -106,19 +107,20 @@ export function InputField(props) {
                         </IconButton>
                     </InputAdornment>
                 }
-                required name={props.name}
+                required={props.required}
+                name={props.name}
                 error={!!props.error}
                 label={capitalizeFirstLetter(props.label)}
             />
-            <FormHelperText error={!!props.error} sx={{ maxWidth: 200, textAlign: "justify" }}>{props.error}</FormHelperText>
+            {!!props.error && <FormHelperText error={!!props.error} sx={{ maxWidth: 200, textAlign: "justify" }}>{props.error}</FormHelperText>}
         </FormControl>)
     }
     else {
         return (
             <FormControl variant='outlined' fullWidth>
                 <InputLabel htmlFor={props.id} error={!!props.error}>{capitalizeFirstLetter(props.label)}</InputLabel>
-                <OutlinedInput id={props.id} label={capitalizeFirstLetter(props.label)} required name={props.name} type={props.type} error={!!props.error} {...props} />
-                {!props.error?.message && <FormHelperText error={!!props.error} sx={{ textAlign: "justify" }}>{props.error}</FormHelperText>}
+                <OutlinedInput id={props.id} label={capitalizeFirstLetter(props.label)} required={props.required} name={props.name} type={props.type} error={!!props.error} {...props} />
+                {!!props.error?.message && <FormHelperText error={!!props.error} sx={{ textAlign: "justify" }}>{props.error}</FormHelperText>}
             </FormControl>
         )
     }

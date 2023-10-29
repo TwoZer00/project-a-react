@@ -59,16 +59,18 @@ export default function HomeDashboard() {
                             </ListItem>
                         ))}
                     </List>
-                    {posts?.length === 0 && <Typography variant="body1">No posts</Typography>}
+                    {posts?.length === 0 && <Typography variant="body1" textAlign={"center"}>No posts</Typography>}
                 </Box>
             </Box>
             <Box component={Paper} variant='outlined' p={1}>
                 <Typography variant="h2" fontSize={24}>Latest comments</Typography>
                 <List>
                     {
-                        comments?.length > 0 && comments?.slice(0, 4).map((item) => {
+                        comments?.length > 0 ? comments?.slice(0, 4).map((item) => {
                             return <CommentDashboard data={item} />;
                         })
+                            :
+                            <Typography variant="body1" textAlign={"center"}>No comments</Typography>
                     }
                 </List>
             </Box>

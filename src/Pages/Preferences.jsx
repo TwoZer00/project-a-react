@@ -1,5 +1,5 @@
-import { Divider, FormControl, InputLabel, MenuItem, Select, Stack, Switch, Typography, createTheme } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { Divider, FormControl, MenuItem, Select, Stack, Switch, Typography, createTheme } from '@mui/material'
+import React, { useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { isDarkModeEnabled, paletteTemp } from '../Pages/Init'
 
@@ -61,7 +61,6 @@ export default function Preferences() {
                     </Select>
                 </FormControl>
             </Stack>
-
         </Stack >
     )
 }

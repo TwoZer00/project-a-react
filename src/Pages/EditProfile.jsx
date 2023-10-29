@@ -1,7 +1,7 @@
 import { Box, Button, Stack, TextField } from '@mui/material';
 import { getAuth } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import CustomNotification, { SlideTransition } from '../components/CustomNotification';
 import InputFileField from '../components/InputFileField';
 import UserAvatar from '../components/UserAvatar';
@@ -15,6 +15,7 @@ export default function EditProfile() {
     const [image, setImage] = useState();
     const [imageUrl, setImageUrl] = useState(initData?.user?.avatarURL || undefined);
     const navigate = useNavigate();
+    const location = useLocation();
     const [notFlag, setNotFlag] = useState();
     useEffect(() => {
         const temp = { ...initData };
@@ -30,6 +31,11 @@ export default function EditProfile() {
         }
     }, [image])
 
+    useEffect(() => {
+        if (!initData?.user) {
+            navigate('/login', { state: { from: location } })
+        }
+    }, [!initData?.user])
     const fileToUrl = (file, targetElement) => {
         const reader = new FileReader();
         reader.onload = function (e) {

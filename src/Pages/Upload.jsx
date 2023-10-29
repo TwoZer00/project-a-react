@@ -57,6 +57,12 @@ export default function Upload() {
         setValuea(newValue)
     }
 
+    useEffect(() => {
+        if (!initData?.user) {
+            navigate('/login', { state: { from: location } })
+        }
+    }, [initData?.user])
+
     const [tagInput, setTagInput] = useState([]);
     const [uploadState, setUploadState] = useState([]);
     const [error, setError] = useState({})
@@ -185,6 +191,7 @@ export default function Upload() {
         </>
     )
 }
+
 
 export function NSFWToggleButton({ val }) {
     const [selected, setSelected] = useState(val || false);

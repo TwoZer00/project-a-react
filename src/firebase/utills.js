@@ -21,7 +21,7 @@ export async function getUserData(userId) {
         return { ...userDoc.data(), id: userDoc.id };
     }
     else {
-        throw new CustomError("user not found");
+        throw new CustomError("user not found", 101);
     }
 }
 export async function getAudioUrl(path) {
@@ -54,16 +54,14 @@ export async function updateUser(id, user) {
  * @returns {Promise<string>} Promise<string> url of the avatar image
  */
 export async function getAvatarImage(refpath) {
-    // console.log("Getting avatar image");
     const storage = getStorage();
     const storageRef = ref(storage, refpath);
     let url;
     try {
         url = await getDownloadURL(storageRef);
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
-    // console.log("Avatar image fetched");
     return url;
 }
 export async function getPostFromTags(tags) {
@@ -109,7 +107,6 @@ export async function getCategories() {
     const categoriesRef = collection(db, "category");
     const categoriesSnapshot = await getDocs(categoriesRef);
     const categories = categoriesSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
-    console.log(categories);
     return categories;
 }
 

@@ -1,12 +1,11 @@
-import { Typography } from "@mui/material";
 import { getAuth } from "firebase/auth";
 import { createBrowserRouter } from "react-router-dom";
 import Categories from "../Pages/Categories";
 import Category from "../Pages/Category";
 import Dashboard from "../Pages/Dashboard";
 import HomeDashboard from "../Pages/Dashboard/Home";
-import DashboardPost from "../Pages/Dashboard/Post";
 import PostListDashboard from "../Pages/Dashboard/Posts/List";
+import DashboardPost from "../Pages/Dashboard/Posts/Post";
 import EditProfile from "../Pages/EditProfile";
 import Genre from "../Pages/Genre";
 import Home from "../Pages/Home";
@@ -29,7 +28,7 @@ export const router = createBrowserRouter([
         loader: async () => {
             return getAuth(app)
         },
-        errorElement: <Typography>Error</Typography>,
+        errorElement: <Error />,
         children: [
             {
                 path: "",

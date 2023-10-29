@@ -1,7 +1,7 @@
-import { Avatar } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { stringAvatar } from './PostCard'
-import { getAvatarImage } from '../firebase/utills'
+import { Avatar } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { getAvatarImage } from '../firebase/utills';
+import { stringAvatar } from './PostCard';
 
 export default function UserAvatar({ username, url, ...props }) {
     const [avatarURL, setAvatarURL] = useState();
@@ -15,6 +15,6 @@ export default function UserAvatar({ username, url, ...props }) {
         }
     }, [url])
     return (
-        <Avatar src={(url && url.includes("gs://")) ? avatarURL : url} {...stringAvatar(username, { width: props.width || 40, height: props.height || 40 })} />
+        <Avatar src={avatarURL || (url?.includes("gs://") ? "" : url)} {...stringAvatar(username, { width: props.width || 40, height: props.height || 40 })} />
     )
 }

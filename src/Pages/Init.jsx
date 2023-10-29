@@ -13,7 +13,8 @@ export default function Init() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        onAuthStateChanged(auth, async (user) => {
+        const authState = onAuthStateChanged(auth, async (user) => {
+            // console.log(location.pathname, "bbbb");
             if (user) {
                 const temp = {
                     uid: user.uid,
@@ -22,7 +23,7 @@ export default function Init() {
                 let userData;
                 try {
                     userData = await getUserData(user.uid);
-                    userData.avatarURL = await getAvatarImage(userData.avatarURL);
+                    userData.avatarURL = userData.avatarURL ? (await getAvatarImage(userData.avatarURL)) : undefined;
                     const tempData = { ...initData };
                     tempData.user = userData;
                     setInitData((val) => {
@@ -38,7 +39,13 @@ export default function Init() {
                     delete temp.user;
                     return temp
                 });
+                // console.log(location.pathname);
+                // const loggedPagges = ['/upload', '/settings/profile'];
+                // console.log(loggedPagges.includes(location.pathname), location.pathname);
+                // if (loggedPagges.includes(location.pathname)) navigate('/login', { state: { from: location }, replace: true })
             }
+
+            // if ((location.pathname).includes('upload')) navigate('/login')
             setLoading(false);
         });
         if (localStorage.getItem('preferences')) {
@@ -62,6 +69,7 @@ export default function Init() {
             temp.main = { ...main };
             return temp;
         })
+        return () => authState();
     }, [])
     useEffect(() => {
         if (initData?.preferences) {
