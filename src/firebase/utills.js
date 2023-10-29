@@ -68,7 +68,7 @@ export async function getPostFromTags(tags) {
     const db = getFirestore();
     const postsRef = collection(db, "post");
     const temp = tags.map(tag => { return doc(db, "tag", encodeURI(tag)) });
-    const q = query(postsRef, where('visibility', '==', 'public'), where('tags', 'array-contains-any', temp), orderBy('creationTime', 'desc'));
+    const q = query(postsRef, where('indexed', '==', true), where('visibility', '==', 'public'), where('tags', 'array-contains-any', temp), orderBy('creationTime', 'desc'));
     const postsSnapshot = await getDocs(q);
     const posts = postsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
     return posts;
@@ -77,7 +77,7 @@ export async function getPostFromGenre(genre) {
     const db = getFirestore();
     const postsRef = collection(db, "post");
     const genreRef = doc(db, "genre", genre);
-    const q = query(postsRef, where('visibility', '==', 'public'), where('genre', '==', genreRef), orderBy('creationTime', 'desc'));
+    const q = query(postsRef, where('indexed', '==', true), where('visibility', '==', 'public'), where('genre', '==', genreRef), orderBy('creationTime', 'desc'));
     const postsSnapshot = await getDocs(q);
     const posts = postsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
     return posts;
@@ -86,7 +86,7 @@ export async function getPostFromCategory(category) {
     const db = getFirestore();
     const postsRef = collection(db, "post");
     const categoryRef = doc(db, "category", category);
-    const q = query(postsRef, where('visibility', '==', 'public'), where('category', '==', categoryRef), orderBy('creationTime', 'desc'));
+    const q = query(postsRef, where('indexed', '==', true), where('visibility', '==', 'public'), where('category', '==', categoryRef), orderBy('creationTime', 'desc'));
     const postsSnapshot = await getDocs(q);
     const posts = postsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
     return posts;
@@ -130,7 +130,7 @@ export async function getUsername(id) {
 export async function getPostsUser(id, size) {
     const db = getFirestore();
     const postsRef = collection(db, "post");
-    const q = query(postsRef, where('user', '==', doc(db, "user", id)));
+    const q = query(postsRef, where('indexed', '==', true), where('user', '==', doc(db, "user", id)));
     const postsSnapshot = await getDocs(q);
     const posts = postsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
     return posts;
@@ -194,6 +194,6 @@ export function getLoggedUserRef() {
 export async function deletePost(id) {
     const db = getFirestore();
     const postRef = doc(db, "post", id);
-    await updateDoc(postRef, { state: "deleted" });
+    await updateDoc(postRef, { indexed: false });
 }
 

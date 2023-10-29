@@ -226,9 +226,9 @@ async function getPosts(userId) {
     const db = getFirestore();
     const userRef = doc(db, 'user', userId);
     const postsRef = collection(db, 'post');
-    let q = query(postsRef, where('user', '==', userRef));
+    let q = query(postsRef, where('indexed', '==', true), where('user', '==', userRef));
     if (userId !== getAuth().currentUser?.uid) {
-        q = query(postsRef, where('user', '==', userRef), where('visibility', '==', "public"));
+        q = query(postsRef, where('indexed', '==', true), where('user', '==', userRef), where('visibility', '==', "public"));
     }
     const postsArr = await getDocs(q);
     postsArr.forEach((doc) => {

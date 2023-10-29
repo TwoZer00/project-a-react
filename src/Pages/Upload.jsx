@@ -105,6 +105,7 @@ export default function Upload() {
                 creationTime: serverTimestamp(),
                 user: getLoggedUserRef(),
                 visibility: formData.get('visibility'),
+                indexed: true,
                 plays: 0
             }
             await uploadFile(valuea, postRef, getLoggedUserRef().id, setInitData, post, tagInput)
