@@ -1,11 +1,12 @@
-import { PlaylistRemove, Public, PublicOff } from '@mui/icons-material'
-import { Box, Button, Card, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
+import { BarChart, Comment, PlaylistRemove, Public, PublicOff } from '@mui/icons-material'
+import { Box, Card, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
 import { getDoc, getFirestore } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import moment from 'moment/moment'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
 import { getUserData } from '../firebase/utills'
+import { windowLang } from '../utils'
 import PlayButton from './PlayButton'
 import UserAvatar from './UserAvatar'
 
@@ -71,9 +72,9 @@ export default function PostCard({ postData }) {
                         </Stack>
                         <Stack direction={"column"} gap={1} maxWidth={"100%"}>
                             <Stack direction={"column"}>
-                                <Typography variant="h5" component="div" flex={1} >
+                                <Link variant="h5" component={RouterLink} to={`/post/${postData.id}`} underline='hover' color={"inherit"} flex={1}>
                                     {postData.title}
-                                </Typography>
+                                </Link>
                             </Stack>
                             <Typography variant="body2" color="text.secondary" overflow={"hidden"} maxWidth={{ md: "40ch" }} maxHeight={{ sx: "300px" }} textOverflow={'ellipsis'} whiteSpace={'break-spaces'}>
                                 {postData.desc}
@@ -81,19 +82,32 @@ export default function PostCard({ postData }) {
                         </Stack>
                         {postData.nsfw && <Typography sx={{ width: "fit-content", letterSpacing: 2, fontWeight: "400", fontSize: "12px" }} color='error'>NSFW</Typography>}
                     </CardContent>
-                    <CardActions sx={{ display: "flex", flexDirection: "row" }} >
-                        {/* <IconButton onClick={handlePlayButton} >
-                            {initData?.postInPlay?.id === postData.id && initData?.postInPlay?.isAudioInProgress ? <Pause /> : <PlayArrow />}
-                        </IconButton> */}
+                    <CardActions sx={{ display: "flex", flexDirection: "row", gap: 2 }} >
                         <PlayButton post={postData} user={user} variant="icon" />
-                        <Typography>{(postData?.plays).toLocaleString(Navigator.language, { style: "decimal" })}</Typography>
-                        <Button variant="text" size='small' component={RouterLink} to={`/post/${postData.id}`} >View</Button>
+                        <Stack direction={"row"} gap={1}>
+                            <Comment />
+                            <Typography>{formatNumber(postData?.comment?.length)}</Typography>
+                        </Stack>
+                        <Tooltip title={postData?.plays}>
+                            <Stack direction={"row"} gap={1}>
+                                <BarChart />
+                                <Typography>{formatNumber(postData?.plays)}</Typography>
+                            </Stack>
+                        </Tooltip>
                     </CardActions>
                 </Card>
             </Grid >
         </>
     )
 }
+
+const formatNumber = (number) =>
+    number >= 1e6
+        ? (number / 1e6).toLocaleString(windowLang, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'M'
+        : number >= 1e3
+            ? (number / 1e3).toLocaleString(windowLang, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'k'
+            : number.toLocaleString();
+
 
 function stringToColor(string) {
     let hash = 0;

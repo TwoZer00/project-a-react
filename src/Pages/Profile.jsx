@@ -37,27 +37,6 @@ export default function Profile() {
             loadUserData(getAuth().currentUser.uid);
         }
     }, [])
-
-    // useEffect(() => {
-    //     const loadUserData = async (userId) => {
-    //         const data = await fetchUserData(userId);
-    //         let profileURL = ""
-    //         try {
-    //             profileURL = await getProfileImgUrl(data.profileImg);
-    //         }
-    //         catch (e) {
-    //             if (e.code !== "storage/object-not-found") {
-    //                 console.error(e.code);
-    //             }
-    //         }
-    //         // const temp = { ...data, photoURL: profileURL };
-    //         setUserData(data);
-    //     }
-    //     if (getAuth().currentUser?.uid) {
-    //         loadUserData(getAuth().currentUser.uid);
-    //     }
-    // }, [getAuth().currentUser])
-
     const handleGender = (gender, fs) => {
         let genderIcon = <Person4 sx={{ fontSize: fs }} />
         switch (parseInt(gender)) {
@@ -100,8 +79,6 @@ export default function Profile() {
                 </Box>
                 <Typography variant="subtitle">{userData?.desc}</Typography>
                 <Grid container py={2} spacing={2}>
-                    {/* <CustomTabs /> */}
-                    {/* <BasicTabs /> */}
                     <PostList userId={id || getAuth().currentUser?.uid} />
                 </Grid>
             </Box>

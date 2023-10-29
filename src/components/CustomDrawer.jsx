@@ -2,7 +2,7 @@ import { Category, Home, Upload } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
-import { LinearProgress, MenuItem, Tooltip } from '@mui/material';
+import { LinearProgress, MenuItem, Tooltip, useMediaQuery } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -27,6 +27,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const theme = useTheme();
     const [initData, setInitData] = data;
     const [open, setOpen] = useState(false);
+    const matches = useMediaQuery(theme.breakpoints.up('md'));
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -35,6 +36,15 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    useEffect(() => {
+        if (!matches) {
+            handleDrawerClose();
+        }
+        else {
+            handleDrawerOpen();
+        }
+    }, [matches])
 
     return (
         <>

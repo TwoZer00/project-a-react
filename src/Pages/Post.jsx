@@ -17,7 +17,6 @@ export default function Post() {
     const postData = useLoaderData();
     const [commentList, setCommentList] = useState(postData?.comment || []);
     let [searchParams, setSearchParams] = useSearchParams();
-    // console.log(searchParams.get("comment"));
     useEffect(() => {
         const loadUser = async (id) => {
             const data = await getUserData(id);
