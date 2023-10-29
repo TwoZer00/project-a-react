@@ -50,7 +50,6 @@ export default function DashboardPost() {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                {/* <TextField variant={"outlined"} value={post.title} onChange={(event)=>{setPost({...newData, title: event.target.value})}} /> */}
                 <PostForm data={post} setData={setPost} formRefa={formRef} postList />
             </Dialog>
         </>

@@ -47,6 +47,7 @@ export default function PostForm({ data, setData, formRefa }) {
             temp[postList.findIndex((item) => { return item.id === updatedPost.id })] = updatedPost;
             return temp;
         })
+        navigate(-1);
     }
 
     return (
