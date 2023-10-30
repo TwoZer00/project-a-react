@@ -30,8 +30,10 @@ export default function Init() {
                         return { ...val, user: userData };
                     });
                 } catch (error) {
-                    if (error.code == 101) navigate('settings/profile')
-                    setInitData(prev => ({ ...prev, error: { msg: "you don have information for your profile, in order to use the app fill out this form", type: "info", duration: 10000 } }))
+                    if (error.code == 101) {
+                        setInitData(prev => ({ ...prev, notification: { msg: "you don have information for your profile, in order to use the app fill out this form", type: "info", duration: 10000 } }))
+                        navigate('settings/profile')
+                    }
                 }
             }
             else {
@@ -40,13 +42,7 @@ export default function Init() {
                     delete temp.user;
                     return temp
                 });
-                // console.log(location.pathname);
-                // const loggedPagges = ['/upload', '/settings/profile'];
-                // console.log(loggedPagges.includes(location.pathname), location.pathname);
-                // if (loggedPagges.includes(location.pathname)) navigate('/login', { state: { from: location }, replace: true })
             }
-
-            // if ((location.pathname).includes('upload')) navigate('/login')
             setLoading(false);
         });
         if (localStorage.getItem('preferences')) {
