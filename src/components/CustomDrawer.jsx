@@ -97,7 +97,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                     <Divider />
                     <List>
                         <ListItem disablePadding sx={{ display: 'block' }}>
-                            <Tooltip title={!matches && "Home"} placement="right" >
+                            <Tooltip title={!open && "Home"} placement="right" >
                                 <ListItemButton
                                     component={RouterLink}
                                     to="/"
@@ -117,7 +117,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                     <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
                                 </ListItemButton>
                             </Tooltip>
-                            <Tooltip title={!matches && "Categories"} placement="right">
+                            <Tooltip title={!open && "Categories"} placement="right">
                                 <ListItemButton
                                     component={RouterLink}
                                     to="/categories"
