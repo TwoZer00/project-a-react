@@ -10,10 +10,10 @@ export default function List({ commentsList, comment }) {
             setListC(temp);
         }
     }, [comment])
-    if (!comment) {
+    if (comment === null) {
         return (
             <Stack direction={"column"} gap={2}>
-                {commentsList?.length > 0 && commentsList.map(comment => <Comment key={comment.id} id={comment.id} />)}
+                {commentsList?.length > 0 && commentsList?.map(comment => <Comment key={comment.id} id={comment.id} />)}
             </Stack>
         )
     }

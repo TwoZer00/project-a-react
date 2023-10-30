@@ -51,11 +51,7 @@ export const router = createBrowserRouter([
                 element: <Post />,
                 loader: async ({ params }) => {
                     return getPostData(params.id);
-                },
-                // children: [{
-                //     path: "comment/:id",
-                //     // element: <Post />
-                // }]
+                }
             },
             {
                 path: 'settings',

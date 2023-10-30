@@ -30,12 +30,11 @@ export default function EditProfile() {
             setImageUrl();
         }
     }, [image])
-
-    useEffect(() => {
-        if (!initData?.user) {
-            navigate('/login', { state: { from: location } })
-        }
-    }, [!initData?.user])
+    // useEffect(() => {
+    //     if (!initData?.user) {
+    //         navigate('/login', { state: { from: location } })
+    //     }
+    // }, [!initData?.user])
     const fileToUrl = (file, targetElement) => {
         const reader = new FileReader();
         reader.onload = function (e) {

@@ -31,6 +31,7 @@ export default function Init() {
                     });
                 } catch (error) {
                     if (error.code == 101) navigate('settings/profile')
+                    setInitData(prev => ({ ...prev, error: { msg: "you don have information for your profile, in order to use the app fill out this form", type: "info", duration: 10000 } }))
                 }
             }
             else {

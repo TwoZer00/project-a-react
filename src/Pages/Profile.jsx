@@ -7,6 +7,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useOutletContext, useParams } from 'react-router-dom';
+import ButtonFollow from '../components/Follow/Button';
 import PostCard from '../components/PostCard';
 import UserAvatar from '../components/UserAvatar';
 
@@ -73,7 +74,9 @@ export default function Profile() {
                                 <Typography variant="subtitle">{handleGender(userData?.gender, 14)}</Typography>
                                 <Typography variant="subtitle" fontSize={12}>User since {moment(new Date(userData?.creationTime.seconds ? userData?.creationTime.seconds * 1000 : userData?.creationTime)).format("MMMM Do YYYY")}</Typography>
                             </Stack>
-                            <Typography variant="subtitle" fontSize={12} sx={{ ":first-letter": { textTransform: "capitalize" } }} >{userData?.description}</Typography>
+                            <Typography variant="subtitle1" fontSize={12} sx={{ ":first-letter": { textTransform: "capitalize" } }} >{userData?.description}</Typography>
+                            <Typography variant="body" fontSize={12}>Followers {userData?.followers?.length || 0}</Typography>
+                            <ButtonFollow userId={getAuth().currentUser.uid} followerId={id} setFData={setUserData} />
                         </Stack>
                     </Stack>
                 </Box>

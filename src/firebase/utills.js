@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { collection, doc, getDoc, getDocs, getFirestore, increment, orderBy, query, setDoc, updateDoc, where, writeBatch } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, getFirestore, increment, orderBy, query, runTransaction, setDoc, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { CustomError } from '../Errors/CustomError';
 export async function getPostData(id) {
@@ -195,5 +195,36 @@ export async function deletePost(id) {
     const db = getFirestore();
     const postRef = doc(db, "post", id);
     await updateDoc(postRef, { indexed: false });
+}
+
+export async function setFollower(userId, followerId) {
+    const db = getFirestore();
+    const userRef = doc(db, "user", userId);
+    const followerRef = doc(db, "user", followerId);
+    await runTransaction(db, async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+        const followerDoc = await transaction.get(followerRef);
+        if (!userDoc.exists() || !followerDoc.exists()) {
+            throw new CustomError(`User not found`, 203);
+        }
+        transaction.update(followerRef, { followers: arrayUnion({ user: userRef, date: new Date() }) });
+        transaction.update(userRef, { followings: arrayUnion({ user: followerRef, date: new Date() }) });
+        return;
+    })
+}
+export async function deleteFollower(userId, followerId) {
+    const db = getFirestore();
+    const userRef = doc(db, "user", userId);
+    const followerRef = doc(db, "user", followerId);
+    await runTransaction(db, async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+        const followerDoc = await transaction.get(followerRef);
+        if (!userDoc.exists() || !followerDoc.exists()) {
+            throw new CustomError(`User not found`, 203);
+        }
+        transaction.update(followerRef, { followers: arrayRemove(userRef) });
+        transaction.update(userRef, { followings: arrayRemove(followerRef) });
+        return;
+    })
 }
 

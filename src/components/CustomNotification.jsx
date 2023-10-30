@@ -1,7 +1,7 @@
 import { Alert, Slide, Snackbar } from '@mui/material';
 import React from 'react';
 
-export default function CustomNotification({ val, setFlag, msg, type }) {
+export default function CustomNotification({ val, setFlag, msg, type, duration = 6000 }) {
     const handleClose = () => {
         setFlag({
             ...val,
@@ -13,7 +13,7 @@ export default function CustomNotification({ val, setFlag, msg, type }) {
         return (
             <Snackbar
                 open={val?.open}
-                autoHideDuration={2000}
+                autoHideDuration={duration}
                 onClose={handleClose}
                 TransitionComponent={val?.Transition}
                 message={msg}
@@ -26,7 +26,7 @@ export default function CustomNotification({ val, setFlag, msg, type }) {
         return (
             <Snackbar
                 open={val?.open}
-                autoHideDuration={2000}
+                autoHideDuration={duration}
                 onClose={handleClose}
                 TransitionComponent={val?.Transition}
                 key={val?.Transition.name}

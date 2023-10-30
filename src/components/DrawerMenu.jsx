@@ -73,7 +73,7 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 {auth &&
-                    <MenuItem component={RouterLink} to={"/user"} sx={{ height: 60 }} >
+                    <MenuItem component={RouterLink} to={`/user/${auth.uid}`} sx={{ height: 60 }} >
                         <Stack direction={"row"} gap={1} sx={{ height: "100%" }} alignItems={"center"} >
                             <UserAvatar username={username || auth.email} url={auth.photoURL || avatarURL} />
                             <Stack direction={"column"}>

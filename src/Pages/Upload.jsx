@@ -74,7 +74,6 @@ export default function Upload() {
         })
         const form = formRef.current;
         const formData = new FormData(form);
-        // console.log(form.checkValidity());
         try {
             if (!valuea) {
                 form.file.setCustomValidity("no file");
@@ -92,7 +91,7 @@ export default function Upload() {
                     }
                 })
                 setError(errors)
-                throw new CustomError("input fields required empty")
+                throw new CustomError("input fields required are empty")
             }
             else {
                 setError({})
@@ -122,11 +121,9 @@ export default function Upload() {
     }
     return (
         <>
-            {/* <LinearProgress value={uploadingProgress} sx={{}} /> */}
             <Backdrop open={!!initData?.loading} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} />
             <Stack gap={1} ref={formRef} component={"form"} sx={{ height: "100%" }}>
                 <Stack direction={"row"} gap={2} >
-                    {/* <TextField label={"Title"} type='text' sx={{ flex: 1 }} name='title' /> */}
                     <InputField label={"title"} type={"text"} name={"title"} error={error.title} />
                     <Visibility />
                     <NSFWToggleButton />

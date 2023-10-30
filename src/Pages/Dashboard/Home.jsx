@@ -2,6 +2,7 @@ import { Box, Divider, List, ListItem, ListItemButton, ListItemText, ListSubhead
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useOutletContext } from 'react-router-dom';
 import CommentDashboard from '../../components/Comments/CommentDashboard';
+import FollowerDashboard from '../../components/Follow/Follower';
 import { getComments } from '../../firebase/utills';
 import { countPlays } from '../../utils';
 
@@ -39,6 +40,11 @@ export default function HomeDashboard() {
                         <Typography variant="h2" fontSize={24}>Plays</Typography>
                         <Typography variant="body1" textAlign={"center"}>{plays}</Typography>
                     </Box>
+                    <Divider orientation="vertical" flexItem variant="middle" />
+                    <Box>
+                        <Typography variant="h2" fontSize={24}>Follower</Typography>
+                        <Typography variant="body1" textAlign={"center"}>{user?.followers?.length || 0}</Typography>
+                    </Box>
                 </Stack>
             </Box>
             <Box component={Paper} variant='outlined' p={1}>
@@ -73,6 +79,16 @@ export default function HomeDashboard() {
                             <Typography variant="body1" textAlign={"center"}>No comments</Typography>
                     }
                 </List>
+            </Box>
+            <Box component={Paper} variant='outlined' p={1}>
+                <Typography variant="h2" fontSize={24}>Latest followers</Typography>
+                {
+                    user?.followers?.length > 0 ? user?.followers?.slice(0, 4).map((item) => {
+                        return <FollowerDashboard data={item} />;
+                    })
+                        :
+                        <Typography variant="body1" textAlign={"center"}>No followers</Typography>
+                }
             </Box>
         </Stack>
     )

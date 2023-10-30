@@ -20,12 +20,14 @@ import { styled, useTheme } from '@mui/material/styles';
 import { getAuth, signOut } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import CustomNotification, { SlideTransition } from './CustomNotification';
 import DrawerMenu from './DrawerMenu';
 import PlayerInDrawer from './PlayerInDrawer';
 
 export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const theme = useTheme();
     const [initData, setInitData] = data;
+    const [error, setError] = useState();
     const [open, setOpen] = useState(false);
     const matches = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -45,6 +47,19 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
             handleDrawerOpen();
         }
     }, [matches])
+
+    useEffect(() => {
+        if (initData?.notification) {
+            setError({ open: true, Transition: SlideTransition });
+            setTimeout(() => {
+                setInitData(prev => {
+                    const temp = { ...prev }
+                    delete temp.notification
+                    return temp
+                })
+            }, initData.notification.duration || 6500)
+        }
+    }, [initData?.notification])
 
     return (
         <>
@@ -133,6 +148,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                 <Box component="main" sx={{ flexGrow: 1, height: "100vh", display: "flex", flexDirection: "column", position: 'relative', px: 2, py: 2, overflow: "auto" }}>
                     <DrawerHeader />
                     {!loading && outlet}
+                    <CustomNotification val={error} setFlag={setError} type={initData?.notification?.type} msg={initData?.notification?.msg} />
                 </Box >
             </Box >
         </>

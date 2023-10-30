@@ -15,7 +15,7 @@ export default function Post() {
     const [initData, setInitData] = useOutletContext();
     const [user, setUser] = useState();
     const postData = useLoaderData();
-    const [commentList, setCommentList] = useState(postData?.comment || []);
+    const [commentList, setCommentList] = useState();
     let [searchParams, setSearchParams] = useSearchParams();
     useEffect(() => {
         const loadUser = async (id) => {
@@ -28,6 +28,7 @@ export default function Post() {
         const temp = { ...initData }
         temp.main = { title: capitalizeFirstLetter(postData.title) }
         setInitData(temp)
+        setCommentList(postData?.comment);
     }, [])
     return (
         <Stack direction={"column"} gap={1}>
