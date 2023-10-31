@@ -1,4 +1,4 @@
-import { Grid, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { collection, getDocs, getFirestore, orderBy, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
@@ -9,13 +9,8 @@ export default function Home() {
     const [data, setData] = useState();
 
     useEffect(() => {
-        // console.log(initData);
         const temp = { ...initData }
         temp.title = "A project";
-        // const main = { ...initData }
-        // tempData.main = { ...temp }
-        // document.title = temp.title
-        // console.log(tempData);
         setInitData((val) => {
             return { ...val, main: temp }
         });
@@ -36,14 +31,11 @@ export default function Home() {
     }, []);
     return (
         <Stack direction={"column"} gap={2} >
-            {/* <div>
-                <TagList />
-            </div> */}
-            <Grid container gap={2} direction={{ xs: "column", md: "row" }} >
+            <Box sx={{ columnCount: "auto", columnWidth: { xs: "100%", sm: "300px" } }}  >
                 {
                     data?.map(item => <PostCard key={item.id + "postCard"} postData={item} />)
                 }
-            </Grid>
+            </Box>
         </Stack>
     )
 }

@@ -1,5 +1,5 @@
 import { BarChart, Comment, PlaylistRemove, Public, PublicOff } from '@mui/icons-material'
-import { Box, Card, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
+import { Box, Card, CardActions, CardContent, CardHeader, Chip, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
 import { getAuth } from 'firebase/auth'
 import { getDoc, getFirestore } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
@@ -47,69 +47,63 @@ export default function PostCard({ postData }) {
         fetchUser();
     }, [])
     return (
-        <>
-            <Grid item xs="auto" maxWidth={{ xs: "100%" }}>
-                <Card>
-                    <CardHeader
-                        title={
-                            <Stack direction={"row"}>
-                                <Link component={RouterLink} to={`/${postData.user.path}`} underline='hover'>{user?.username}</Link>
-                                <ButtonFollow userId={getAuth()?.currentUser?.uid} followerId={postData.user.id} />
-                            </Stack>
-                        }
-                        // avatar={<Avatar src={user?.avatarURL} component={RouterLink} to={`/${(postData.user.path)}`} {...stringAvatar(username)} />}
-                        avatar={
-                            <UserAvatar url={user?.avatarURL} username={user?.username} />
-                        }
-                        subheader={
-                            <Stack direction={"row"} gap={1}>
-                                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
-                                    <Tooltip title={visibilityText(postData.visibility)}>
-                                        <IconButton size='small' color='inherit' sx={{ padding: 0 }} >
-                                            <VisibilityIcon visibility={postData.visibility} />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title={moment(postData.creationTime.seconds * 1000).format("dddd, MMMM Do YYYY, h:mm:ss a")}><Typography variant="body1" >{moment.duration(moment(postData.creationTime.seconds * 1000).subtract(new Date())).humanize(true)}</Typography></Tooltip>
-                                </Box>
-                            </Stack>
-                        }
-                    />
-                    <CardContent sx={{ paddingY: 0, display: "flex", flexDirection: "column", gap: 1 }}>
-                        {/* {postData.nsfw && <Typography sx={{ width: "fit-content", letterSpacing: 2, fontWeight: "bolder", fontSize: "12px" }} color='error'>NSFW</Typography>} */}
-                        <Link component={RouterLink} to={`/categories/${postData.category.id}`} relative='path' underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.category).path).substring(postData.category.path.lastIndexOf("/") + 1)}</Link>
-                        <Stack direction={"row"} gap={1} width={"100%"} maxWidth={"350px"} overflow={'auto'} sx={{ scrollBehavior: "smooth", scrollbarWidth: "thin" }} >
-                            {postData?.tags?.map((tag, index) => <Chip key={index} label={decodeURIComponent((tag.path).substring(tag.path.lastIndexOf("/") + 1))} clickable size='small' variant='outlined' component={RouterLink} to={`/tags/${(tag.path).substring(tag.path.lastIndexOf("/") + 1)}`} relative='path' />)}
-                        </Stack>
-                        <Stack direction={"column"} gap={1} maxWidth={"100%"}>
-                            <Stack direction={"column"}>
-                                <Link variant="h5" component={RouterLink} to={`/post/${postData.id}`} underline='hover' color={"inherit"} flex={1}>
-                                    {postData.title}
-                                </Link>
-                            </Stack>
-                            <Typography variant="body2" color="text.secondary" overflow={"hidden"} maxWidth={{ md: "40ch" }} maxHeight={{ sx: "300px" }} textOverflow={'ellipsis'} whiteSpace={'break-spaces'}>
-                                {postData.desc}
-                            </Typography>
-                        </Stack>
-                        {postData.nsfw && <Typography sx={{ width: "fit-content", letterSpacing: 2, fontWeight: "400", fontSize: "12px" }} color='error'>NSFW</Typography>}
-                    </CardContent>
-                    <CardActions sx={{ display: "flex", flexDirection: "row", gap: 2 }} >
-                        <PlayButton post={postData} user={user} variant="icon" />
-                        <Tooltip title={(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal" })}>
-                            <Stack direction={"row"} gap={1}>
-                                <Comment />
-                                <Typography>{(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
-                            </Stack>
-                        </Tooltip>
-                        <Tooltip title={(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}>
-                            <Stack direction={"row"} gap={1}>
-                                <BarChart />
-                                <Typography>{(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
-                            </Stack>
-                        </Tooltip>
-                    </CardActions>
-                </Card>
-            </Grid >
-        </>
+        <Card sx={{ ":first-child": { marginTop: 0 }, marginY: 2, ":last-child": { marginBottom: 0 } }}>
+            <CardHeader
+                title={
+                    <Stack direction={"row"}>
+                        <Link component={RouterLink} to={`/${postData.user.path}`} underline='hover'>{user?.username}</Link>
+                        <ButtonFollow userId={getAuth()?.currentUser?.uid} followerId={postData.user.id} />
+                    </Stack>
+                }
+                avatar={
+                    <UserAvatar url={user?.avatarURL} username={user?.username} />
+                }
+                subheader={
+                    <Stack direction={"row"} gap={1}>
+                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
+                            <Tooltip title={visibilityText(postData.visibility)}>
+                                <IconButton size='small' color='inherit' sx={{ padding: 0 }} >
+                                    <VisibilityIcon visibility={postData.visibility} />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title={moment(postData.creationTime.seconds * 1000).format("dddd, MMMM Do YYYY, h:mm:ss a")}><Typography variant="body1" >{moment.duration(moment(postData.creationTime.seconds * 1000).subtract(new Date())).humanize(true)}</Typography></Tooltip>
+                        </Box>
+                    </Stack>
+                }
+            />
+            <CardContent sx={{ paddingY: 0, display: "flex", flexDirection: "column", gap: 1 }}>
+                <Link component={RouterLink} to={`/categories/${postData.category.id}`} relative='path' underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.category).path).substring(postData.category.path.lastIndexOf("/") + 1)}</Link>
+                <Stack direction={"row"} gap={1} width={"100%"} overflow={'auto'} sx={{ scrollBehavior: "smooth", scrollbarWidth: "thin" }}>
+                    {postData?.tags?.map((tag, index) => <Chip key={index} label={decodeURIComponent((tag.path).substring(tag.path.lastIndexOf("/") + 1))} clickable size='small' variant='outlined' component={RouterLink} to={`/tags/${(tag.path).substring(tag.path.lastIndexOf("/") + 1)}`} relative='path' />)}
+                </Stack>
+                <Stack direction={"column"} gap={1} maxWidth={"100%"}>
+                    <Stack direction={"column"}>
+                        <Link variant="h5" component={RouterLink} to={`/post/${postData.id}`} underline='hover' color={"inherit"} flex={1}>
+                            {postData.title}
+                        </Link>
+                    </Stack>
+                    <Typography variant="body2" color="text.secondary" overflow={"hidden"} maxWidth={{ md: "40ch" }} maxHeight={{ sx: "300px" }} textOverflow={'ellipsis'} whiteSpace={'break-spaces'}>
+                        {postData.desc}
+                    </Typography>
+                </Stack>
+                {postData.nsfw && <Typography sx={{ width: "fit-content", letterSpacing: 2, fontWeight: "400", fontSize: "12px" }} color='error'>NSFW</Typography>}
+            </CardContent>
+            <CardActions sx={{ display: "flex", flexDirection: "row", gap: 2 }} >
+                <PlayButton post={postData} user={user} variant="icon" />
+                <Tooltip title={(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal" })}>
+                    <Stack direction={"row"} gap={1}>
+                        <Comment />
+                        <Typography>{(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
+                    </Stack>
+                </Tooltip>
+                <Tooltip title={(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}>
+                    <Stack direction={"row"} gap={1}>
+                        <BarChart />
+                        <Typography>{(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
+                    </Stack>
+                </Tooltip>
+            </CardActions>
+        </Card >
     )
 }
 
