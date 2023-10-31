@@ -19,7 +19,6 @@ export default function HomeDashboard() {
         }
         const fetchComments = async () => {
             const temp = await getComments(user.id);
-            console.log(temp.length);
             setComments(temp);
         }
         if (user?.id) {
@@ -73,7 +72,7 @@ export default function HomeDashboard() {
                 <List>
                     {
                         comments?.length > 0 ? comments?.slice(0, 4).map((item) => {
-                            return <CommentDashboard data={item} />;
+                            return <CommentDashboard key={item.id} data={item} />;
                         })
                             :
                             <Typography variant="body1" textAlign={"center"}>No comments</Typography>
@@ -82,13 +81,15 @@ export default function HomeDashboard() {
             </Box>
             <Box component={Paper} variant='outlined' p={1}>
                 <Typography variant="h2" fontSize={24}>Latest followers</Typography>
-                {
-                    user?.followers?.length > 0 ? user?.followers?.slice(0, 4).map((item) => {
-                        return <FollowerDashboard data={item} />;
-                    })
-                        :
-                        <Typography variant="body1" textAlign={"center"}>No followers</Typography>
-                }
+                <List>
+                    {
+                        user?.followers?.length > 0 ? user?.followers?.slice(0, 4).map((item) => {
+                            return <FollowerDashboard key={item.id} data={item} />;
+                        })
+                            :
+                            <Typography variant="body1" textAlign={"center"}>No followers</Typography>
+                    }
+                </List>
             </Box>
         </Stack>
     )

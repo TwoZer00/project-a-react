@@ -120,7 +120,7 @@ export function InputField(props) {
             <FormControl variant='outlined' fullWidth>
                 <InputLabel htmlFor={props.id} error={!!props.error}>{capitalizeFirstLetter(props.label)}</InputLabel>
                 <OutlinedInput id={props.id} label={capitalizeFirstLetter(props.label)} required={props.required} name={props.name} type={props.type} error={!!props.error} {...props} />
-                {!!props.error?.message && <FormHelperText error={!!props.error} sx={{ textAlign: "justify" }}>{props.error}</FormHelperText>}
+                {!!props.error?.message && <FormHelperText error={!!props.error} sx={{ textAlign: "justify" }}>{props.error.message || props.error}</FormHelperText>}
             </FormControl>
         )
     }

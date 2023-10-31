@@ -26,11 +26,6 @@ export default function Upload() {
             const temp = await getTags();
             setTags(temp)
         }
-
-        const loadGenre = async () => {
-            const temp = await getGenre();
-            setGenre(temp)
-        }
         const loadCategory = async () => {
             const temp = await getCategory();
             setCategory(temp)
@@ -41,7 +36,6 @@ export default function Upload() {
             return temp;
         })
         loadCategory();
-        // loadGenre();
         loadTags();
     }, []);
 
@@ -108,10 +102,14 @@ export default function Upload() {
                 plays: 0
             }
             await uploadFile(valuea, postRef, getLoggedUserRef().id, setInitData, post, tagInput)
-            setUploadState(['finished', 'success', "Post uploaded!"])
         }
         catch (error) {
             setUploadState(['finished', 'error', error.message])
+            setInitData(prev => {
+                const temp = { ...prev }
+                temp.notification = { type: "error", msg: error.message }
+                return temp;
+            })
         }
         finally {
             const tempInitData = { ...initData };
@@ -134,7 +132,7 @@ export default function Upload() {
                             fullWidth
                             multiple
                             id="tags"
-                            options={tags.map((option) => option.title)}
+                            options={tags.map((option) => decodeURI(option.title))}
                             freeSolo
                             renderTags={(value, getTagProps) =>
                                 value.map((option, index) => (
@@ -285,7 +283,7 @@ async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) 
         },
         async () => {
             uploadingProgress((val) => {
-                return { ...val, loading: { state: "loading" } }
+                return { ...val, loading: true }
             })
             // Upload completed successfully, now we can get the download URL
             const url = (uploadTask.snapshot.ref).toString();
@@ -296,6 +294,7 @@ async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) 
             uploadingProgress((val) => {
                 const temp = { ...val };
                 delete temp.loading;
+                temp.notification = { type: "success", msg: "Post uploaded!" }
                 return temp;
             })
         }
@@ -325,7 +324,11 @@ async function uploadPost(post, postRef, filePath, tags) {
     const batch = writeBatch(getFirestore());
     batch.set(postRef, tempPost);
     tags.forEach((tag) => {
-        batch.set(tag, { title: (tag.path).substring((tag.path).lastIndexOf("/") + 1), urlPath: encodeURIComponent((tag.path).substring((tag.path).lastIndexOf("/") + 1)) });
+        const temp = {
+            title: decodeURI(tag.id),
+            urlPath: tag.path
+        }
+        batch.set(tag, temp);
     });
     await batch.commit();
 }
@@ -334,7 +337,9 @@ export function Visibility({ val }) {
     const [visibility, setVisibility] = useState(val || 'public');
 
     const handleChange = (event, newVisibility) => {
-        setVisibility(newVisibility);
+        if (newVisibility !== null) {
+            setVisibility(newVisibility);
+        }
 
     };
     return (

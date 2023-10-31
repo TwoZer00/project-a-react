@@ -76,7 +76,7 @@ export default function Profile() {
                             </Stack>
                             <Typography variant="subtitle1" fontSize={12} sx={{ ":first-letter": { textTransform: "capitalize" } }} >{userData?.description}</Typography>
                             <Typography variant="body" fontSize={12}>Followers {userData?.followers?.length || 0}</Typography>
-                            <ButtonFollow userId={getAuth().currentUser?.uid} followerId={id} setFData={setUserData} />
+                            <ButtonFollow type="text" userId={getAuth().currentUser?.uid} followerId={id} setFData={setUserData} />
                         </Stack>
                     </Stack>
                 </Box>

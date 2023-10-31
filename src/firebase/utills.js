@@ -177,7 +177,6 @@ export async function getComments(id) {
     const commentsRef = collection(db, "comment");
     const q = query(commentsRef, where('postOwned', '==', doc(db, "user", id)));
     const commentsSnapshot = await getDocs(q);
-    console.log(commentsSnapshot.docs);
     const comments = commentsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
     return comments;
 }

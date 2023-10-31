@@ -2,6 +2,7 @@ import { Autocomplete, Box, Button, Chip, FormControl, InputLabel, MenuItem, Sel
 import { doc, getFirestore } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { InputField } from "../Pages/Login";
 import { NSFWToggleButton, Visibility } from "../Pages/Upload";
 import { getCategories, getTags, updatePost } from "../firebase/utills";
 import { capitalizeFirstLetter } from "../utils";
@@ -15,6 +16,7 @@ export default function PostForm({ data, setData, formRefa }) {
     const [categoryVal, setCategoryVal] = useState(data?.category?.id);
     const [tagInput, setTagInput] = useState(data?.tags ? (data?.tags).map(item => decodeURI(item.id)) : []);
     const navigate = useNavigate();
+    const [error, setError] = useState({});
     const handleChange = (event) => {
         setCategoryVal(event.target.value)
     }
@@ -40,20 +42,57 @@ export default function PostForm({ data, setData, formRefa }) {
             category: doc(getFirestore(), "category", formData.get("category")),
             nsfw: form.nsfw.checked,
         }
+        let errors = { ...error }
+        for (let item of form.querySelectorAll("input")) {
+            const err = {};
+            if (!item.checkValidity()) {
+                err[item.name] = { message: item.validationMessage }
+                errors = { ...errors, ...err }
+            }
+            else {
+                delete errors[item.name]
+            }
+        }
+        setError(errors)
+        const updatedPost = { ...post };
         delete post.id
-        const updatedPost = await updatePost(data.id, post, tagInput);
-        setPostList((prev) => {
-            const temp = [...prev];
-            temp[postList.findIndex((item) => { return item.id === updatedPost.id })] = updatedPost;
-            return temp;
-        })
-        navigate(-1);
+        delete post.plays
+        delete post.filePath
+        delete post.user
+        delete post.creationTime
+        delete post.indexed
+        requiredPostFields(post);
+        if (form.checkValidity() && requiredPostFields(post)) {
+            await updatePost(data.id, post, tagInput);
+            setPostList((prev) => {
+                const temp = [...prev];
+                temp[postList.findIndex((item) => { return item.id === updatedPost.id })] = updatedPost;
+                return temp;
+            })
+            navigate(-1);
+        }
     }
-
+    const requiredPostFields = (post) => {
+        const flag = true;
+        for (const field in post) {
+            if (typeof post[field] !== "boolean" && field !== "desc") {
+                if (!Boolean(post[field])) return false
+            }
+        }
+        return flag;
+    }
     return (
         <Stack direction={"column"} gap={2} marginY={4} px={4} component={"form"} ref={formRef} height={"100%"}>
             <Stack direction={"row"} gap={2}>
-                <TextField autoFocus id="outlined-basic" label="Title" variant="outlined" fullWidth value={newData?.title} onChange={(e) => {
+                {/* <TextField required autoFocus id="outlined-basic" label="Title" variant="outlined" fullWidth value={newData?.title} onChange={(e) => {
+                    const value = (e.target.value);
+                    setNewData(val => {
+                        const temp = { ...val };
+                        temp.title = value;
+                        return temp;
+                    })
+                }} /> */}
+                <InputField type="text" name="title" label="title" autoFocus value={newData?.title} required error={!!error?.title} onChange={(e) => {
                     const value = (e.target.value);
                     setNewData(val => {
                         const temp = { ...val };

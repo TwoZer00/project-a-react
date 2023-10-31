@@ -1,17 +1,21 @@
-import { Button } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import { getAuth } from 'firebase/auth';
 import { doc, getFirestore } from 'firebase/firestore';
 import React, { useRef } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { deleteFollower, setFollower } from '../../firebase/utills';
 
-export default function ButtonFollow({ userId, followerId, setFData }) {
+export default function ButtonFollow({ userId, followerId, setFData, ...props }) {
     const [initData, setInitData] = useOutletContext();
     const buttonRef = useRef();
+    const navigate = useNavigate();
     const handleClick = async () => {
         setInitData(prev => ({ ...prev, loading: true }))
         console.log('follow')
-        if (!getAuth().currentUser) throw new Error('You must be logged in to follow')
+        if (!getAuth().currentUser) {
+            navigate('/login')
+            setInitData(prev => ({ ...prev, loading: false }))
+        }
         handleFollow();
     }
     const handleFollow = async () => {
@@ -44,11 +48,26 @@ export default function ButtonFollow({ userId, followerId, setFData }) {
     const alreadyFollowing = () => {
         return initData?.user?.followings?.some(item => item.id === followerId)
     }
-    return (
-        <>
-            <Button ref={buttonRef} variant='outlined' color='inherit' sx={{ width: "fit-content", ":first-letter": { textTransform: 'uppercase' } }} size='small' onClick={handleClick} disabled={(getAuth().currentUser === null) || initData?.loading} >
-                {alreadyFollowing() ? "unfollow" : "follow"} {getAuth().currentUser?.uid == followerId ? 'self' : ''}
-            </Button>
-        </>
-    )
+    if (props.type === "text") {
+        return (
+            <>
+                <Tooltip title={getAuth().currentUser?.uid ? "You have to log in" : ""}>
+                    {getAuth().currentUser?.uid !== followerId &&
+                        <Button ref={buttonRef} variant='outlined' color='inherit' sx={{ width: "fit-content", ":first-letter": { textTransform: 'uppercase' } }} size='small' onClick={handleClick} disabled={initData?.loading} >
+                            {alreadyFollowing() ? "unfollow" : "follow"} {getAuth().currentUser?.uid == followerId ? 'self' : ''}
+                        </Button>}
+                </Tooltip>
+            </>
+        )
+    }
+    else {
+        return (
+            <>
+                {getAuth().currentUser?.uid !== followerId &&
+                    <Button ref={buttonRef} variant='text' color='inherit' disableElevation sx={{ width: "fit-content", fontSize: 8, padding: 0, ":first-letter": { textTransform: 'uppercase' } }} size='small' onClick={handleClick} disabled={initData?.loading} >
+                        {alreadyFollowing() ? "unfollow" : "follow"} {getAuth().currentUser?.uid == followerId ? 'self' : ''}
+                    </Button>}
+            </>
+        )
+    }
 }

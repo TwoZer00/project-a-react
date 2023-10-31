@@ -1,5 +1,6 @@
 import { BarChart, Comment, PlaylistRemove, Public, PublicOff } from '@mui/icons-material'
 import { Box, Card, CardActions, CardContent, CardHeader, Chip, Grid, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
+import { getAuth } from 'firebase/auth'
 import { getDoc, getFirestore } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import moment from 'moment/moment'
@@ -7,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
 import { getUserData } from '../firebase/utills'
 import { windowLang } from '../utils'
+import ButtonFollow from './Follow/Button'
 import PlayButton from './PlayButton'
 import UserAvatar from './UserAvatar'
 
@@ -49,19 +51,27 @@ export default function PostCard({ postData }) {
             <Grid item xs="auto" maxWidth={{ xs: "100%" }}>
                 <Card>
                     <CardHeader
-                        title={<Link component={RouterLink} to={`/${postData.user.path}`} underline='hover'>{user?.username}</Link>}
+                        title={
+                            <Stack direction={"row"}>
+                                <Link component={RouterLink} to={`/${postData.user.path}`} underline='hover'>{user?.username}</Link>
+                                <ButtonFollow userId={getAuth()?.currentUser?.uid} followerId={postData.user.id} />
+                            </Stack>
+                        }
                         // avatar={<Avatar src={user?.avatarURL} component={RouterLink} to={`/${(postData.user.path)}`} {...stringAvatar(username)} />}
-                        avatar={<UserAvatar url={user?.avatarURL} username={user?.username} />}
+                        avatar={
+                            <UserAvatar url={user?.avatarURL} username={user?.username} />
+                        }
                         subheader={
-                            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
-                                <Tooltip title={visibilityText(postData.visibility)}>
-                                    <IconButton size='small' color='inherit' sx={{ padding: 0 }} >
-                                        <VisibilityIcon visibility={postData.visibility} />
-                                    </IconButton>
-                                </Tooltip>
-                                {/* {moment(new Date(postData.creationTime.seconds * 1000)).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} */}
-                                <Tooltip title={moment(postData.creationTime.seconds * 1000).format("dddd, MMMM Do YYYY, h:mm:ss a")}><Typography variant="body1" >{moment.duration(moment(postData.creationTime.seconds * 1000).subtract(new Date())).humanize(true)}</Typography></Tooltip>
-                            </Box>
+                            <Stack direction={"row"} gap={1}>
+                                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
+                                    <Tooltip title={visibilityText(postData.visibility)}>
+                                        <IconButton size='small' color='inherit' sx={{ padding: 0 }} >
+                                            <VisibilityIcon visibility={postData.visibility} />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title={moment(postData.creationTime.seconds * 1000).format("dddd, MMMM Do YYYY, h:mm:ss a")}><Typography variant="body1" >{moment.duration(moment(postData.creationTime.seconds * 1000).subtract(new Date())).humanize(true)}</Typography></Tooltip>
+                                </Box>
+                            </Stack>
                         }
                     />
                     <CardContent sx={{ paddingY: 0, display: "flex", flexDirection: "column", gap: 1 }}>
