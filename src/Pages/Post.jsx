@@ -32,16 +32,12 @@ export default function Post() {
     }, [])
     return (
         <Stack direction={"column"} gap={1}>
-            {/* <Stack direction={"row"} >
-                <Link component={RouterLink} to={`/user/${user?.id}`} underline='hover' variant='caption' >{user?.username}</Link>
-            </Stack> */}
             <Link component={RouterLink} to={`/categories/${postData.category.id}`} underline='hover' variant='body1' textTransform={"uppercase"} >
                 {postData.category.id}
             </Link>
-            {/* <Typography variant="body1" fontSize={16} textTransform={"capitalize"} >{postData.category.id}</Typography> */}
             <Stack direction={"row"} gap={1} alignItems={"center"}>
                 <Box sx={{ width: "100%" }}>
-                    <Typography variant="h1" component="h1" sx={{ fontSize: '2.5rem', fontWeight: 'bold', width: "100%", ":first-letter": { textTransform: "capitalize" } }}>
+                    <Typography variant="h1" component="h1" sx={{ wordBreak: "break-all", fontSize: '2.5rem', fontWeight: 'bold', width: "100%", ":first-letter": { textTransform: "capitalize" } }}>
                         {postData.title}
                     </Typography>
                     <Typography variant='body'>
@@ -59,7 +55,7 @@ export default function Post() {
                     </Typography>
                 </Stack>
             </Stack>
-            <Stack direction={"row"} gap={1}>
+            <Stack direction={"row"} gap={1} maxWidth={"100%"} flexWrap={'wrap'}>
                 {postData?.tags?.map(tag => <Chip component={RouterLink} to={`/${tag.path}`} clickable key={tag.id} label={decodeURIComponent(tag.id)} variant="outlined" size="small" />)}
             </Stack>
             <Typography variant="body1">{postData.desc}</Typography>
