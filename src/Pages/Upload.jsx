@@ -79,9 +79,12 @@ export default function Upload() {
                 let errors = { ...error }
                 Array.from(form.querySelectorAll("input")).forEach((item) => {
                     const err = {};
+                    err[item.name] = { message: `${item.validationMessage}` }
                     if (!item.checkValidity()) {
-                        err[item.name] = { message: `${item.validationMessage}` }
                         errors = { ...errors, ...err }
+                    }
+                    else {
+                        delete errors[item.name];
                     }
                 })
                 setError(errors)
@@ -102,6 +105,7 @@ export default function Upload() {
                 plays: 0
             }
             await uploadFile(valuea, postRef, getLoggedUserRef().id, setInitData, post, tagInput)
+            setPostRef(doc(collection(getFirestore(), "post")))
         }
         catch (error) {
             setUploadState(['finished', 'error', error.message])
@@ -122,7 +126,7 @@ export default function Upload() {
             <Backdrop open={!!initData?.loading} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} />
             <Stack gap={1} ref={formRef} component={"form"} sx={{ height: "100%" }}>
                 <Stack direction={"row"} gap={2} >
-                    <InputField label={"title"} type={"text"} name={"title"} error={error.title} />
+                    <InputField label={"title"} type={"text"} name={"title"} error={!!error.title} required />
                     <Visibility />
                     <NSFWToggleButton />
                 </Stack>

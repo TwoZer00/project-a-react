@@ -90,18 +90,18 @@ export default function PostCard({ postData }) {
             </CardContent>
             <CardActions sx={{ display: "flex", flexDirection: "row", gap: 2 }} >
                 <PlayButton post={postData} user={user} variant="icon" />
-                <Tooltip title={(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal" })}>
-                    <Stack direction={"row"} gap={1}>
-                        <Comment />
+                <Stack direction={"row"} gap={1}>
+                    <Comment />
+                    <Tooltip title={(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal" })}>
                         <Typography>{(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
-                    </Stack>
-                </Tooltip>
-                <Tooltip title={(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}>
-                    <Stack direction={"row"} gap={1}>
-                        <BarChart />
+                    </Tooltip>
+                </Stack>
+                <Stack direction={"row"} gap={1}>
+                    <BarChart />
+                    <Tooltip title={(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}>
                         <Typography>{(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
-                    </Stack>
-                </Tooltip>
+                    </Tooltip>
+                </Stack>
             </CardActions>
         </Card >
     )
