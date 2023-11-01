@@ -78,7 +78,7 @@ export default function PostCard({ postData }) {
                 </Stack>
                 <Stack direction={"column"} gap={1} maxWidth={"100%"}>
                     <Stack direction={"column"}>
-                        <Link variant="h5" component={RouterLink} to={`/post/${postData.id}`} underline='hover' color={"inherit"} flex={1}>
+                        <Link variant="h5" component={RouterLink} to={`/post/${postData.id}`} underline='hover' color={"inherit"} flex={1} sx={{ wordBreak: "break-word" }}>
                             {postData.title}
                         </Link>
                     </Stack>
