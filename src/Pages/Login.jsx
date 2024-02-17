@@ -59,9 +59,18 @@ export default function Login() {
                 <Stack height={"100vh"} >
                     {loading && <LinearProgress />}
                     <CssBaseline />
-                    <Box width={"100vw"} height={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-                        <Stack component={Paper} variant='outlined' direction={"column"}>
-                            <Stack component={"form"} variant='outlined' padding={2} gap={2} onSubmit={handleSubmit} noValidate >
+                    <Box width={"100vw"} height={"100%"} display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
+                        <Stack component={Paper} variant='outlined' direction={"column"} width={"100%"} maxWidth={400} >
+                            <Box display={"flex"} flexDirection={"column"} alignItems={"center"} paddingBottom={2}>
+                                <Box display={"flex"} flexDirection={"column"} alignItems={"center"} marginY={1}>
+                                    <img src="./aproject.svg" alt="aproject logo" width={70} />
+                                    {/* <Typography variant="h2" color="inherit" fontSize={22} marginTop={1} fontWeight={400}>A.M.É</Typography> */}
+                                </Box>
+                                <Typography variant="h1" color="inherit" fontSize={32} fontWeight={500} >{labels[windowLang]["login"]}</Typography>
+                                <Typography variant="body1" color="inherit">{labels[windowLang]["welcome-login"]}</Typography>
+                                <Typography variant="body1" color="inherit">{labels[windowLang]["welcome-login1"]}</Typography>
+                            </Box>
+                            <Stack component={"form"} variant='outlined' paddingX={2} gap={2} onSubmit={handleSubmit} noValidate width={"100%"} >
                                 <InputField id='email' required error={error?.email} label={labels[windowLang]['email']} variant='outlined' name='email' type='email' />
                                 <InputField id='password' required error={error?.password} label={labels[windowLang]['password']} variant='outlined' type='password' name='password' />
                                 {/* <TextField id='email' label='Email' variant='outlined' required name='email' error={!!error.email} helperText={error.email} FormHelperTextProps={{ "error": !!error.email }} type='email' /> */}
@@ -90,7 +99,7 @@ export function InputField(props) {
         event.preventDefault();
     };
     if (props.type === "password") {
-        return (<FormControl variant="outlined">
+        return (<FormControl variant="outlined" >
             <InputLabel htmlFor={props.id} error={!!props.error}>{capitalizeFirstLetter(props.label)}</InputLabel>
             <OutlinedInput
                 id={props.id}

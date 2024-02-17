@@ -1,11 +1,12 @@
 import { ThemeProvider } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Man, PedalBike, Woman } from '@mui/icons-material'
-import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
 import React, { useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { labels, windowLang } from '../utils'
 import { theme } from './Init'
 import { InputField } from './Login'
 
@@ -54,6 +55,15 @@ export default function Register() {
                 <CssBaseline />
                 <Box sx={{ display: 'flex', height: "100vh", width: "100vw", justifyContent: "center", alignItems: "center" }}>
                     <Box component={Paper} variant='outlined' sx={{ maxWidth: 500, width: { md: "100%" } }} >
+                        <Box display={"flex"} flexDirection={"column"} alignItems={"center"} paddingBottom={2}>
+                            <Box display={"flex"} flexDirection={"column"} alignItems={"center"} marginY={1}>
+                                <img src="./aproject.svg" alt="aproject logo" width={70} />
+                                {/* <Typography variant="h2" color="inherit" fontSize={22} marginTop={1} fontWeight={400}>A.M.É</Typography> */}
+                            </Box>
+                            <Typography variant="h1" color="inherit" fontSize={32} fontWeight={500} >{labels[windowLang]["register"]}</Typography>
+                            <Typography variant="body1" color="inherit">{labels[windowLang]["welcome-register"]}</Typography>
+                            <Typography variant="body1" color="inherit">{labels[windowLang]["welcome-register1"]}</Typography>
+                        </Box>
                         <Stack component={"form"} padding={2} gap={1} onSubmit={handleSubmit} noValidate>
                             <Stack direction={"row"} justifyContent={"space-between"} alignItems={"stretch"} gap={1} >
                                 <InputField label={"Username"} required name={"username"} id={"username"} type={"text"} error={error.username} />

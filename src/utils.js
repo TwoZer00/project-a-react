@@ -51,6 +51,10 @@ export const labels = {
         'delete-sure-desc': 'This action cannot be undone.',
         'delete': 'Delete',
         'edit': 'Edit',
+        'welcome-login': 'Welcome back',
+        'welcome-login1': 'Please login to your account',
+        'welcome-register': 'Welcome',
+        'welcome-register1': 'Please create an account',
     },
     es: {
         'email': 'Correo electrónico',
@@ -79,6 +83,10 @@ export const labels = {
         'delete-sure-desc': 'Esta acción no se puede deshacer.',
         'delete': 'Eliminar',
         'edit': 'Editar',
+        'welcome-login': 'Bienvenido de nuevo',
+        'welcome-login1': 'Por favor inicie sesión en su cuenta',
+        'welcome-register': 'Bienvenido',
+        'welcome-register1': 'Por favor cree una cuenta',
     }
 }
 
