@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Man, PedalBike, Woman } from '@mui/icons-material'
+import { FireExtinguisher, Man, Park, PedalBike, SportsRugby, Woman } from '@mui/icons-material'
 import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
@@ -99,7 +99,7 @@ function validateForm(formElements, error) {
 
 function validatePassword(passwords, error) {
     if (passwords[0].value !== passwords[1].value) {
-        passwords[1].setCustomValidity("Passwords do not match");
+        passwords[1].setCustomValidity(labels[windowLang]["valid-password-match"]);
         error.confirmPassword = passwords[1].validationMessage;
     }
     else {
@@ -110,6 +110,11 @@ function validatePassword(passwords, error) {
 
 export function CustomToggleButton(props) {
     const [gender, setGender] = useState(props.value || 'male');
+    const otherGender = Math.random() < 0.5 ? 'male' : 'female';
+    //a variable that contains a random rumber between 0 and 5
+    const randomNumber = Math.floor(Math.random() * 3);
+
+    const gend = [<Park />, <SportsRugby />, <FireExtinguisher />, <PedalBike />]
 
     const handleGender = (event, newGender) => {
         setGender(newGender);
@@ -131,7 +136,7 @@ export function CustomToggleButton(props) {
                 </ToggleButton>
                 <Divider flexItem orientation="vertical" sx={{ fontSize: "12px", mx: 1 }}>or</Divider>
                 <ToggleButton value="other" aria-label="other">
-                    <PedalBike />
+                    {gend[randomNumber]}
                 </ToggleButton>
                 <input type="number" hidden name='gender' value={genderToNumber(gender)} id='gender' />
             </StyledToggleButtonGroup>
@@ -172,7 +177,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 
 async function validateUsername(username, error) {
     if (username.value.length < 3) {
-        username.setCustomValidity("Username must be atleast 3 characters long");
+        username.setCustomValidity(labels[windowLang]["valid-user-length"]);
         error.username = username.validationMessage;
     }
     else {
@@ -183,7 +188,7 @@ async function validateUsername(username, error) {
     const db = getFirestore();
     const user = await getDoc(doc(db, "user", username.value))
     if (user.exists()) {
-        username.setCustomValidity("Username already exists");
+        username.setCustomValidity(labels[windowLang]["valid-user-exist"]);
         error.username = username.validationMessage;
     }
     else {

@@ -55,6 +55,9 @@ export const labels = {
         'welcome-login1': 'Please login to your account',
         'welcome-register': 'Welcome',
         'welcome-register1': 'Please create an account',
+        'valid-user-length': 'Username must be atleast 3 characters long',
+        'valid-user-exist': 'Username already exists',
+        'valid-password-match': 'Passwords do not match',
     },
     es: {
         'email': 'Correo electrónico',
@@ -87,6 +90,9 @@ export const labels = {
         'welcome-login1': 'Por favor inicie sesión en su cuenta',
         'welcome-register': 'Bienvenido',
         'welcome-register1': 'Por favor cree una cuenta',
+        'valid-user-length': 'El nombre de usuario debe tener al menos 3 caracteres',
+        'valid-user-exist': 'El nombre de usuario ya existe',
+        'valid-password-match': 'Las contraseñas no coinciden',
     }
 }
 
