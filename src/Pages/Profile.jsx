@@ -10,6 +10,7 @@ import { Link as RouterLink, useOutletContext, useParams } from 'react-router-do
 import ButtonFollow from '../components/Follow/Button';
 import PostCard from '../components/PostCard';
 import UserAvatar from '../components/UserAvatar';
+import { labels, windowLang } from '../utils';
 
 export default function Profile() {
     const { id } = useParams();
@@ -28,7 +29,7 @@ export default function Profile() {
             }
             // const temp = { ...data, photoURL: profileURL };
             setUserData(data);
-            temp.main = { title: `${data.username}'s profile` };
+            temp.main = { title: `${data.username}'s ${labels[windowLang]['profile']}` };
             setInitData(temp);
         }
         if (id) {

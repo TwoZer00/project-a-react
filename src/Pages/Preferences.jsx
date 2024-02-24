@@ -2,13 +2,14 @@ import { Divider, FormControl, MenuItem, Select, Stack, Switch, Typography, crea
 import React, { useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { isDarkModeEnabled, paletteTemp } from '../Pages/Init'
+import { labels, windowLang } from '../utils'
 
 export default function Preferences() {
     const [initData, setInitData] = useOutletContext()
     useEffect(
         () => {
             const temp = { ...initData }
-            const main = { title: 'Preferences' }
+            const main = { title: labels[windowLang]['preferences'] }
             setInitData({ ...temp, main })
         }
         , []
@@ -17,8 +18,8 @@ export default function Preferences() {
         <Stack direction={'column'} gap={2} >
             <Stack direction={'row'}>
                 <Stack direction={'column'} sx={{ width: "100%" }} >
-                    <Typography variant="body1">NSFW</Typography>
-                    <Typography variant="caption">Show NSFW post(must be considered of legal age in your place of residence)</Typography>
+                    <Typography variant="body1">{labels[windowLang]['nsfw']}</Typography>
+                    <Typography variant="caption">{labels[windowLang]['nsfw-sub']}</Typography>
                 </Stack>
                 <Switch
                     checked={!!initData?.preferences?.nsfw}
@@ -34,8 +35,8 @@ export default function Preferences() {
             <Divider />
             <Stack direction={'row'}>
                 <Stack direction={'column'} sx={{ width: "100%" }} flex={"1 1 auto"} >
-                    <Typography variant="body1">Theme</Typography>
-                    <Typography variant="caption">Set theme of app(setted as navigator by default)</Typography>
+                    <Typography variant="body1">{labels[windowLang]['theme']}</Typography>
+                    <Typography variant="caption">{labels[windowLang]['theme-sub']}</Typography>
                 </Stack>
                 <FormControl sx={{ flexGrow: 0, flex: "none" }}>
                     {/* <InputLabel id="demo-simple-select-label">Theme</InputLabel> */}
@@ -44,7 +45,7 @@ export default function Preferences() {
                         id="demo-simple-select"
                         value={initData?.preferences?.selectedTheme || 'default'}
                         // label="Theme"
-                        sx={{ width: 'fit-content' }}
+                        sx={{ width: 'fit-content', textTransform: 'capitalize' }}
                         onChange={(event) => {
                             const temp = { ...initData }
                             const preferences = { ...temp?.preferences }
@@ -55,9 +56,9 @@ export default function Preferences() {
                             setInitData({ ...temp, preferences })
                         }}
                     >
-                        <MenuItem value={"default"}>Automatic</MenuItem>
-                        <MenuItem value={"light"}>Light</MenuItem>
-                        <MenuItem value={"dark"}>Dark</MenuItem>
+                        <MenuItem value={labels[windowLang]['theme-selector-options']['automatic']['val']} sx={{ textTransform: 'capitalize' }}>{labels[windowLang]['theme-selector-options']['automatic']['label']}</MenuItem>
+                        <MenuItem value={labels[windowLang]['theme-selector-options']['light']['val']} sx={{ textTransform: 'capitalize' }}>{labels[windowLang]['theme-selector-options']['light']['label']}</MenuItem>
+                        <MenuItem value={labels[windowLang]['theme-selector-options']['dark']['val']} sx={{ textTransform: 'capitalize' }}>{labels[windowLang]['theme-selector-options']['dark']['label']}</MenuItem>
                     </Select>
                 </FormControl>
             </Stack>

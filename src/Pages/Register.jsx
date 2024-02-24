@@ -66,16 +66,16 @@ export default function Register() {
                         </Box>
                         <Stack component={"form"} padding={2} gap={1} onSubmit={handleSubmit} noValidate>
                             <Stack direction={"row"} justifyContent={"space-between"} alignItems={"stretch"} gap={1} >
-                                <InputField label={"Username"} required name={"username"} id={"username"} type={"text"} error={error.username} />
+                                <InputField label={labels[windowLang]['username']} required name={"username"} id={"username"} type={"text"} error={error.username} />
                                 <CustomToggleButton />
                             </Stack>
-                            <InputField label={"Email"} name={"email"} required id={"email"} type={"email"} autoCorrect={"false"} error={error.email} />
-                            <InputField label={"Description"} name={"description"} id={"description"} type={"text"} error={error.description} multiline rows={5} />
-                            <InputField label={"Password"} name={"password"} required id={"password"} type={"password"} error={error.password} />
-                            <InputField label={"Confirm Password"} required name={"confirmPassword"} id={"confirmPassword"} type={"password"} error={error.confirmPassword} />
+                            <InputField label={labels[windowLang]['email']} name={"email"} required id={"email"} type={"email"} autoCorrect={"false"} error={error.email} />
+                            <InputField label={labels[windowLang]['description']} name={"description"} id={"description"} type={"text"} error={error.description} multiline rows={5} />
+                            <InputField label={labels[windowLang]['password']} name={"password"} required id={"password"} type={"password"} error={error.password} />
+                            <InputField label={labels[windowLang]['cpassword']} required name={"confirmPassword"} id={"confirmPassword"} type={"password"} error={error.confirmPassword} />
                             <Stack direction={"row"} gap={2} >
-                                <Button variant='outlined' component={RouterLink} to={"/login"} >Login</Button>
-                                <Button type={"submit"} variant='contained' sx={{ flex: 1 }} >Register</Button>
+                                <Button variant='outlined' component={RouterLink} to={"/login"} >{labels[windowLang]['login']}</Button>
+                                <Button type={"submit"} variant='contained' sx={{ flex: 1 }} >{labels[windowLang]['register']}</Button>
                             </Stack>
                         </Stack>
                     </Box>

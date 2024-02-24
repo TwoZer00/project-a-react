@@ -22,6 +22,8 @@ export function countPlays(posts) {
 }
 
 
+
+
 // Labels
 export const labels = {
     en: {
@@ -58,6 +60,35 @@ export const labels = {
         'valid-user-length': 'Username must be atleast 3 characters long',
         'valid-user-exist': 'Username already exists',
         'valid-password-match': 'Passwords do not match',
+        'preferences': 'Preferences',
+        'nsfw': 'NSFW',
+        'nsfw-sub': 'Show NSFW post(must be considered of legal age in your place of residence)',
+        'theme': 'Theme',
+        'theme-sub': 'Set theme of app(setted as navigator by default)',
+        'theme-selector-options': { 'automatic': { val: 'default', label: 'automatic' }, 'light': { val: 'light', label: 'light' }, 'dark': { val: 'dark', label: 'dark' } },
+        'profile': 'profile',
+        'profiles': 'profile\'s',
+        'username': 'username',
+        'description': 'description',
+        'password': 'password',
+        'cpassword': 'confirm password',
+        'upload': 'upload',
+        'title': 'title',
+        'tags': 'tags',
+        'category': 'category',
+        'visibility': 'visibility',
+        'visibility-options': { 'public': { label: 'available for everyone' }, 'private': { label: 'available for no one' }, 'no-listed': { label: 'available using link' } },
+        'categories': { 'audiobook': { label: 'audiobook', value: 'audiobook' }, 'effects': { label: 'effects', value: 'effects' }, 'general': { label: 'general', value: 'general' }, 'music': { label: 'music', value: 'music' } },
+        'posts': 'posts',
+        'plays': 'plays',
+        'follower': 'follower',
+        'recent-posts': 'recent posts',
+        'latest-posts': 'latests posts',
+        'latest-followers': 'latest followers',
+        'comments': 'comments',
+        'no-posts': 'no posts',
+        'no-comments': 'no comments',
+        'no-followers': 'no followers'
     },
     es: {
         'email': 'Correo electrónico',
@@ -93,6 +124,35 @@ export const labels = {
         'valid-user-length': 'El nombre de usuario debe tener al menos 3 caracteres',
         'valid-user-exist': 'El nombre de usuario ya existe',
         'valid-password-match': 'Las contraseñas no coinciden',
+        'preferences': 'Preferencias',
+        'nsfw': 'NSFW',
+        'nsfw-sub': 'Mostrar publicaciones NSFW(debes ser considerado mayor de edad)',
+        'theme': 'Tema',
+        'theme-sub': 'Aplica el tema(Aplicado del navegador por defecto)',
+        'theme-selector-options': { 'automatic': { val: 'default', label: 'automatico' }, 'light': { val: 'light', label: 'claro' }, 'dark': { val: 'dark', label: 'obscuro' } },
+        'profile': 'perfile',
+        'profiles': 'perfil de',
+        'username': 'nombre de usuario',
+        'description': 'description',
+        'password': 'password',
+        'cpassword': 'confirm password',
+        'upload': 'subir',
+        'title': 'título',
+        'tags': 'etiquetas',
+        'category': 'categorias',
+        'visibility': 'visibilidad',
+        'visibility-options': { 'public': { label: 'disponible para todos' }, 'private': { label: 'no disponible para nadie' }, 'no-listed': { label: 'disponible solo atravez de vinculo' } },
+        'categories': { 'audiobook': { label: 'audio libro', value: 'audiobook' }, 'effects': { label: 'efectos', value: 'effects' }, 'general': { label: 'general', value: 'general' }, 'music': { label: 'musica', value: 'music' } },
+        'posts': 'publicaciones',
+        'plays': 'reproducciones',
+        'follower': 'seguidor',
+        'recent-posts': 'publicaciones recientes',
+        'latest-posts': 'últimas publicaciones',
+        'latest-followers': 'últimos seguidores',
+        'comments': 'comentarios',
+        'no-posts': 'sin publicaciones',
+        'no-comments': 'sin comentarios',
+        'no-followers': 'sin seguidores'
     }
 }
 

@@ -1,0 +1,202 @@
+{
+    "en": {
+        "email": "Email",
+        "register": "Register",
+        "login": "Login",
+        "dashboard": "Dashboard",
+        "logout": "Logout",
+        "back-to-app": "Back to app",
+        "followers": "Followers",
+        "recently-uploaded": "Recently uploaded",
+        "recently-followed": "Recently followed",
+        "id": "ID",
+        "date": "Date",
+        "post": "Post",
+        "file-path": "File path",
+        "cancel": "Cancel",
+        "update": "Update",
+        "updating": "Updating",
+        "edit-post": "Edit post",
+        "delete-sure": "Are you sure you want to delete this post?",
+        "delete-sure-desc": "This action cannot be undone.",
+        "delete": "Delete",
+        "edit": "Edit",
+        "welcome-login": "Welcome back",
+        "welcome-login1": "Please login to your account",
+        "welcome-register": "Welcome",
+        "welcome-register1": "Please create an account",
+        "valid-user-length": "Username must be atleast 3 characters long",
+        "valid-user-exist": "Username already exists",
+        "valid-password-match": "Passwords do not match",
+        "preferences": "Preferences",
+        "nsfw": "NSFW",
+        "nsfw-sub": "Show NSFW post(must be considered of legal age in your place of residence)",
+        "theme": "Theme",
+        "theme-sub": "Set theme of app(setted as navigator by default)",
+        "theme-selector-options": {
+            "automatic": {
+                "value": "default",
+                "label": "automatic"
+            },
+            "light": {
+                "value": "light",
+                "label": "light"
+            },
+            "dark": {
+                "value": "dark",
+                "label": "dark"
+            }
+        },
+        "profile": "profile",
+        "profiles": "profile\"s",
+        "username": "username",
+        "description": "description",
+        "password": "password",
+        "cpassword": "confirm password",
+        "upload": "upload",
+        "title": "title",
+        "tags": "tags",
+        "category": "category",
+        "visibility": "visibility",
+        "visibility-options": {
+            "public": {
+                "label": "available for everyone"
+            },
+            "private": {
+                "label": "available for no one"
+            },
+            "no-listed": {
+                "label": "available using link"
+            }
+        },
+        "categories": {
+            "audiobook": {
+                "label": "audiobook",
+                "value": "audiobook"
+            },
+            "effects": {
+                "label": "effects",
+                "value": "effects"
+            },
+            "general": {
+                "label": "general",
+                "value": "general"
+            },
+            "music": {
+                "label": "music",
+                "value": "music"
+            }
+        },
+        "posts": "posts",
+        "plays": "plays",
+        "follower": "follower",
+        "recent-posts": "recent posts",
+        "latest-posts": "latests posts",
+        "latest-followers": "latest followers",
+        "comments": "comments",
+        "no-posts": "no posts",
+        "no-comments": "no comments",
+        "no-followers": "no followers"
+    },
+    "es": {
+        "email": "correo",
+        "register": "registro",
+        "login": "iniciar de sesion",
+        "dashboard": "panel de control",
+        "logout": "cerrar sesion",
+        "back-to-app": "regresa a la aplicacion",
+        "followers": "seguidores",
+        "recently-uploaded": "subidos recientemente",
+        "recently-followed": "seguidos recientemente",
+        "id": "ID",
+        "date": "fecha",
+        "post": "publicacion",
+        "file-path": "ubicacion de archivo",
+        "cancel": "cancelar",
+        "update": "actualizar",
+        "updating": "actualizando",
+        "edit-post": "modificar post",
+        "delete-sure": "¿estas seguro de eliminar?",
+        "delete-sure-desc": "esta accion no puede ser deshecha",
+        "delete": "borrar",
+        "edit": "modificar",
+        "welcome-login": "bienvenido/a de regreso",
+        "welcome-login1": "por favor iniciar sesion",
+        "welcome-register": "bienvenido",
+        "welcome-register1": "por favor crear una cuenta",
+        "valid-user-length": "el nombre de usuario debe ser al menos de 3 caracteres de largo",
+        "valid-user-exist": "el nombre de usuario ya existe",
+        "valid-password-match": "las contraseñas no coinciden",
+        "preferences": "preferencias",
+        "nsfw": "NSFW",
+        "nsfw-sub": "mostrar publicaciones NSFW(debes ser considerado mayor de edad)",
+        "theme": "tema",
+        "theme-sub": "aplica el tema(aplicado por defecto del navegador)",
+        "theme-selector-options": {
+            "automatic": {
+                "value": "default",
+                "label": "automatico"
+            },
+            "light": {
+                "value": "light",
+                "label": "claro"
+            },
+            "dark": {
+                "value": "dark",
+                "label": "obscuro"
+            }
+        },
+        "profile": "perfil",
+        "profiles": "profile\"s",
+        "username": "nombre de usuario",
+        "description": "descripcion",
+        "password": "contraseña",
+        "cpassword": "confirma contraseña",
+        "upload": "subir",
+        "title": "titulo",
+        "tags": "etiquetas",
+        "category": "categoria",
+        "visibility": "visibilidad",
+        "visibility-options": {
+            "public": {
+                "label": "available for everyone"
+            },
+            "private": {
+                "label": "available for no one"
+            },
+            "no-listed": {
+                "label": "available using link"
+            }
+        },
+        "categories": {
+            "audiobook": {
+                "label": "audiolibro",
+                "value": "audiobook"
+            },
+            "effects": {
+                "label": "efectos",
+                "value": "effects"
+            },
+            "general": {
+                "label": "general",
+                "value": "general"
+            },
+            "music": {
+                "label": "musica",
+                "value": "music"
+            }
+        },
+        "posts": "publicaciones",
+        "plays": "reproduciones",
+        "follower": "seguidores",
+        "recent-posts": "publicaciones recientes",
+        "latest-comments": "ultimos comentarios",
+        "latest-followers": "ultimos seguidores",
+        "comments": "comentarios",
+        "no-posts": "sin publicaciones",
+        "no-comments": "sin comentarios",
+        "no-followers": "sin seguidores"
+    },
+    "it": {},
+    "cn": {}
+}
