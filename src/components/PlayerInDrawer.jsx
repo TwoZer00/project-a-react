@@ -1,7 +1,8 @@
-import { PauseOutlined, PlayArrowOutlined, SkipNextOutlined, SkipPreviousOutlined } from '@mui/icons-material';
+import { Pause, PauseOutlined, PlayArrow, PlayArrowOutlined, SkipNextOutlined, SkipPreviousOutlined } from '@mui/icons-material';
 import { Box, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
+import { theme } from '../Pages/Init';
 import { getAvatarImage, getUserData, setPlay } from '../firebase/utills';
 import AudioCover from './AudioCover';
 
@@ -208,8 +209,8 @@ export default function PlayerInDrawer({ open, audio, data }) {
                 <IconButton onClick={handlePlay} disabled={!audio} >
                     {
                         initData?.postInPlay?.isAudioInProgress[0] && audio.id === initData?.postInPlay?.id ?
-                            <PauseOutlined /> :
-                            <PlayArrowOutlined />
+                            (theme.palette.mode === "dark" ? <Pause /> : <PauseOutlined />) :
+                            (theme.palette.mode == "dark" ? <PlayArrow /> : <PlayArrowOutlined />)
                     }
                 </IconButton>
                 {

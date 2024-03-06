@@ -1,4 +1,4 @@
-import { Category, Home, Upload } from '@mui/icons-material';
+import { Category, CategoryOutlined, Home, HomeOutlined, Upload } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -30,7 +30,6 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const [error, setError] = useState();
     const [open, setOpen] = useState(false);
     const matches = useMediaQuery(theme.breakpoints.up('md'));
-
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -112,7 +111,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                             mr: open ? 3 : 'auto',
                                             justifyContent: 'center',
                                         }}>
-                                        <Home />
+                                        {theme.palette.mode === "dark" ? <Home /> : <HomeOutlined />}
                                     </ListItemIcon>
                                     <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
                                 </ListItemButton>
@@ -132,7 +131,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                             mr: open ? 3 : 'auto',
                                             justifyContent: 'center',
                                         }}>
-                                        <Category />
+                                        {theme.palette.mode === "dark" ? <Category /> : <CategoryOutlined />}
                                     </ListItemIcon>
                                     <ListItemText primary="Categories" sx={{ opacity: open ? 1 : 0 }} />
                                 </ListItemButton>
