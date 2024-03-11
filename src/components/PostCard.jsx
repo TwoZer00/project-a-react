@@ -73,16 +73,14 @@ export default function PostCard({ postData }) {
             />
             <CardContent sx={{ paddingY: 0, display: "flex", flexDirection: "column", gap: 1 }}>
                 <Link component={RouterLink} to={`/categories/${postData.category.id}`} relative='path' underline='hover' color='text.primary' fontSize='small' sx={{ textDecoration: "none" }}>{((postData.category).path).substring(postData.category.path.lastIndexOf("/") + 1)}</Link>
-                <Stack direction={"row"} gap={1} width={"100%"} overflow={'auto'} sx={{ scrollBehavior: "smooth", scrollbarWidth: "thin" }}>
+                <Stack direction={"row"} gap={1} width={"100%"} position={'relative'} overflow={'auto'} sx={{ scrollBehavior: "smooth", scrollbarWidth: "none" }} >
                     {postData?.tags?.map((tag, index) => <Chip key={index} label={decodeURIComponent((tag.path).substring(tag.path.lastIndexOf("/") + 1))} clickable size='small' variant='outlined' component={RouterLink} to={`/tags/${(tag.path).substring(tag.path.lastIndexOf("/") + 1)}`} relative='path' />)}
                 </Stack>
                 <Stack direction={"column"} gap={1} maxWidth={"100%"}>
-                    <Stack direction={"column"}>
-                        <Link variant="h5" component={RouterLink} to={`/post/${postData.id}`} underline='hover' color={"inherit"} flex={1} sx={{ wordBreak: "break-word" }}>
-                            {postData.title}
-                        </Link>
-                    </Stack>
-                    <Typography variant="body2" color="text.secondary" overflow={"hidden"} maxWidth={{ md: "40ch" }} maxHeight={{ sx: "300px" }} textOverflow={'ellipsis'} whiteSpace={'break-spaces'}>
+                    <Link variant="h5" title={postData.title} component={RouterLink} to={`/post/${postData.id}`} underline='hover' color={"inherit"} sx={{ wordBreak: "break-all", textOverflow: "ellipsis", overflow: 'hidden', whiteSpace: "nowrap" }}>
+                        {postData.title}
+                    </Link>
+                    <Typography variant="body2" color="text.secondary" overflow={"hidden"} maxWidth={{ md: "40ch" }} maxHeight={{ sx: "300px" }} sx={{ lineClamp: 2, display: "-webkit-box", "WebkitBoxOrient": "vertical", "WebkitLineClamp": 2 }} textOverflow={'ellipsis'} whiteSpace={'break-spaces'}>
                         {postData.desc}
                     </Typography>
                 </Stack>

@@ -37,7 +37,6 @@ export default function Login() {
         if (Object.keys({ ...tempE.email, ...tempE.password }).length === 0) {
             try {
                 await signInWithEmailAndPassword(getAuth(), data.email, data.password);
-                // console.log(location.state?.from?.pathname);
                 location.state?.from?.pathname ? navigate(location.state.from.pathname, { replace: true }) : navigate("/user", { replace: true });
             } catch (error) {
                 console.error(error);
@@ -46,11 +45,12 @@ export default function Login() {
             }
             finally {
                 setLoading(false)
-                // console.log(location.state);
             }
         }
         else {
+            setLoading(false);
             tempE.signin = "Please fill all the fields";
+            setError(tempE);
         }
     }
     return (
