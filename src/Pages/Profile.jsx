@@ -1,6 +1,6 @@
 import { getDownloadURL, getStorage, ref } from '@firebase/storage';
 import { Person, Person2, Person4 } from '@mui/icons-material';
-import { Box, Grid, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { getAuth } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import moment from 'moment';
@@ -54,7 +54,7 @@ export default function Profile() {
     }
     return (
         <>
-            <Box>
+            <Stack direction={"column"} gap={1}>
                 <Box sx={{
                     width: "100%",
                     height: "250px",
@@ -82,10 +82,10 @@ export default function Profile() {
                     </Stack>
                 </Box>
                 <Typography variant="subtitle">{userData?.desc}</Typography>
-                <Grid container py={2} spacing={2}>
+                <Box sx={{ columnCount: "auto", columnWidth: { xs: "100%", sm: "300px" } }}>
                     <PostList userId={id || getAuth().currentUser?.uid} />
-                </Grid>
-            </Box>
+                </Box>
+            </Stack>
         </>
     )
 }
