@@ -6,6 +6,7 @@ import Dashboard from "../Pages/Dashboard";
 import HomeDashboard from "../Pages/Dashboard/Home";
 import PostListDashboard from "../Pages/Dashboard/Posts/List";
 import DashboardPost from "../Pages/Dashboard/Posts/Post";
+import ProfileDashboard from "../Pages/Dashboard/Profile/ProfileDashboard";
 import EditProfile from "../Pages/EditProfile";
 import Genre from "../Pages/Genre";
 import Home from "../Pages/Home";
@@ -118,6 +119,10 @@ export const router = createBrowserRouter([
                         element: <DashboardPost />
                     }
                 ]
+            },
+            {
+                path: "profile",
+                element: <ProfileDashboard />,
             }
         ]
     }

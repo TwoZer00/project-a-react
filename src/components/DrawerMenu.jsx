@@ -1,6 +1,6 @@
 import { useTheme } from '@emotion/react';
 import { AccountCircleOutlined, Dashboard, Logout, MoreVert, Settings } from '@mui/icons-material';
-import { Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography, useMediaQuery } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import UserAvatar from './UserAvatar';
@@ -12,11 +12,20 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
     const matches = useMediaQuery(theme.breakpoints.up('sm'));
     const navigate = useNavigate();
     const open = Boolean(anchorEl);
+    const [openDialog, setOpenDialog] = useState(false)
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     }
     const handleClose = () => {
         setAnchorEl();
+    }
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    }
+
+    const handleLogout = () => {
+        setOpenDialog(true);
+
     }
     return (
         <Stack direction={"row"} gap={1}>
@@ -100,7 +109,7 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                     Dashboard
                 </MenuItem>}
                 {auth &&
-                    <MenuItem onClick={() => { logout(); handleClose() }}>
+                    <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
                             <Logout fontSize="small" />
                         </ListItemIcon>
@@ -108,6 +117,27 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                     </MenuItem>
                 }
             </Menu>
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Are you sure you want to logout?
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        This will clear all your data. You can always login again.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog}>Cancel</Button>
+                    <Button onClick={() => { logout(); handleCloseDialog() }} autoFocus>
+                        Logout
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Stack>
     )
 }

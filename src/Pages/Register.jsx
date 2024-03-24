@@ -4,7 +4,7 @@ import { FireExtinguisher, Man, Park, PedalBike, SportsRugby, Woman } from '@mui
 import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { labels, windowLang } from '../utils'
 import { theme } from './Init'
@@ -112,9 +112,9 @@ export function CustomToggleButton(props) {
     const [gender, setGender] = useState(props.value || 'male');
     const otherGender = Math.random() < 0.5 ? 'male' : 'female';
     //a variable that contains a random rumber between 0 and 5
-    const randomNumber = Math.floor(Math.random() * 3);
+    const randomNumber = useRef(Math.floor(Math.random() * 3));
 
-    const gend = [<Park />, <SportsRugby />, <FireExtinguisher />, <PedalBike />]
+    const gend = [<FireExtinguisher />, <Park />, <SportsRugby />, <PedalBike />];
 
     const handleGender = (event, newGender) => {
         setGender(newGender);
@@ -136,7 +136,7 @@ export function CustomToggleButton(props) {
                 </ToggleButton>
                 <Divider flexItem orientation="vertical" sx={{ fontSize: "12px", mx: 1 }}>or</Divider>
                 <ToggleButton value="other" aria-label="other">
-                    {gend[randomNumber]}
+                    {gend[randomNumber.current]}
                 </ToggleButton>
                 <input type="number" hidden name='gender' value={genderToNumber(gender)} id='gender' />
             </StyledToggleButtonGroup>

@@ -7,7 +7,7 @@ import { Link as RouterLink, useLocation, useNavigate, useOutletContext } from '
 import { PlaylistRemove, Public, PublicOff } from '@mui/icons-material';
 import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { CustomError } from '../Errors/CustomError';
-import { getLoggedUserRef } from '../firebase/utills';
+import { getCategories, getLoggedUserRef } from '../firebase/utills';
 import { InputField } from './Login';
 
 const filter = createFilterOptions();
@@ -27,7 +27,7 @@ export default function Upload() {
             setTags(temp)
         }
         const loadCategory = async () => {
-            const temp = await getCategory();
+            const temp = await getCategories();
             setCategory(temp)
         }
         setInitData((val) => {
@@ -233,13 +233,14 @@ async function getGenre() {
     return tags;
 }
 async function getCategory() {
-    const tags = []
+    let categories = ["audiobook", "effects", "music", "general"]
     const db = getFirestore();
     const docs = await getDocs(collection(db, "category"));
-    docs.size > 0 && docs.forEach((doc) => {
-        tags.push({ ...doc.data() })
-    });
-    return tags;
+    categories = [...categories, ...docs.docs]
+    // docs.size > 0 && docs.forEach((doc) => {
+    //     categories.push({ ...doc.data() })
+    // });
+    return categories;
 }
 
 async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) {

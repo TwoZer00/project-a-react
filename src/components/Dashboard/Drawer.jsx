@@ -1,4 +1,4 @@
-import { ArrowBack, Dashboard, ListAlt } from '@mui/icons-material';
+import { ArrowBack, Dashboard, ListAlt, Person } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -20,6 +20,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import * as React from 'react';
 import { useState } from 'react';
 import { Outlet, Link as RouterLink } from 'react-router-dom';
+import { labels, windowLang } from '../../utils';
 
 const drawerWidth = 240;
 
@@ -130,7 +131,7 @@ export default function DrawerDashboard({ user, postList }) {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    <Tooltip title="Dashboard" placement='right-end' >
+                    <Tooltip title={labels[windowLang]["dashboard"]} placement='right-end' >
                         <ListItem disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
@@ -150,11 +151,11 @@ export default function DrawerDashboard({ user, postList }) {
                                 >
                                     <Dashboard />
                                 </ListItemIcon>
-                                <ListItemText primary="dashboard" sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
+                                <ListItemText primary={labels[windowLang]["dashboard"]} sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
                             </ListItemButton>
                         </ListItem>
                     </Tooltip>
-                    <Tooltip title="Posts" placement='right-end'>
+                    <Tooltip title={labels[windowLang]["post"]} placement='right-end'>
                         <ListItem disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
@@ -174,14 +175,38 @@ export default function DrawerDashboard({ user, postList }) {
                                 >
                                     <ListAlt />
                                 </ListItemIcon>
-                                <ListItemText primary="post" sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
+                                <ListItemText primary={labels[windowLang]["post"]} sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Tooltip>
+                    <Tooltip title={labels[windowLang]["profile"]} placement='right-end'>
+                        <ListItem disablePadding sx={{ display: 'block' }}>
+                            <ListItemButton
+                                sx={{
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5,
+                                }}
+                                component={RouterLink}
+                                to="profile"
+                            >
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : 'auto',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Person />
+                                </ListItemIcon>
+                                <ListItemText primary={labels[windowLang]["profile"]} sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
                             </ListItemButton>
                         </ListItem>
                     </Tooltip>
                 </List>
                 <Divider />
                 <List sx={{ marginTop: "auto" }} >
-                    <Tooltip title="Go back app" placement='right'>
+                    <Tooltip title={labels[windowLang]["go-back-app"]} placement='right'>
                         <ListItem disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
@@ -201,7 +226,7 @@ export default function DrawerDashboard({ user, postList }) {
                                 >
                                     <ArrowBack />
                                 </ListItemIcon>
-                                <ListItemText primary="dashboard" sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
+                                <ListItemText primary={labels[windowLang]["go-back-app"]} sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
                             </ListItemButton>
                         </ListItem>
                     </Tooltip>

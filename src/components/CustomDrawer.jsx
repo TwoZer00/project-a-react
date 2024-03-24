@@ -2,7 +2,7 @@ import { Category, CategoryOutlined, Home, HomeOutlined, Upload } from '@mui/ico
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
-import { LinearProgress, MenuItem, Tooltip, useMediaQuery } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, MenuItem, Tooltip, useMediaQuery } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -29,7 +29,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const [initData, setInitData] = data;
     const [error, setError] = useState();
     const [open, setOpen] = useState(false);
-    const matches = useMediaQuery(theme.breakpoints.up('md'));
+    const matches = useMediaQuery(theme.breakpoints.up('lg'));
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -254,6 +254,7 @@ const AvatarInMenu = ({ username, avatarURL }) => {
                 <Upload />
             </IconButton>}
             <DrawerMenu auth={auth} username={username} avatarURL={avatarURL} logout={logout} />
+
         </>
     )
 }
@@ -283,6 +284,28 @@ const AvatarInMenuLoggedMenuItems = ({ handleClose }) => {
             <MenuItem onClick={handleMyAccount}>My account</MenuItem>
             <MenuItem onClick={handleSettings}>Settings</MenuItem>
             <MenuItem onClick={handleLogout} >Logout</MenuItem>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Use Google's location service?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Let Google help apps determine location. This means sending anonymous
+                        location data to Google, even when no apps are running.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={handleClose} autoFocus>
+                        Agree
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     )
 }

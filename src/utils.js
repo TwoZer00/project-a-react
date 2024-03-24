@@ -27,6 +27,7 @@ export function countPlays(posts) {
 // Labels
 export const labels = {
     en: {
+        'my-profile': 'My profile',
         'email': 'Email',
         'register': 'Register',
         'password': 'Password',
@@ -88,9 +89,12 @@ export const labels = {
         'comments': 'comments',
         'no-posts': 'no posts',
         'no-comments': 'no comments',
-        'no-followers': 'no followers'
+        'no-followers': 'no followers',
+        'go-back-app': 'Go back app',
+        'profile': 'Profile'
     },
     es: {
+        'my-profile': 'Mi perfil',
         'email': 'Correo electrónico',
         'password': 'Contraseña',
         'register': 'Registrarse',
@@ -152,7 +156,9 @@ export const labels = {
         'comments': 'comentarios',
         'no-posts': 'sin publicaciones',
         'no-comments': 'sin comentarios',
-        'no-followers': 'sin seguidores'
+        'no-followers': 'sin seguidores',
+        'go-back-app': 'Regresar',
+        'profile': 'Perfil'
     }
 }
 

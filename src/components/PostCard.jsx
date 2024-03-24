@@ -91,13 +91,13 @@ export default function PostCard({ postData }) {
                 <Stack direction={"row"} gap={1}>
                     <Comment />
                     <Tooltip title={(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal" })}>
-                        <Typography>{(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
+                        <Typography>{(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal", roundingPriority: "morePrecision", notation: "compact", })}</Typography>
                     </Tooltip>
                 </Stack>
                 <Stack direction={"row"} gap={1}>
                     <BarChart />
                     <Tooltip title={(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}>
-                        <Typography>{(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal", compactDisplay: "short", notation: "compact", })}</Typography>
+                        <Typography>{(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal", roundingPriority: "morePrecision", notation: "compact", })}</Typography>
                     </Tooltip>
                 </Stack>
             </CardActions>

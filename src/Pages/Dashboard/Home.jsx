@@ -8,8 +8,8 @@ import { countPlays } from '../../utils';
 
 export default function HomeDashboard() {
     const [posts, setPosts] = useState();
-    const [user, postList] = useOutletContext();
-    const [plays, setPlays] = useState();
+    const [[user, setUser], postList] = useOutletContext();
+    const [plays, setPlays] = useState(0);
     const [comments, setComments] = useState();
     useEffect(() => {
         const fetchPosts = async () => {
@@ -30,19 +30,19 @@ export default function HomeDashboard() {
         <Stack gap={2} p={2} >
             <Box component={Paper} variant='outlined' p={1}>
                 <Stack direction={"row"} justifyContent={"space-around"}>
-                    <Box>
+                    <Box textAlign={"center"}>
                         <Typography variant="h2" fontSize={24}>Posts</Typography>
-                        <Typography variant="body1" textAlign={"center"}>{(posts?.length)}</Typography>
+                        <Typography variant="body1" >{(posts?.length.toLocaleString(window.navigator.language, { style: "decimal" }))}</Typography>
                     </Box>
                     <Divider orientation="vertical" flexItem variant="middle" />
-                    <Box>
+                    <Box textAlign={"center"}>
                         <Typography variant="h2" fontSize={24}>Plays</Typography>
-                        <Typography variant="body1" textAlign={"center"}>{plays}</Typography>
+                        <Typography variant="body1">{plays.toLocaleString(window.navigator.language, { style: "decimal" })}</Typography>
                     </Box>
                     <Divider orientation="vertical" flexItem variant="middle" />
-                    <Box>
+                    <Box textAlign={"center"}>
                         <Typography variant="h2" fontSize={24}>Follower</Typography>
-                        <Typography variant="body1" textAlign={"center"}>{user?.followers?.length || 0}</Typography>
+                        <Typography variant="body1" >{user?.followers?.length.toLocaleString(window.navigator.language, { style: "decimal" }) || 0}</Typography>
                     </Box>
                 </Stack>
             </Box>
@@ -57,8 +57,8 @@ export default function HomeDashboard() {
                                 <ListItemButton key={post.id} component={RouterLink} to={`/dashboard/post/${post.id}`}>
                                     <ListItemText primary={post.title} />
                                     <Stack direction={"row"} gap={1}>
-                                        <Typography variant="subtitle1" sx={{ width: "5ch" }} align='right'>{post.plays}</Typography>
-                                        <Typography variant="subtitle1" sx={{ width: "8ch" }} align='right'>{post.comment ? post.comment.length : 0}</Typography>
+                                        <Typography variant="subtitle1" sx={{ width: "5ch" }} align='right'>{post.plays?.toLocaleString(window.navigator.language, { style: "decimal", notation: "compact", roundingPriority: "morePrecision" })}</Typography>
+                                        <Typography variant="subtitle1" sx={{ width: "8ch" }} align='right'>{post.comment ? post.comment.length?.toLocaleString(toLocaleString(window.navigator.language, { style: "decimal", roundingPriority: "morePrecision", notation: "compact" })) : 0}</Typography>
                                     </Stack>
                                 </ListItemButton>
                             </ListItem>

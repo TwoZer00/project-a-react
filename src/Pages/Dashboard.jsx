@@ -31,7 +31,7 @@ export default function Dashboard() {
     return (
         <>
             <ThemeProvider theme={theme} >
-                <DrawerDashboard user={user} postList={[posts, setPosts]} />
+                <DrawerDashboard user={[user, setUser]} postList={[posts, setPosts]} />
             </ThemeProvider>
         </>
     )
