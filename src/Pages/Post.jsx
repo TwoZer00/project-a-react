@@ -28,7 +28,7 @@ export default function Post() {
         const temp = { ...initData }
         temp.main = { title: capitalizeFirstLetter(postData.title) }
         setInitData(temp)
-        setCommentList(postData?.comment);
+        setCommentList(postData?.comment || []);
     }, [])
     return (
         <Stack direction={"column"} gap={1}>
