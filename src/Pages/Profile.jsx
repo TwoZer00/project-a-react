@@ -1,9 +1,9 @@
 import { getDownloadURL, getStorage, ref } from '@firebase/storage';
 import { Person, Person2, Person4 } from '@mui/icons-material';
 import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 import { getAuth } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, query, where } from 'firebase/firestore';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useOutletContext, useParams } from 'react-router-dom';
@@ -73,7 +73,7 @@ export default function Profile() {
                             <Typography variant="h1" fontSize={24} fontWeight={400}>{userData?.username}</Typography>
                             <Stack direction={"row"} spacing={1} alignItems={"center"}>
                                 <Typography variant="subtitle">{handleGender(userData?.gender, 14)}</Typography>
-                                <Typography variant="subtitle" fontSize={12}>User since {moment(new Date(userData?.creationTime.seconds ? userData?.creationTime.seconds * 1000 : userData?.creationTime)).format("MMMM Do YYYY")}</Typography>
+                                <Typography variant="subtitle" fontSize={12}>User since {dayjs(new Date(userData?.creationTime.seconds ? userData?.creationTime.seconds * 1000 : userData?.creationTime)).format("MMMM DD YYYY")}</Typography>
                             </Stack>
                             <Typography variant="subtitle1" fontSize={12} sx={{ ":first-letter": { textTransform: "capitalize" } }} >{userData?.description}</Typography>
                             <Typography variant="body" fontSize={12}>Followers {userData?.followers?.length || 0}</Typography>

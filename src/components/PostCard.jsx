@@ -1,16 +1,23 @@
 import { BarChart, Comment, PlaylistRemove, Public, PublicOff } from '@mui/icons-material'
 import { Box, Card, CardActions, CardContent, CardHeader, Chip, IconButton, Link, Stack, Tooltip, Typography } from '@mui/material'
+import dayjs from 'dayjs'
+import 'dayjs/locale/en'
+import 'dayjs/locale/es'
+import duration from 'dayjs/plugin/duration'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { getAuth } from 'firebase/auth'
 import { getDoc, getFirestore } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
-import moment from 'moment/moment'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
 import { getUserData } from '../firebase/utills'
 import { windowLang } from '../utils'
+import { inTime } from './Comments/Comment'
 import ButtonFollow from './Follow/Button'
 import PlayButton from './PlayButton'
 import UserAvatar from './UserAvatar'
+dayjs.extend(duration)
+dayjs.extend(relativeTime)
 
 export default function PostCard({ postData }) {
     const [initData, setInitData] = useOutletContext();
@@ -66,7 +73,9 @@ export default function PostCard({ postData }) {
                                     <VisibilityIcon visibility={postData.visibility} />
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip title={moment(postData.creationTime.seconds * 1000).format("dddd, MMMM Do YYYY, h:mm:ss a")}><Typography variant="body1" >{moment.duration(moment(postData.creationTime.seconds * 1000).subtract(new Date())).humanize(true)}</Typography></Tooltip>
+                            <Tooltip title={dayjs(postData.creationTime.seconds * 1000).format("dddd, MMMM DD YYYY, h:mm:ss a")}>
+                                <Typography variant="body1" >{inTime(postData.creationTime)}</Typography>
+                            </Tooltip>
                         </Box>
                     </Stack>
                 }

@@ -113,12 +113,12 @@ export async function getCategories() {
 export async function getComment(id) {
     const db = getFirestore();
     const commentRef = doc(db, "comment", id);
-    const commentDoc = await getDoc(commentRef);
-    if (commentDoc.exists()) {
-        return { ...commentDoc.data(), id: commentDoc.id };
-    }
-    else {
-        return;
+    try {
+        const commentDoc = await getDoc(commentRef);
+        if (commentDoc.exists())
+            return { ...commentDoc.data(), id: commentDoc.id }
+    } catch (error) {
+        console.error(error);
     }
 }
 
@@ -226,4 +226,3 @@ export async function deleteFollower(userId, followerId, date) {
         return;
     })
 }
-

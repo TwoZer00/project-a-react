@@ -58,7 +58,7 @@ export default function HomeDashboard() {
                                     <ListItemText primary={post.title} />
                                     <Stack direction={"row"} gap={1}>
                                         <Typography variant="subtitle1" sx={{ width: "5ch" }} align='right'>{post.plays?.toLocaleString(window.navigator.language, { style: "decimal", notation: "compact", roundingPriority: "morePrecision" })}</Typography>
-                                        <Typography variant="subtitle1" sx={{ width: "8ch" }} align='right'>{post.comment ? post.comment.length?.toLocaleString(toLocaleString(window.navigator.language, { style: "decimal", roundingPriority: "morePrecision", notation: "compact" })) : 0}</Typography>
+                                        <Typography variant="subtitle1" sx={{ width: "8ch" }} align='right'>{post.comment ? post.comment?.length?.toLocaleString(window.navigator.language, { style: "decimal", roundingPriority: "morePrecision", notation: "compact" }) : 0}</Typography>
                                     </Stack>
                                 </ListItemButton>
                             </ListItem>

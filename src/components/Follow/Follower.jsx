@@ -1,8 +1,8 @@
 import { ListItem, ListItemAvatar, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { getUserData } from '../../firebase/utills';
+import { inTime } from '../Comments/Comment';
 import UserAvatar from '../UserAvatar';
 
 export default function FollowerDashboard({ data }) {
@@ -23,7 +23,7 @@ export default function FollowerDashboard({ data }) {
                         <UserAvatar username={user?.username} url={user?.avatarURL} />
                     </ListItemAvatar>
                     <ListItemText primary={user?.username} secondary={<Stack direction={"row"}>
-                        <Typography variant="body2">{moment.duration(moment(data?.date.seconds * 1000).subtract(new Date())).humanize(true)}</Typography>
+                        <Typography variant="body2">{inTime(data?.date)}</Typography>
                     </Stack>} />
                 </ListItemButton>
             </ListItem>
