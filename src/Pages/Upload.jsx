@@ -125,12 +125,12 @@ export default function Upload() {
         <>
             <Backdrop open={!!initData?.loading} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} />
             <Stack gap={1} ref={formRef} component={"form"} sx={{ height: "100%" }}>
-                <Stack direction={"row"} gap={2} >
+                <Stack direction={"row"} gap={2} width={"100%"} mx={"auto"} maxWidth={"lg"}   >
                     <InputField label={"title"} type={"text"} name={"title"} error={!!error.title} required />
                     <Visibility />
                     <NSFWToggleButton />
                 </Stack>
-                <Stack direction={"row"} gap={2}>
+                <Stack direction={"row"} gap={2} width={"100%"} mx={"auto"} maxWidth={"lg"}>
                     <Box flex={"1 1 auto"} >
                         <Autocomplete
                             fullWidth
@@ -172,8 +172,10 @@ export default function Upload() {
                         </Select>
                     </FormControl>
                 </Stack>
-                <TextField label={"Description"} multiline rows={4} type='text' name='desc' />
-                <MuiFileInput error={!!error.file} getSizeText={(value) => `${((value?.size) / Math.pow(1024, 2)).toFixed(2)} MB`} inputProps={{ accept: 'audio/*' }} value={valuea} onChange={handleChangeF} color='info' name='file' />
+                <Stack gap={1} width={"100%"} mx={"auto"} maxWidth={"lg"}>
+                    <TextField fullWidth label={"Description"} multiline rows={4} type='text' name='desc' />
+                    <MuiFileInput fullWidth error={!!error.file} getSizeText={(value) => `${((value?.size) / Math.pow(1024, 2)).toFixed(2)} MB`} inputProps={{ accept: 'audio/*' }} value={valuea} onChange={handleChangeF} color='info' name='file' />
+                </Stack>
                 <Box sx={{ mt: "auto", height: "100%", display: "flex", alignItems: "self-end", justifyContent: "flex-end" }} >
                     <Button variant='contained' onClick={handleSubmit} disabled={initData.loading} >
                         Upload

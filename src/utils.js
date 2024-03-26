@@ -91,7 +91,8 @@ export const labels = {
         'no-comments': 'no comments',
         'no-followers': 'no followers',
         'go-back-app': 'Go back app',
-        'profile': 'Profile'
+        'profile': 'Profile',
+        'settings': 'settings'
     },
     es: {
         'my-profile': 'Mi perfil',
@@ -158,7 +159,8 @@ export const labels = {
         'no-comments': 'sin comentarios',
         'no-followers': 'sin seguidores',
         'go-back-app': 'Regresar',
-        'profile': 'Perfil'
+        'profile': 'Perfil',
+        'settings': 'configuraciones'
     }
 }
 

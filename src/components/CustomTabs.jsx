@@ -67,7 +67,7 @@ function MyTabs() {
         <Tabs value={currentTab} centered>
             <Tab label="Preferences" value="settings/preferences" to="preferences" component={Link} />
             {/* <Tab label="Profile" value="settings/profile" to="profile" component={Link} /> */}
-            {getAuth().currentUser && <Tab label="Profile" value="settings/profile" to="profile" component={Link} />}
+            {/* {getAuth().currentUser && <Tab label="Profile" value="settings/profile" to="profile" component={Link} />} */}
         </Tabs>
     );
 }
@@ -75,7 +75,7 @@ function MyTabs() {
 export default function TabsRouter({ context }) {
     return (
         <Stack direction={'column'} sx={{ width: '100%', height: '100%' }}>
-            <MyTabs />
+            {/* <MyTabs /> */}
             <Outlet context={context} />
         </Stack>
     );

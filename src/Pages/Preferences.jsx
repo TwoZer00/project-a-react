@@ -9,7 +9,7 @@ export default function Preferences() {
     useEffect(
         () => {
             const temp = { ...initData }
-            const main = { title: labels[windowLang]['preferences'] }
+            const main = { title: labels[windowLang]['settings'] }
             setInitData({ ...temp, main })
         }
         , []
