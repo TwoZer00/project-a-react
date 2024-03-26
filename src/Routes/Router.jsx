@@ -56,16 +56,17 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'settings',
-                element: <Settings />,
-                children: [{
-                    path: 'profile',
-                    element: <EditProfile />
-                }
+                element: <Preferences />,
+                children: [
+                    // {
+                    //     path: 'profile',
+                    //     element: <EditProfile />
+                    // }
                     ,
-                {
-                    path: 'preferences',
-                    element: <Preferences />
-                }
+                    {
+                        path: 'preferences',
+                        element: <Preferences />
+                    }
                 ]
             },
             {

@@ -96,7 +96,7 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                     auth &&
                     <Divider />
                 }
-                <MenuItem component={RouterLink} to={"settings/preferences"} >
+                <MenuItem component={RouterLink} to={"settings"} >
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>

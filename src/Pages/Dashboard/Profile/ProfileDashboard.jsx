@@ -1,4 +1,4 @@
-import { Button, Stack, TextField } from '@mui/material';
+import { Box, Button, Stack, TextField } from '@mui/material';
 import { getAuth } from 'firebase/auth';
 import { setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
@@ -74,13 +74,13 @@ export default function ProfileDashboard() {
 
     return (
         <>
-            <Stack p={2} width={"100%"} maxWidth={"md"} mx={"auto"}  >
-                <Stack direction={"column"} spacing={2} justifyContent={"center"} alignItems={"center"} mt={2} component={"form"} onSubmit={handleSubmit} >
-                    <Stack direction={"row"} justifyContent={"center"} alignItems={"center"} width={"100%"} gap={2} >
+            <Stack p={2} width={"100%"} height={"100%"}>
+                <Stack direction={"column"} gap={2} alignItems={"center"} mt={2} component={"form"} onSubmit={handleSubmit} height={"100%"}>
+                    <Stack maxWidth={"lg"} mx={"auto"} direction={"row"} justifyContent={"center"} alignItems={"center"} width={"100%"} gap={2} >
                         <UserAvatar url={imageUrl || userData?.avatarURL} username={user?.username || getAuth()?.currentUser?.email} width={80} height={80} />
                         <InputFileField file={image} label={"Change Profile Picture"} setFile={setImage} accept={"image/*"} filesize={.50} />
                     </Stack>
-                    <Stack direction={"row"} gap={1} width={"100%"}>
+                    <Stack maxWidth={"lg"} mx={"auto"} direction={"row"} gap={1} width={"100%"}>
                         <TextField
                             fullWidth
                             id="username"
@@ -96,22 +96,24 @@ export default function ProfileDashboard() {
                         />
                         <CustomToggleButton value={genderToText(parseInt(user?.gender))} />
                     </Stack>
-                    <TextField
-                        fullWidth
-                        id="outlined-multiline-static"
-                        label="Description"
-                        multiline
-                        rows={4}
-                        value={user?.description}
-                        onChange={(event) => {
-                            setUser((value) => {
-                                const temp = { ...value };
-                                temp.description = event.target.value;
-                                return temp
-                            })
-                        }}
-                    />
-                    <Button variant="contained" sx={{ placeSelf: "flex-end" }} type='submit' >
+                    <Box width={"100%"} maxWidth={"lg"} mx={"auto"}>
+                        <TextField
+                            fullWidth
+                            id="outlined-multiline-static"
+                            label="Description"
+                            multiline
+                            rows={4}
+                            value={user?.description}
+                            onChange={(event) => {
+                                setUser((value) => {
+                                    const temp = { ...value };
+                                    temp.description = event.target.value;
+                                    return temp
+                                })
+                            }}
+                        />
+                    </Box>
+                    <Button variant="contained" sx={{ placeSelf: "flex-end", mt: "auto" }} type='submit' >
                         Save changes
                     </Button>
                 </Stack>

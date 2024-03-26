@@ -28,7 +28,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const theme = useTheme();
     const [initData, setInitData] = data;
     const [error, setError] = useState();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(useMediaQuery(theme.breakpoints.up('lg')));
     const matches = useMediaQuery(theme.breakpoints.up('lg'));
     const handleDrawerOpen = () => {
         setOpen(true);
