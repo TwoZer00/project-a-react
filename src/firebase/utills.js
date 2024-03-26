@@ -196,7 +196,7 @@ export async function deletePost(id) {
     await updateDoc(postRef, { indexed: false });
 }
 
-export async function setFollower(userId, followerId) {
+export async function setFollower(userId, followerId, date) {
     const db = getFirestore();
     const userRef = doc(db, "user", userId);
     const followerRef = doc(db, "user", followerId);
@@ -206,12 +206,12 @@ export async function setFollower(userId, followerId) {
         if (!userDoc.exists() || !followerDoc.exists()) {
             throw new CustomError(`User not found`, 203);
         }
-        transaction.update(followerRef, { followers: arrayUnion({ user: userRef, date: new Date() }) });
-        transaction.update(userRef, { followings: arrayUnion({ user: followerRef, date: new Date() }) });
+        transaction.update(followerRef, { followers: arrayUnion({ user: userRef, date }) });
+        transaction.update(userRef, { followings: arrayUnion({ user: followerRef, date }) });
         return;
     })
 }
-export async function deleteFollower(userId, followerId) {
+export async function deleteFollower(userId, followerId, date) {
     const db = getFirestore();
     const userRef = doc(db, "user", userId);
     const followerRef = doc(db, "user", followerId);
@@ -221,8 +221,8 @@ export async function deleteFollower(userId, followerId) {
         if (!userDoc.exists() || !followerDoc.exists()) {
             throw new CustomError(`User not found`, 203);
         }
-        transaction.update(followerRef, { followers: arrayRemove(userRef) });
-        transaction.update(userRef, { followings: arrayRemove(followerRef) });
+        transaction.update(followerRef, { followers: arrayRemove({ date, user: userRef }) });
+        transaction.update(userRef, { followings: arrayRemove({ date, user: followerRef }) });
         return;
     })
 }

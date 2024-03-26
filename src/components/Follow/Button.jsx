@@ -1,7 +1,7 @@
 import { Button, Tooltip } from '@mui/material';
 import { getAuth } from 'firebase/auth';
 import { doc, getFirestore } from 'firebase/firestore';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { deleteFollower, setFollower } from '../../firebase/utills';
 
@@ -10,11 +10,8 @@ export default function ButtonFollow({ userId, followerId, setFData, ...props })
     const buttonRef = useRef();
     const navigate = useNavigate();
     const handleClick = async () => {
-        setInitData(prev => ({ ...prev, loading: true }))
-        console.log('follow')
         if (!getAuth().currentUser) {
             navigate('/login')
-            setInitData(prev => ({ ...prev, loading: false }))
         }
         handleFollow();
     }
@@ -23,14 +20,16 @@ export default function ButtonFollow({ userId, followerId, setFData, ...props })
             const temp = { ...initData }
             if (getAuth().currentUser.uid === followerId) throw new Error('Cant follow yourself :C')
             if (alreadyFollowing()) {
-                await deleteFollower(userId, followerId);
-                temp.user.followings = temp.user.followings.filter(item => item.id !== followerId)
+                const ref = initData.user.followings.find(item => item.user.id === followerId)
+                await deleteFollower(userId, followerId, ref.date);
+                temp.user.followings = temp.user.followings.filter(item => item.user.id !== followerId)
                 temp.notification = { msg: "Unfollowed", type: "success" }
             }
             else {
-                await setFollower(userId, followerId);
+                const date = new Date();
+                await setFollower(userId, followerId, date);
                 temp.user.followings = temp.user.followings || []
-                temp.user.followings.push(doc(getFirestore(), 'user', followerId))
+                temp.user.followings.push({ user: doc(getFirestore(), 'user', followerId), date })
                 temp.notification = { msg: "Followed", type: "success" }
             }
             setInitData(temp)
@@ -46,8 +45,9 @@ export default function ButtonFollow({ userId, followerId, setFData, ...props })
         }
     }
     const alreadyFollowing = () => {
-        return initData?.user?.followings?.some(item => item.id === followerId)
+        return initData?.user?.followings?.some(item => item?.user?.id === followerId)
     }
+
     if (props.type === "text") {
         return (
             <>
