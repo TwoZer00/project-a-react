@@ -28,6 +28,7 @@ export function countPlays(posts) {
 export const labels = {
     en: {
         'my-profile': 'My profile',
+        'user-since': 'User since',
         'email': 'Email',
         'register': 'Register',
         'password': 'Password',
@@ -160,7 +161,8 @@ export const labels = {
         'no-followers': 'sin seguidores',
         'go-back-app': 'Regresar',
         'profile': 'Perfil',
-        'settings': 'configuraciones'
+        'settings': 'configuraciones',
+        'user-since': 'Usuario desde'
     }
 }
 

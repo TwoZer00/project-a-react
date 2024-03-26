@@ -20,7 +20,7 @@ export default function PostListDashboard() {
         { field: 'visibility', headerName: labels[windowLang]['visibility'], flex: 1 },
         { field: 'category', headerName: labels[windowLang]['category'], flex: 1, valueFormatter: (params) => { return params.value.id } },
         { field: 'tags', headerName: labels[windowLang]['tags'], flex: 1, sorteable: false, renderCell: (params) => <Stack direction={"row"} gap={1} py={1} sx={{ overflowX: "hide", }} >{params?.value?.map((item) => <Chip key={item.id} label={decodeURI(item.id)} />)}</Stack> },
-        { field: 'creationTime', headerName: labels[windowLang]["date"], flex: 1, type: "date", valueFormatter: (params) => { return dayjs(params.value.seconds * 1000).format("DD/MM/YYYY") } },
+        { field: 'creationTime', headerName: labels[windowLang]["date"], flex: 1, type: "date", valueFormatter: (params) => { return dayjs(params.value.seconds * 1000).locale(windowLang).format("DD/MM/YYYY") } },
         { field: 'plays', headerName: labels[windowLang]["plays"], flex: 1, align: "right", type: 'number', valueFormatter: (params) => { return (params.value).toLocaleString(window.navigator.language, { style: "decimal", roundingPriority: "morePrecision", notation: "compact" }) } },
         {
             field: "actions", getActions: (params) => [

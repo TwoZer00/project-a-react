@@ -73,7 +73,7 @@ export default function Profile() {
                             <Typography variant="h1" fontSize={24} fontWeight={400}>{userData?.username}</Typography>
                             <Stack direction={"row"} spacing={1} alignItems={"center"}>
                                 <Typography variant="subtitle">{handleGender(userData?.gender, 14)}</Typography>
-                                <Typography variant="subtitle" fontSize={12}>User since {dayjs(new Date(userData?.creationTime.seconds ? userData?.creationTime.seconds * 1000 : userData?.creationTime)).format("MMMM DD YYYY")}</Typography>
+                                <Typography variant="subtitle" fontSize={12}>{labels[windowLang]["user-since"]} {dayjs(new Date(userData?.creationTime.seconds ? userData?.creationTime.seconds * 1000 : userData?.creationTime)).locale(windowLang).format("MMMM DD YYYY")}</Typography>
                             </Stack>
                             <Typography variant="subtitle1" fontSize={12} sx={{ ":first-letter": { textTransform: "capitalize" } }} >{userData?.description}</Typography>
                             <Typography variant="body" fontSize={12}>Followers {userData?.followers?.length || 0}</Typography>

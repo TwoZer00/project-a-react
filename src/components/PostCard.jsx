@@ -73,7 +73,7 @@ export default function PostCard({ postData }) {
                                     <VisibilityIcon visibility={postData.visibility} />
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip title={dayjs(postData.creationTime.seconds * 1000).format("dddd, MMMM DD YYYY, h:mm:ss a")}>
+                            <Tooltip title={dayjs(postData.creationTime.seconds * 1000).locale(windowLang).format("dddd, MMMM DD YYYY, h:mm:ss a")}>
                                 <Typography variant="body1" >{inTime(postData.creationTime)}</Typography>
                             </Tooltip>
                         </Box>
