@@ -4,6 +4,7 @@ import { getAuth } from 'firebase/auth'
 import { arrayUnion, collection, doc, getFirestore, writeBatch } from 'firebase/firestore'
 import React, { useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
+import { labels, windowLang } from '../../utils'
 
 export default function InputComment({ post, setCommentList }) {
     const [initData, setInitData] = useOutletContext();
@@ -46,12 +47,12 @@ export default function InputComment({ post, setCommentList }) {
                 maxRows={4}
                 fullWidth
                 onChange={handleChange}
-                label="Leave a comment"
+                label={labels[windowLang]['leave-comment']}
             />
             <Tooltip title={`${getAuth().currentUser ? "" : "Please sign in first"}`} >
                 <span style={{ width: "fit-content", marginLeft: "auto" }}>
                     <Button onClick={handleSubmit} disabled={!getAuth().currentUser} endIcon={<Send />} color="primary" size="small" variant='contained'>
-                        Send
+                        {labels[windowLang]['send']}
                     </Button>
                 </span>
             </Tooltip>

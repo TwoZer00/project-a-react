@@ -121,7 +121,7 @@ export function InputField(props) {
                 error={!!props.error}
                 label={capitalizeFirstLetter(props.label)}
             />
-            {!!props.error && <FormHelperText error={!!props.error} sx={{ maxWidth: 200, textAlign: "justify" }}>{props.error}</FormHelperText>}
+            {!!props.error && <FormHelperText error={!!props.error} sx={{ textAlign: "justify" }}>{props.error}</FormHelperText>}
         </FormControl>)
     }
     else {

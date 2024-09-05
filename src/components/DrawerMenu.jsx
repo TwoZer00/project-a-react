@@ -4,6 +4,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import UserAvatar from './UserAvatar';
+import { labels, windowLang } from '../utils';
 
 export default function DrawerMenu({ auth, username, avatarURL, logout }) {
     const theme = useTheme();
@@ -96,24 +97,24 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                     auth &&
                     <Divider />
                 }
-                <MenuItem component={RouterLink} to={"settings"} >
+                <MenuItem component={RouterLink} to={"settings"} sx={{textTransform:"capitalize"}} >
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>
-                    Settings
+                    {labels[windowLang]['settings']}
                 </MenuItem>
                 {auth && <MenuItem component={RouterLink} to={"dashboard"}>
                     <ListItemIcon>
                         <Dashboard fontSize="small" />
                     </ListItemIcon>
-                    Dashboard
+                    {labels[windowLang]['dashboard']}
                 </MenuItem>}
                 {auth &&
                     <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
                             <Logout fontSize="small" />
                         </ListItemIcon>
-                        Logout
+                        {labels[windowLang]['logout']}
                     </MenuItem>
                 }
             </Menu>

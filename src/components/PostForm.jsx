@@ -5,7 +5,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { InputField } from "../Pages/Login";
 import { NSFWToggleButton, Visibility } from "../Pages/Upload";
 import { getCategories, getTags, updatePost } from "../firebase/utills";
-import { capitalizeFirstLetter } from "../utils";
+import { capitalizeFirstLetter, labels, windowLang } from "../utils";
 
 export default function PostForm({ data, setData, formRefa }) {
     const [newData, setNewData] = useState(data)
@@ -76,23 +76,15 @@ export default function PostForm({ data, setData, formRefa }) {
         const flag = true;
         for (const field in post) {
             if (typeof post[field] !== "boolean" && field !== "desc") {
-                if (!Boolean(post[field])) return false
+                if (!post[field]) return false
             }
         }
         return flag;
     }
     return (
         <Stack direction={"column"} gap={2} marginY={4} px={4} component={"form"} ref={formRef} height={"100%"}>
-            <Stack direction={"row"} gap={2}>
-                {/* <TextField required autoFocus id="outlined-basic" label="Title" variant="outlined" fullWidth value={newData?.title} onChange={(e) => {
-                    const value = (e.target.value);
-                    setNewData(val => {
-                        const temp = { ...val };
-                        temp.title = value;
-                        return temp;
-                    })
-                }} /> */}
-                <InputField type="text" name="title" label="title" autoFocus value={newData?.title} required error={!!error?.title} onChange={(e) => {
+            <Stack direction={"row"} gap={2} alignItems={'stretch'}>
+                <InputField type="text" name="title" label={labels[windowLang]['title']} autoFocus value={newData?.title} required error={!!error?.title} onChange={(e) => {
                     const value = (e.target.value);
                     setNewData(val => {
                         const temp = { ...val };
@@ -158,5 +150,49 @@ export default function PostForm({ data, setData, formRefa }) {
                 <Button variant="contained" children={"save"} onClick={handleSubmit} sx={{ height: "fit-content" }} />
             </Box>
         </Stack >
+    )
+}
+
+const TagsInput = ()=>{
+    return (
+        <Stack direction={"row"} gap={2}>
+                <Autocomplete
+                    fullWidth
+                    multiple
+                    id="tags"
+                    value={[...tagInput]}
+                    freeSolo
+                    options={tags.map((option) => decodeURI(option.title))}
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                        ))
+                    }
+                    onChange={(event, value, reason) => {
+                        setTagInput([...value])
+                    }}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            variant="outlined"
+                            label="Tags"
+                            placeholder="Tag"
+                        />
+                    )}
+                />
+                <FormControl sx={{ flex: "none", width: '15ch' }}>
+                    <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="Category"
+                        value={categoryVal}
+                        name='category'
+                        onChange={handleChange}
+                    >
+                        {category.length > 0 && category.map((item, index) => <MenuItem key={item.title} value={item.title}>{capitalizeFirstLetter(item.title)}</MenuItem>)}
+                    </Select>
+                </FormControl>
+            </Stack>
     )
 }

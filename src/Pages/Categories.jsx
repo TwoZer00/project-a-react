@@ -5,7 +5,6 @@ import CategoriesList from '../components/CategoriesList';
 export default function Categories() {
     const [initData, setInitData] = useOutletContext()
     const categories = useLoaderData();
-    // console.log(categories);
     return (
         <>
             <CategoriesList categories={categories} />

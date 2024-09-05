@@ -76,7 +76,7 @@ export default function Profile() {
                                 <Typography variant="subtitle" fontSize={12}>{labels[windowLang]["user-since"]} {dayjs(new Date(userData?.creationTime.seconds ? userData?.creationTime.seconds * 1000 : userData?.creationTime)).locale(windowLang).format("MMMM DD YYYY")}</Typography>
                             </Stack>
                             <Typography variant="subtitle1" fontSize={12} sx={{ ":first-letter": { textTransform: "capitalize" } }} >{userData?.description}</Typography>
-                            <Typography variant="body" fontSize={12}>Followers {userData?.followers?.length || 0}</Typography>
+                            <Typography variant="body" fontSize={12}>{labels[windowLang]['followers']} {userData?.followers?.length || 0}</Typography>
                             <ButtonFollow type="text" userId={getAuth().currentUser?.uid} followerId={id} setFData={setUserData} />
                         </Stack>
                     </Stack>

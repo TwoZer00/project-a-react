@@ -23,6 +23,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import CustomNotification, { SlideTransition } from './CustomNotification';
 import DrawerMenu from './DrawerMenu';
 import PlayerInDrawer from './PlayerInDrawer';
+import { labels, windowLang } from '../utils';
 
 export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const theme = useTheme();
@@ -96,7 +97,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                     <Divider />
                     <List>
                         <ListItem disablePadding sx={{ display: 'block' }}>
-                            <Tooltip title={!open && "Home"} placement="right" >
+                            <Tooltip title={!open && labels[windowLang]['home']} placement="right" >
                                 <ListItemButton
                                     component={RouterLink}
                                     to="/"
@@ -113,10 +114,10 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                         }}>
                                         {theme.palette.mode === "dark" ? <Home /> : <HomeOutlined />}
                                     </ListItemIcon>
-                                    <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
+                                    <ListItemText primary={labels[windowLang]['home']} sx={{ opacity: open ? 1 : 0 }} />
                                 </ListItemButton>
                             </Tooltip>
-                            <Tooltip title={!open && "Categories"} placement="right">
+                            <Tooltip title={!open && labels[windowLang]['category']} placement="right">
                                 <ListItemButton
                                     component={RouterLink}
                                     to="/categories"
@@ -133,7 +134,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                         }}>
                                         {theme.palette.mode === "dark" ? <Category /> : <CategoryOutlined />}
                                     </ListItemIcon>
-                                    <ListItemText primary="Categories" sx={{ opacity: open ? 1 : 0 }} />
+                                    <ListItemText primary={labels[windowLang]['category']} sx={{ ":first-letter":{textTransform:"uppercase"},opacity: open ? 1 : 0 }} />
                                 </ListItemButton>
                             </Tooltip>
                         </ListItem>
@@ -255,65 +256,6 @@ const AvatarInMenu = ({ username, avatarURL }) => {
             </IconButton>}
             <DrawerMenu auth={auth} username={username} avatarURL={avatarURL} logout={logout} />
 
-        </>
-    )
-}
-
-
-const AvatarInMenuLoggedMenuItems = ({ handleClose }) => {
-    const navigate = useNavigate();
-    const handleLogout = async () => {
-        await signOut(getAuth());
-        handleClose();
-    }
-    const handleProfile = () => {
-        handleClose();
-        navigate(`/user/${getAuth().currentUser?.uid}`);
-    }
-    const handleSettings = () => {
-        handleClose();
-        navigate("/settings/preferences");
-    }
-    const handleMyAccount = () => {
-        handleClose();
-        navigate("/settings/profile");
-    }
-    return (
-        <>
-            <MenuItem onClick={handleProfile}>Profile</MenuItem>
-            <MenuItem onClick={handleMyAccount}>My account</MenuItem>
-            <MenuItem onClick={handleSettings}>Settings</MenuItem>
-            <MenuItem onClick={handleLogout} >Logout</MenuItem>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    {"Use Google's location service?"}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Let Google help apps determine location. This means sending anonymous
-                        location data to Google, even when no apps are running.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose} autoFocus>
-                        Agree
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
-    )
-}
-
-const AvatarInMenuLoggedMenuItemsNotLoggedIn = ({ handleClose }) => {
-    return (
-        <>
-            <MenuItem onClick={handleClose} >Login</MenuItem>
         </>
     )
 }

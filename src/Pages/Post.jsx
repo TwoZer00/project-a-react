@@ -1,4 +1,4 @@
-import { Box, Chip, Link, Stack } from '@mui/material';
+import { Box, Chip, Link, Stack, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLoaderData, useOutletContext, useSearchParams } from 'react-router-dom';
@@ -8,7 +8,8 @@ import PlayButton from '../components/PlayButton';
 import UserAvatar from '../components/UserAvatar';
 import VisibilityIcon from '../components/VisibilityIcon';
 import { getUserData } from '../firebase/utills';
-import { capitalizeFirstLetter } from '../utils';
+import { capitalizeFirstLetter, labels, windowLang } from '../utils';
+import dayjs from 'dayjs';
 
 
 export default function Post() {
@@ -37,21 +38,26 @@ export default function Post() {
             </Link>
             <Stack direction={"row"} gap={1} alignItems={"center"}>
                 <Box sx={{ width: "100%" }}>
-                    <Typography variant="h1" component="h1" sx={{ wordBreak: "break-all", fontSize: '2.5rem', fontWeight: 'bold', width: "100%", ":first-letter": { textTransform: "capitalize" } }}>
-                        {postData.title}
-                    </Typography>
+                    <Stack direction={'row'} alignItems={'end'} gap={2}>
+                        <Typography variant="h1" component="h1" sx={{ wordBreak: "break-all", fontSize: '2.5rem', fontWeight: 'bold',  ":first-letter": { textTransform: "capitalize" } }}>
+                            {postData.title}
+                        </Typography>
+                    </Stack>
                     <Typography variant='body'>
-                        Plays: {(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}
+                        {labels[windowLang]['plays']}: {(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}
                     </Typography>
                 </Box>
-                <VisibilityIcon visibility={postData.visibility} fontSize="small" />
+                <Stack gap={1} alignItems={'center'}>
+                    <VisibilityIcon visibility={postData.visibility} fontSize="small" />
+                    {postData.nsfw && <Tooltip title={labels[windowLang]['nsfw-alt']} ><Chip clickable variant='outlined' size='small' color='error' label={labels[windowLang]['nsfw']} /></Tooltip>}
+                </Stack>
             </Stack>
             <Stack direction={"row"} gap={1} alignItems={"flex-end"}>
                 <UserAvatar username={user?.username} url={user?.avatarURL} width={40} height={40} />
                 <Stack direction={"column"}>
                     <Link component={RouterLink} to={`/user/${user?.id}`} underline='hover' variant='caption' >{user?.username}</Link>
-                    <Typography variant='caption'>
-                        {new Date(postData.creationTime.seconds * 1000).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "numeric", hour12: false })}
+                    <Typography sx={{":first-letter":{textTransform:'uppercase'}}} variant='caption'>
+                        {dayjs(postData.creationTime.seconds * 1000).locale(windowLang).format("dddd DD MMMM  YYYY, h:mm:ss a")}
                     </Typography>
                 </Stack>
             </Stack>

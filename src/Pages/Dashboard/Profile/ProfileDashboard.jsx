@@ -7,18 +7,17 @@ import CustomNotification, { SlideTransition } from '../../../components/CustomN
 import InputFileField from '../../../components/InputFileField';
 import UserAvatar from '../../../components/UserAvatar';
 import { getUserData, postProfileImage, updateUser } from '../../../firebase/utills';
-import { genderToText } from '../../../utils';
+import { genderToText, labels, windowLang } from '../../../utils';
 import { CustomToggleButton } from '../../Register';
 
 export default function ProfileDashboard() {
-    const [[user, setUser], postList] = useOutletContext();
+    const [[user, setUser], postList,setTitlte] = useOutletContext();
     const [userData, setUserData] = useState({});
     const [image, setImage] = useState();
     const [imageUrl, setImageUrl] = useState(user?.avatarURL || undefined);
     const [notFlag, setNotFlag] = useState();
-
-
-
+    
+    setTitlte(labels[windowLang]['profile'])
     useEffect(() => {
         const fetchUserData = async () => {
             const data = await getUserData(user.id);
@@ -78,13 +77,13 @@ export default function ProfileDashboard() {
                 <Stack direction={"column"} gap={2} alignItems={"center"} mt={2} component={"form"} onSubmit={handleSubmit} height={"100%"}>
                     <Stack maxWidth={"lg"} mx={"auto"} direction={"row"} justifyContent={"center"} alignItems={"center"} width={"100%"} gap={2} >
                         <UserAvatar url={imageUrl || userData?.avatarURL} username={user?.username || getAuth()?.currentUser?.email} width={80} height={80} />
-                        <InputFileField file={image} label={"Change Profile Picture"} setFile={setImage} accept={"image/*"} filesize={.50} />
+                        <InputFileField file={image} label={labels[windowLang]['change-profile-pic']} setFile={setImage} accept={"image/*"} filesize={.50} />
                     </Stack>
                     <Stack maxWidth={"lg"} mx={"auto"} direction={"row"} gap={1} width={"100%"}>
                         <TextField
                             fullWidth
                             id="username"
-                            label="Username"
+                            label={labels[windowLang]['username']}
                             value={user?.username}
                             onChange={(event) => {
                                 setUser((value) => {
@@ -100,7 +99,7 @@ export default function ProfileDashboard() {
                         <TextField
                             fullWidth
                             id="outlined-multiline-static"
-                            label="Description"
+                            label={labels[windowLang]['description']}
                             multiline
                             rows={4}
                             value={user?.description}
@@ -114,7 +113,7 @@ export default function ProfileDashboard() {
                         />
                     </Box>
                     <Button variant="contained" sx={{ placeSelf: "flex-end", mt: "auto" }} type='submit' >
-                        Save changes
+                    {labels[windowLang]['save-changes']}
                     </Button>
                 </Stack>
             </Stack>

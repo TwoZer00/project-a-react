@@ -9,9 +9,8 @@ export async function getPostData(id) {
     if (userDoc.exists()) {
         return { ...userDoc.data(), id: userDoc.id };
     }
-    else {
-        return null;
-    }
+    throw new CustomError("post not found", 101);
+
 }
 export async function getUserData(userId) {
     const db = getFirestore();
