@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@emotion/react'
 import styled from '@emotion/styled'
-import { FireExtinguisher, Man, Park, PedalBike, SportsRugby, Woman } from '@mui/icons-material'
+import { Accessibility, FireExtinguisher, Man, Park, PedalBike, SportsRugby, Woman } from '@mui/icons-material'
 import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
@@ -109,7 +109,7 @@ function validatePassword(passwords, error) {
 }
 
 export function CustomToggleButton(props) {
-    const [gender, setGender] = useState(props.value || 'male');
+    const [gender, setGender] = useState(props.value || 'other');
     const otherGender = Math.random() < 0.5 ? 'male' : 'female';
     //a variable that contains a random rumber between 0 and 5
     const randomNumber = useRef(Math.floor(Math.random() * 3));
@@ -121,7 +121,7 @@ export function CustomToggleButton(props) {
     }
     return (
         <>
-            <StyledToggleButtonGroup
+            <ToggleButtonGroup
                 value={gender}
                 exclusive
                 onChange={handleGender}
@@ -131,15 +131,16 @@ export function CustomToggleButton(props) {
                 <ToggleButton value="male" aria-label="male">
                     <Man />
                 </ToggleButton>
+                <ToggleButton value="other" aria-label="other">
+                    {/* {gend[randomNumber.current]} */}
+                    <Accessibility/>
+                </ToggleButton>
                 <ToggleButton value="female" aria-label="female">
                     <Woman />
                 </ToggleButton>
-                <Divider flexItem orientation="vertical" sx={{ fontSize: "12px", mx: 1 }}>or</Divider>
-                <ToggleButton value="other" aria-label="other">
-                    {gend[randomNumber.current]}
-                </ToggleButton>
+                {/* <Divider flexItem orientation="vertical" sx={{ fontSize: "12px", mx: 1 }}>or</Divider> */}
                 <input type="number" hidden name='gender' value={genderToNumber(gender)} id='gender' />
-            </StyledToggleButtonGroup>
+            </ToggleButtonGroup>
         </>
     );
 }
