@@ -9,6 +9,7 @@ import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { CustomError } from '../Errors/CustomError';
 import { getCategories, getLoggedUserRef } from '../firebase/utills';
 import { InputField } from './Login';
+import { labels, windowLang } from '../utils';
 
 const filter = createFilterOptions();
 export default function Upload() {
@@ -199,18 +200,19 @@ export function NSFWToggleButton({ val }) {
     const [selected, setSelected] = useState(val || false);
     return (
         <>
-            <ToggleButton
-                value="checked"
-                selected={selected}
-                onChange={() => {
-                    setSelected(!selected);
-                }}
-                color='error'
-            // sx={{ borderColor: "" }}
-            >
-                NSFW
-            </ToggleButton>
-            <input type="checkbox" name='nsfw' checked={selected} hidden readOnly />
+        <input type="checkbox" name='nsfw' checked={selected} hidden readOnly />
+            <Tooltip title={'Contenido explicito'}  >
+                <ToggleButton
+                    value="checked"
+                    selected={selected}
+                    onChange={() => {
+                        setSelected(!selected);
+                    }}
+                    color='error'
+                >
+                    {labels[windowLang]['nsfw']}
+                </ToggleButton>
+            </Tooltip>
         </>
     )
 }
@@ -361,17 +363,17 @@ export function Visibility({ val }) {
                 name="visibility"
             >
                 <ToggleButton value="public">
-                    <Tooltip disableFocusListener title='Everyone can watch'>
+                    <Tooltip disableFocusListener title={labels[windowLang]['visibility-options']['public'].label}>
                         <Public />
                     </Tooltip>
                 </ToggleButton>
                 <ToggleButton value="private">
-                    <Tooltip disableFocusListener title="No one can watch">
+                    <Tooltip disableFocusListener title={labels[windowLang]['visibility-options']['private'].label}>
                         <PublicOff />
                     </Tooltip>
                 </ToggleButton>
                 <ToggleButton value="unlisted">
-                    <Tooltip disableFocusListener title="Just the one with link" >
+                    <Tooltip disableFocusListener title={labels[windowLang]['visibility-options']['no-listed'].label} >
                         <PlaylistRemove />
                     </Tooltip>
                 </ToggleButton>

@@ -4,6 +4,7 @@ import React from 'react'
 import { useOutletContext } from 'react-router-dom';
 import { getAudioUrl } from '../firebase/utills';
 import { Pause, PlayArrow } from '@mui/icons-material';
+import { labels, windowLang } from '../utils';
 
 export default function PlayButton(props) {
     const [initData, setInitData] = useOutletContext();
@@ -56,7 +57,7 @@ export default function PlayButton(props) {
     else {
         return (
             <>
-                <Button variant="contained" color="primary" size="small" onClick={handleClick}>{isPlaying ? "pause" : "play"}</Button>
+                <Button variant="contained" color="primary" size="small" onClick={handleClick}>{isPlaying ? labels[windowLang]['pause'] : labels[windowLang]['play']}</Button>
             </>
         )
     }

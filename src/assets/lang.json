@@ -96,7 +96,10 @@
         "comments": "comments",
         "no-posts": "no posts",
         "no-comments": "no comments",
-        "no-followers": "no followers"
+        "no-followers": "no followers",
+        "firebase-errors":{
+            "auth/weak-password": "Weak password must be greater than 6 characters"
+        }
     },
     "es": {
         "email": "correo",

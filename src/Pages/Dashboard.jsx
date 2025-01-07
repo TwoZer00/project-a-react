@@ -5,6 +5,7 @@ import { useLoaderData, useLocation, useNavigate } from 'react-router-dom'
 import DrawerDashboard from '../components/Dashboard/Drawer'
 import { getPostsUser, getUserData } from '../firebase/utills'
 import { theme } from './Init'
+import { labels, windowLang } from '../utils'
 
 export default function Dashboard() {
     const navigate = useNavigate();

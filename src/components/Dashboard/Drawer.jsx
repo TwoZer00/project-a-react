@@ -92,7 +92,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function DrawerDashboard({ user, postList }) {
     const theme = useTheme();
     const [open, setOpen] = useState(false);
-
+    const [title,setTitle] = useState(labels[windowLang]['dashboard']);
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -119,7 +119,7 @@ export default function DrawerDashboard({ user, postList }) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Dashboard
+                        {title}
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -234,7 +234,7 @@ export default function DrawerDashboard({ user, postList }) {
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
                 <DrawerHeader />
-                <Outlet context={[user, postList]} />
+                <Outlet context={[user, postList,setTitle]} />
             </Box>
         </Box>
     );

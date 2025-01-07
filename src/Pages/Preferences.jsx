@@ -18,7 +18,9 @@ export default function Preferences() {
         <Stack direction={'column'} gap={2} >
             <Stack direction={'row'}>
                 <Stack direction={'column'} sx={{ width: "100%" }} >
-                    <Typography variant="body1">{labels[windowLang]['nsfw']}</Typography>
+                    <Stack direction={'row'} gap={1} alignItems={'end'}>
+                        <Typography variant="body1">{labels[windowLang]['nsfw']}</Typography> {windowLang==='es' && <Typography variant="caption">({labels[windowLang]['nsfw-alt']})</Typography>}
+                    </Stack>
                     <Typography variant="caption">{labels[windowLang]['nsfw-sub']}</Typography>
                 </Stack>
                 <Switch

@@ -58,11 +58,6 @@ export const router = createBrowserRouter([
                 path: 'settings',
                 element: <Preferences />,
                 children: [
-                    // {
-                    //     path: 'profile',
-                    //     element: <EditProfile />
-                    // }
-                    ,
                     {
                         path: 'preferences',
                         element: <Preferences />

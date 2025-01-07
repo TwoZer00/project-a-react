@@ -4,14 +4,15 @@ import { Link as RouterLink, useOutletContext } from 'react-router-dom';
 import CommentDashboard from '../../components/Comments/CommentDashboard';
 import FollowerDashboard from '../../components/Follow/Follower';
 import { getComments } from '../../firebase/utills';
-import { countPlays } from '../../utils';
+import { countPlays, labels, windowLang } from '../../utils';
 
 export default function HomeDashboard() {
     const [posts, setPosts] = useState();
-    const [[user, setUser], postList] = useOutletContext();
+    const [[user, setUser], postList,setTitle] = useOutletContext();
     const [plays, setPlays] = useState(0);
     const [comments, setComments] = useState();
     useEffect(() => {
+        setTitle(labels[windowLang]['dashboard']);
         const fetchPosts = async () => {
             const [postLista, setPostLista] = postList;
             setPlays(countPlays(postLista));
@@ -31,29 +32,29 @@ export default function HomeDashboard() {
             <Box component={Paper} variant='outlined' p={1}>
                 <Stack direction={"row"} justifyContent={"space-around"}>
                     <Box textAlign={"center"}>
-                        <Typography variant="h2" fontSize={24}>Posts</Typography>
+                        <Typography variant="h2" fontSize={24}>{labels[windowLang]['posts']}</Typography>
                         <Typography variant="body1" >{(posts?.length.toLocaleString(window.navigator.language, { style: "decimal" }))}</Typography>
                     </Box>
                     <Divider orientation="vertical" flexItem variant="middle" />
                     <Box textAlign={"center"}>
-                        <Typography variant="h2" fontSize={24}>Plays</Typography>
+                        <Typography variant="h2" fontSize={24}>{labels[windowLang]['plays']}</Typography>
                         <Typography variant="body1">{plays.toLocaleString(window.navigator.language, { style: "decimal" })}</Typography>
                     </Box>
                     <Divider orientation="vertical" flexItem variant="middle" />
                     <Box textAlign={"center"}>
-                        <Typography variant="h2" fontSize={24}>Follower</Typography>
+                        <Typography variant="h2" fontSize={24}>{labels[windowLang]['followers']}</Typography>
                         <Typography variant="body1" >{user?.followers?.length.toLocaleString(window.navigator.language, { style: "decimal" }) || 0}</Typography>
                     </Box>
                 </Stack>
             </Box>
             <Box component={Paper} variant='outlined' p={1}>
-                <Typography variant="h2" fontSize={24}>Recent Posts</Typography>
+                <Typography variant="h2" fontSize={24}>{labels[windowLang]['latest-posts']}</Typography>
                 <Box>
-                    <List subheader={<ListSubheader sx={{ display: "flex", gap: 1, }} ><Typography variant="subtitle1" flexGrow={1} >Title</Typography>
-                        <Typography variant="subtitle1">Plays</Typography>
-                        <Typography variant="subtitle1">Comments</Typography></ListSubheader>} >
+                    <List subheader={<ListSubheader sx={{ display: "flex", gap: 1, }} ><Typography variant="subtitle1" flexGrow={1} >{labels[windowLang]['title']}</Typography>
+                        <Typography variant="subtitle1">{labels[windowLang]['plays']}</Typography>
+                        <Typography variant="subtitle1">{labels[windowLang]['comments']}</Typography></ListSubheader>} >
                         {posts?.slice(0, 4).map((post) => (
-                            <ListItem disablePadding>
+                            <ListItem disablePadding key={post.id}>
                                 <ListItemButton key={post.id} component={RouterLink} to={`/dashboard/post/${post.id}`}>
                                     <ListItemText primary={post.title} />
                                     <Stack direction={"row"} gap={1}>
@@ -64,30 +65,30 @@ export default function HomeDashboard() {
                             </ListItem>
                         ))}
                     </List>
-                    {posts?.length === 0 && <Typography variant="body1" textAlign={"center"}>No posts</Typography>}
+                    {posts?.length === 0 && <Typography variant="body1" textAlign={"center"}>{labels[windowLang]['no-posts']}</Typography>}
                 </Box>
             </Box>
             <Box component={Paper} variant='outlined' p={1}>
-                <Typography variant="h2" fontSize={24}>Latest comments</Typography>
+                <Typography variant="h2" fontSize={24}>{labels[windowLang]['latest-comments']}</Typography>
                 <List>
                     {
                         comments?.length > 0 ? comments?.slice(0, 4).map((item) => {
                             return <CommentDashboard key={item.id} data={item} />;
                         })
                             :
-                            <Typography variant="body1" textAlign={"center"}>No comments</Typography>
+                            <Typography variant="body1" textAlign={"center"}>{labels[windowLang]['no-comments']}</Typography>
                     }
                 </List>
             </Box>
             <Box component={Paper} variant='outlined' p={1}>
-                <Typography variant="h2" fontSize={24}>Latest followers</Typography>
+                <Typography variant="h2" fontSize={24}>{labels[windowLang]['latest-followers']}</Typography>
                 <List>
                     {
                         user?.followers?.length > 0 ? user?.followers?.slice(0, 4).map((item) => {
                             return <FollowerDashboard key={item.id} data={item} />;
                         })
                             :
-                            <Typography variant="body1" textAlign={"center"}>No followers</Typography>
+                            <Typography variant="body1" textAlign={"center"}>{labels[windowLang]['no-followers']}</Typography>
                     }
                 </List>
             </Box>

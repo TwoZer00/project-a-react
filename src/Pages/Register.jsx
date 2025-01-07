@@ -4,7 +4,7 @@ import { Accessibility, FireExtinguisher, Man, Park, PedalBike, SportsRugby, Wom
 import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { labels, windowLang } from '../utils'
 import { theme } from './Init'
@@ -21,14 +21,6 @@ export default function Register() {
         validateForm(formElements, tempE);
         validatePassword([formElements.password, formElements.confirmPassword], tempE);
         validateUsername(formElements.username, tempE);
-        // const userData = {
-        //     username: formElements.username.value,
-        //     description: formElements.description.value,
-        //     gender: formElements.gender.value,
-        //     // creationTime: getAuth().currentUser.metadata.creationTime,
-        // }
-        // console.log(userData);
-        // console.log(Array.from(e.target.querySelector("#gender").children).find(item => console.log(item)));
         if (Object.keys(tempE).length === 0) {
             try {
                 await createUserWithEmailAndPassword(getAuth(), formData.get("email"), formData.get("password"));
@@ -45,6 +37,9 @@ export default function Register() {
             }
             catch (err) {
                 console.log(err);
+                tempE.password = (labels[windowLang]);
+                setError(tempE);
+                return;
             }
         }
         setError(tempE)
