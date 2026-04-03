@@ -9,7 +9,7 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY,
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: "af-project-3d9e5.firebaseapp.com",
     databaseURL: "https://af-project-3d9e5.firebaseio.com",
     projectId: "af-project-3d9e5",
@@ -25,8 +25,8 @@ if (location.hostname === "localhost" || location.hostname.startsWith("192") ) {
     const auth = getAuth();
     const db = getFirestore();
     const storage = getStorage();
-    connectFirestoreEmulator(db, (import.meta.env.VITE_LOCAL_FIREBASE || process.env.VITE_LOCAL_FIREBASE), 8080);
-    connectAuthEmulator(auth,`http://${(import.meta.env.VITE_LOCAL_FIREBASE || process.env.VITE_LOCAL_FIREBASE)}:9099`, { disableWarnings: true });
-    // Point to the Storage emulator running on localhost.
-    connectStorageEmulator(storage, (import.meta.env.VITE_LOCAL_FIREBASE || process.env.VITE_LOCAL_FIREBASE), 9199);
+    const localHost = import.meta.env.VITE_LOCAL_FIREBASE;
+    connectFirestoreEmulator(db, localHost, 8080);
+    connectAuthEmulator(auth, `http://${localHost}:9099`, { disableWarnings: true });
+    connectStorageEmulator(storage, localHost, 9199);
 } 

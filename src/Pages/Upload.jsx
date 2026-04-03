@@ -198,6 +198,7 @@ export default function Upload() {
 
 export function NSFWToggleButton({ val }) {
     const [selected, setSelected] = useState(val || false);
+    useEffect(() => { if (val !== undefined) setSelected(val); }, [val]);
     return (
         <>
         <input type="checkbox" name='nsfw' checked={selected} hidden readOnly />
@@ -344,6 +345,7 @@ async function uploadPost(post, postRef, filePath, tags) {
 
 export function Visibility({ val }) {
     const [visibility, setVisibility] = useState(val || 'public');
+    useEffect(() => { if (val) setVisibility(val); }, [val]);
 
     const handleChange = (event, newVisibility) => {
         if (newVisibility !== null) {

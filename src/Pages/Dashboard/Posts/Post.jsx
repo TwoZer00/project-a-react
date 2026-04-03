@@ -9,18 +9,23 @@ import { InputField } from '../../Login';
 import { NSFWToggleButton, Visibility } from '../../Upload';
 import { labels, windowLang } from '../../../utils';
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export default function DashboardPost() {
     const { id } = useParams();
     const [post, setPost] = useState()
     const [newData, setNewData] = useState()
+    const [open, setOpen] = useState(true);
     const formRef = useRef();
     const navigate = useNavigate();
     const handleClose = () => {
-        navigate("../",{ replace: true,  });
-    }
-    const Transition = React.forwardRef(function Transition(props, ref) {
-        return <Slide direction="up" ref={ref} {...props} />;
-    });
+        setOpen(false);
+    };
+    const handleExited = () => {
+        navigate("../", { replace: true });
+    };
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -42,9 +47,10 @@ export default function DashboardPost() {
         <>
             <Dialog
                 fullScreen
-                open={Boolean(id)}
+                open={open}
                 onClose={handleClose}
                 TransitionComponent={Transition}
+                TransitionProps={{ onExited: handleExited }}
             >
                 <AppBar sx={{ position: 'relative' }}>
                     <Toolbar>

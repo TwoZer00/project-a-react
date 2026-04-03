@@ -127,8 +127,8 @@ export function InputField(props) {
     else {
         return (
             <FormControl variant='outlined' fullWidth>
-                <InputLabel htmlFor={props.id} error={!!props.error}>{capitalizeFirstLetter(props.label)}</InputLabel>
-                <OutlinedInput id={props.id} label={capitalizeFirstLetter(props.label)} required={props.required} name={props.name} type={props.type} error={!!props.error} {...props} />
+                <InputLabel htmlFor={props.id} error={!!props.error} shrink={!!props.value || undefined}>{capitalizeFirstLetter(props.label)}</InputLabel>
+                <OutlinedInput id={props.id} label={capitalizeFirstLetter(props.label)} required={props.required} name={props.name} type={props.type} error={!!props.error} notched={!!props.value || undefined} {...props} />
                 {!!props.error?.message && <FormHelperText error={!!props.error} sx={{ textAlign: "justify" }}>{props.error.message || props.error}</FormHelperText>}
             </FormControl>
         )

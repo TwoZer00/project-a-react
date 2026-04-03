@@ -15,6 +15,13 @@ export default function PostForm({ data, setData, formRefa }) {
     const formRef = useRef();
     const [categoryVal, setCategoryVal] = useState(data?.category?.id);
     const [tagInput, setTagInput] = useState(data?.tags ? (data?.tags).map(item => decodeURI(item.id)) : []);
+    useEffect(() => {
+        if (data) {
+            setNewData(data);
+            setCategoryVal(data?.category?.id);
+            setTagInput(data?.tags ? data.tags.map(item => decodeURI(item.id)) : []);
+        }
+    }, [data]);
     const navigate = useNavigate();
     const [error, setError] = useState({});
     const handleChange = (event) => {
@@ -134,7 +141,7 @@ export default function PostForm({ data, setData, formRefa }) {
                     </Select>
                 </FormControl>
             </Stack>
-            <TextField label={"Description"} multiline rows={4} type='text' name='desc' value={newData?.desc}
+            <TextField label={"Description"} multiline rows={4} type='text' name='desc' value={newData?.desc || ''} InputLabelProps={{ shrink: !!newData?.desc }}
                 onChange={
                     (event) => {
                         setNewData((val) => {

@@ -19,6 +19,7 @@ import Register from "../Pages/Register";
 import Settings from "../Pages/Settings";
 import Tags from "../Pages/Tags";
 import Upload from "../Pages/Upload";
+import Error from "../Pages/Error";
 import { app } from '../firebase/init';
 import { getCategories, getPostData } from "../firebase/utills";
 

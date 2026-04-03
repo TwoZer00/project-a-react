@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, getFirestore, increment, orderBy, query, runTransaction, setDoc, updateDoc, where, writeBatch } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, getFirestore, increment, limit as firestoreLimit, orderBy, query, runTransaction, setDoc, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { CustomError } from '../Errors/CustomError';
 export async function getPostData(id) {
@@ -93,7 +93,7 @@ export async function getPostFromCategory(category) {
 export async function setPlay(postId) {
     const db = getFirestore();
     const postRef = doc(db, "post", postId);
-    const docSnap = await updateDoc(postRef, { plays: increment(1) });
+    await updateDoc(postRef, { plays: increment(1) });
 }
 export async function setUser(userId, user) {
     const db = getFirestore();
@@ -129,7 +129,9 @@ export async function getUsername(id) {
 export async function getPostsUser(id, size) {
     const db = getFirestore();
     const postsRef = collection(db, "post");
-    const q = query(postsRef, where('indexed', '==', true), where('user', '==', doc(db, "user", id)));
+    const constraints = [where('indexed', '==', true), where('user', '==', doc(db, "user", id))];
+    if (size) constraints.push(firestoreLimit(size));
+    const q = query(postsRef, ...constraints);
     const postsSnapshot = await getDocs(q);
     const posts = postsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
     return posts;
@@ -140,7 +142,6 @@ export async function getTags() {
     const tagsRef = collection(db, "tag");
     const tagsSnapshot = await getDocs(tagsRef);
     const tags = tagsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
-    console.log(tags);
     return tags;
 }
 export async function getPostsUserCount(id) {
