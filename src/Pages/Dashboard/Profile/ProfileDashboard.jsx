@@ -84,7 +84,8 @@ export default function ProfileDashboard() {
                             fullWidth
                             id="username"
                             label={labels[windowLang]['username']}
-                            value={user?.username}
+                            value={user?.username || ''}
+                            InputLabelProps={{ shrink: !!user?.username }}
                             onChange={(event) => {
                                 setUser((value) => {
                                     const temp = { ...value };
@@ -102,7 +103,8 @@ export default function ProfileDashboard() {
                             label={labels[windowLang]['description']}
                             multiline
                             rows={4}
-                            value={user?.description}
+                            value={user?.description || ''}
+                            InputLabelProps={{ shrink: !!user?.description }}
                             onChange={(event) => {
                                 setUser((value) => {
                                     const temp = { ...value };

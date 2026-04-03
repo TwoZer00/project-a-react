@@ -128,13 +128,14 @@ export default function PostForm({ data, setData, formRefa }) {
                     )}
                 />
                 <FormControl sx={{ flex: "none", width: '15ch' }}>
-                    <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                    <InputLabel id="demo-simple-select-label" shrink={!!categoryVal}>Category</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         label="Category"
-                        value={categoryVal}
+                        value={categoryVal || ''}
                         name='category'
+                        notched={!!categoryVal}
                         onChange={handleChange}
                     >
                         {category.length > 0 && category.map((item, index) => <MenuItem key={item.title} value={item.title}>{capitalizeFirstLetter(item.title)}</MenuItem>)}
@@ -157,49 +158,5 @@ export default function PostForm({ data, setData, formRefa }) {
                 <Button variant="contained" children={"save"} onClick={handleSubmit} sx={{ height: "fit-content" }} />
             </Box>
         </Stack >
-    )
-}
-
-const TagsInput = ()=>{
-    return (
-        <Stack direction={"row"} gap={2}>
-                <Autocomplete
-                    fullWidth
-                    multiple
-                    id="tags"
-                    value={[...tagInput]}
-                    freeSolo
-                    options={tags.map((option) => decodeURI(option.title))}
-                    renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-                        ))
-                    }
-                    onChange={(event, value, reason) => {
-                        setTagInput([...value])
-                    }}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant="outlined"
-                            label="Tags"
-                            placeholder="Tag"
-                        />
-                    )}
-                />
-                <FormControl sx={{ flex: "none", width: '15ch' }}>
-                    <InputLabel id="demo-simple-select-label">Category</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="Category"
-                        value={categoryVal}
-                        name='category'
-                        onChange={handleChange}
-                    >
-                        {category.length > 0 && category.map((item, index) => <MenuItem key={item.title} value={item.title}>{capitalizeFirstLetter(item.title)}</MenuItem>)}
-                    </Select>
-                </FormControl>
-            </Stack>
     )
 }

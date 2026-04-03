@@ -98,7 +98,8 @@ export default function EditProfile() {
                                 fullWidth
                                 id="outlined-controlled"
                                 label="Username"
-                                value={user?.username}
+                                value={user?.username || ''}
+                                InputLabelProps={{ shrink: !!user?.username }}
                                 onChange={(event) => {
                                     setUser((value) => {
                                         const temp = { ...value };
@@ -114,7 +115,8 @@ export default function EditProfile() {
                             label="Description"
                             multiline
                             rows={4}
-                            value={user?.description}
+                            value={user?.description || ''}
+                            InputLabelProps={{ shrink: !!user?.description }}
                             onChange={(event) => {
                                 setUser((value) => {
                                     const temp = { ...value };

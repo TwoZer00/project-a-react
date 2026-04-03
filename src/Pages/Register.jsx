@@ -4,7 +4,7 @@ import { Accessibility, FireExtinguisher, Man, Park, PedalBike, SportsRugby, Wom
 import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { labels, windowLang } from '../utils'
 import { theme } from './Init'
@@ -105,6 +105,7 @@ function validatePassword(passwords, error) {
 
 export function CustomToggleButton(props) {
     const [gender, setGender] = useState(props.value || 'other');
+    useEffect(() => { if (props.value) setGender(props.value); }, [props.value]);
     const otherGender = Math.random() < 0.5 ? 'male' : 'female';
     //a variable that contains a random rumber between 0 and 5
     const randomNumber = useRef(Math.floor(Math.random() * 3));
