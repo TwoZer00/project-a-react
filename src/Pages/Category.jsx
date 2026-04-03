@@ -52,6 +52,7 @@ export default function Category() {
 
     return (
         <>
+            <Typography variant="h5" fontWeight={600} sx={{ ':first-letter': { textTransform: 'uppercase' }, mb: 1 }}>{category}</Typography>
             <Stack direction={"row"} gap={2} flexWrap={"wrap"}>
             {posts?.length > 0 && posts.map(post => <PostCard key={post.id} postData={post} />)}
                 {posts?.length === 0 && <EmptyState icon="📂" message={`No posts in "${category}" yet`} actionLabel="Browse categories" actionTo="/categories" />}

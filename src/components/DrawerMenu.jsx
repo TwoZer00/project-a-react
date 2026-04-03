@@ -1,5 +1,5 @@
 import { useTheme } from '@emotion/react';
-import { AccountCircleOutlined, Dashboard, Logout, Mic, MoreVert, Radio, Settings } from '@mui/icons-material';
+import { AccountCircleOutlined, Bookmark, Category, Dashboard, History, Logout, Mic, MoreVert, Radio, Settings } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -102,6 +102,24 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                         <Settings fontSize="small" />
                     </ListItemIcon>
                     {labels[windowLang]['settings']}
+                </MenuItem>
+                <MenuItem component={RouterLink} to={"categories"} sx={{textTransform:"capitalize"}} >
+                    <ListItemIcon>
+                        <Category fontSize="small" />
+                    </ListItemIcon>
+                    {labels[windowLang]['category']}
+                </MenuItem>
+                <MenuItem component={RouterLink} to={"history"} >
+                    <ListItemIcon>
+                        <History fontSize="small" />
+                    </ListItemIcon>
+                    {labels[windowLang]['history']}
+                </MenuItem>
+                <MenuItem component={RouterLink} to={"bookmarks"} >
+                    <ListItemIcon>
+                        <Bookmark fontSize="small" />
+                    </ListItemIcon>
+                    {labels[windowLang]['bookmarks']}
                 </MenuItem>
                 {auth && <MenuItem component={RouterLink} to={"dashboard"}>
                     <ListItemIcon>

@@ -1,240 +1,118 @@
-import { Bookmark, Category, CategoryOutlined, History, Home, HomeOutlined, Upload } from '@mui/icons-material';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import MenuIcon from '@mui/icons-material/Menu';
-import { LinearProgress, Tooltip, useMediaQuery } from '@mui/material';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
+import { ArrowBack, Home, Upload } from '@mui/icons-material';
+import { Box, CssBaseline, IconButton, LinearProgress, Stack, Toolbar, Typography } from '@mui/material';
+import AppBar from '@mui/material/AppBar';
 import { getAuth, signOut } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import CustomNotification, { SlideTransition } from './CustomNotification';
 import DrawerMenu from './DrawerMenu';
 import PlayerInDrawer from './PlayerInDrawer';
 import SearchUsers from './SearchUsers';
-import { AppBar, Drawer, DrawerHeader } from './StyledDrawer';
-import { labels, windowLang } from '../utils';
 
 export default function CustomDrawer({ outlet, title, audio, loading, data }) {
-    const theme = useTheme();
     const [initData, setInitData] = data;
     const [error, setError] = useState();
-    const [open, setOpen] = useState(useMediaQuery(theme.breakpoints.up('lg')));
-    const matches = useMediaQuery(theme.breakpoints.up('lg'));
     const location = useLocation();
-    const currentPath = location.pathname;
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-
-    useEffect(() => {
-        if (!matches) {
-            handleDrawerClose();
-        }
-        else {
-            handleDrawerOpen();
-        }
-    }, [matches])
+    const navigate = useNavigate();
+    const isHome = location.pathname === '/';
 
     useEffect(() => {
         if (initData?.notification) {
             setError({ open: true, Transition: SlideTransition });
             setTimeout(() => {
                 setInitData(prev => {
-                    const temp = { ...prev }
-                    delete temp.notification
-                    return temp
-                })
-            }, initData.notification.duration || 6500)
+                    const temp = { ...prev };
+                    delete temp.notification;
+                    return temp;
+                });
+            }, initData.notification.duration || 6500);
         }
-    }, [initData?.notification])
+    }, [initData?.notification]);
 
     return (
-        <>
-            <Box sx={{ display: 'flex', position: "relative" }}>
-                <CssBaseline />
-                <AppBar position="fixed" open={open}>
-                    {(loading || initData?.loading) &&
-                        <LinearProgress sx={{ position: "absolute", top: "0", width: "100vw" }} variant={initData?.loading?.progress ? "determinate" : "indeterminate"} value={initData?.loading?.progress} color='primary' />
-                    }
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            edge="start"
-                            sx={{
-                                marginRight: 5,
-                                ...(open && { display: 'none' }),
-                            }}
-                        >
-                            <MenuIcon />
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <CssBaseline />
+            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.modal - 1 }}>
+                {(loading || initData?.loading) && (
+                    <LinearProgress
+                        sx={{ position: 'absolute', top: 0, width: '100%' }}
+                        variant={initData?.loading?.progress ? 'determinate' : 'indeterminate'}
+                        value={initData?.loading?.progress}
+                        color="primary"
+                    />
+                )}
+                <Toolbar sx={{ gap: 1 }}>
+                    {isHome ? (
+                        <IconButton color="inherit" component={RouterLink} to="/" edge="start">
+                            <Home />
                         </IconButton>
-                        <Typography variant="h1" noWrap textAlign={"center"} flex={1} textTransform={"uppercase"} fontSize={20} letterSpacing={1} fontWeight={500}>
-                            {title}
-                        </Typography>
-                        <SearchUsers />
-                        <AvatarInMenu username={initData?.user?.username} avatarURL={initData?.user?.avatarURL} />
-                    </Toolbar>
-                </AppBar>
-                <Drawer variant="permanent" open={open} sx={{ height: "100vh" }}>
-                    <DrawerHeader>
-                        <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                    ) : (
+                        <IconButton color="inherit" onClick={() => navigate(-1)} edge="start">
+                            <ArrowBack />
                         </IconButton>
-                    </DrawerHeader>
-                    <Divider />
-                    <List>
-                        <ListItem disablePadding sx={{ display: 'block' }}>
-                            <Tooltip title={!open && labels[windowLang]['home']} placement="right" >
-                                <ListItemButton
-                                    component={RouterLink}
-                                    to="/"
-                                    selected={currentPath === '/'}
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
-                                    }}>
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : 'auto',
-                                            justifyContent: 'center',
-                                        }}>
-                                        {theme.palette.mode === "dark" ? <Home /> : <HomeOutlined />}
-                                    </ListItemIcon>
-                                    <ListItemText primary={labels[windowLang]['home']} sx={{ opacity: open ? 1 : 0 }} />
-                                </ListItemButton>
-                            </Tooltip>
-                            <Tooltip title={!open && labels[windowLang]['category']} placement="right">
-                                <ListItemButton
-                                    component={RouterLink}
-                                    to="/categories"
-                                    selected={currentPath.startsWith('/categories')}
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
-                                    }}>
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : 'auto',
-                                            justifyContent: 'center',
-                                        }}>
-                                        {theme.palette.mode === "dark" ? <Category /> : <CategoryOutlined />}
-                                    </ListItemIcon>
-                                    <ListItemText primary={labels[windowLang]['category']} sx={{ ":first-letter":{textTransform:"uppercase"},opacity: open ? 1 : 0 }} />
-                                </ListItemButton>
-                            </Tooltip>
-                            <Tooltip title={!open && labels[windowLang]['history']} placement="right">
-                                <ListItemButton
-                                    component={RouterLink}
-                                    to="/history"
-                                    selected={currentPath === '/history'}
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
-                                    }}>
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : 'auto',
-                                            justifyContent: 'center',
-                                        }}>
-                                        <History />
-                                    </ListItemIcon>
-                                    <ListItemText primary={labels[windowLang]['history']} sx={{ opacity: open ? 1 : 0 }} />
-                                </ListItemButton>
-                            </Tooltip>
-                            <Tooltip title={!open && labels[windowLang]['bookmarks']} placement="right">
-                                <ListItemButton
-                                    component={RouterLink}
-                                    to="/bookmarks"
-                                    selected={currentPath === '/bookmarks'}
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
-                                    }}>
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : 'auto',
-                                            justifyContent: 'center',
-                                        }}>
-                                        <Bookmark />
-                                    </ListItemIcon>
-                                    <ListItemText primary={labels[windowLang]['bookmarks']} sx={{ opacity: open ? 1 : 0 }} />
-                                </ListItemButton>
-                            </Tooltip>
-                        </ListItem>
-                    </List>
-                    <List sx={{ height: "100%", display: "flex", flexDirection: "column" }} >
-                        <ListItem sx={{ mt: "auto" }}>
-                            <PlayerInDrawer open={open} audio={audio} data={data} />
-                        </ListItem>
-                    </List>
-                </Drawer>
-                <Box component="main" sx={{ flexGrow: 1, height: "100vh", display: "flex", flexDirection: "column", position: 'relative', px: 2, py: 2, overflow: "auto" }}>
-                    <DrawerHeader />
-                    {!loading && outlet}
-                    <CustomNotification val={error} setFlag={setError} type={initData?.notification?.type} msg={initData?.notification?.msg} />
-                </Box >
-            </Box >
-        </>
+                    )}
+                    <Typography
+                        variant="h6"
+                        component={RouterLink}
+                        to="/"
+                        sx={{
+                            textDecoration: 'none',
+                            color: 'inherit',
+                            textTransform: 'uppercase',
+                            letterSpacing: 1,
+                            fontWeight: 600,
+                            flexShrink: 0,
+                            display: { xs: 'none', sm: 'block' }
+                        }}
+                    >
+                        A project
+                    </Typography>
+                    <Box sx={{ flex: 1 }} />
+                    <SearchUsers />
+                    <AvatarInMenu username={initData?.user?.username} avatarURL={initData?.user?.avatarURL} />
+                </Toolbar>
+            </AppBar>
+            <Toolbar />
+            <Box
+                component="main"
+                sx={{
+                    flex: 1,
+                    px: { xs: 1.5, sm: 3 },
+                    py: 2,
+                    pb: audio ? 10 : 2,
+                    maxWidth: 'lg',
+                    width: '100%',
+                    mx: 'auto'
+                }}
+            >
+                {!loading && outlet}
+            </Box>
+            <PlayerInDrawer audio={audio} data={data} />
+            <CustomNotification val={error} setFlag={setError} type={initData?.notification?.type} msg={initData?.notification?.msg} />
+        </Box>
     );
 }
 
-const AvatarInMenu = ({ username, avatarURL }) => {
-    const [anchorEl, setAnchorEl] = useState(null);
+function AvatarInMenu({ username, avatarURL }) {
     const [auth, setAuth] = useState(getAuth().currentUser);
-    const handleChange = (event) => {
-        setAuth(event.target.checked);
-    };
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
     const logout = async () => {
         await signOut(getAuth());
         setAuth();
-    }
-    useEffect(() => {
-        if (getAuth().currentUser) {
-            setAuth(getAuth().currentUser)
-        }
-        else {
-            setAuth();
-        }
-    }
-        , [getAuth().currentUser])
-    return (
-        <>
-            {auth && <IconButton component={RouterLink} to={"/upload"} color='inherit'>
-                <Upload />
-            </IconButton>}
-            <DrawerMenu auth={auth} username={username} avatarURL={avatarURL} logout={logout} />
+    };
 
-        </>
-    )
+    useEffect(() => {
+        setAuth(getAuth().currentUser || undefined);
+    }, [getAuth().currentUser]);
+
+    return (
+        <Stack direction="row" gap={0.5} alignItems="center">
+            {auth && (
+                <IconButton component={RouterLink} to="/upload" color="inherit">
+                    <Upload />
+                </IconButton>
+            )}
+            <DrawerMenu auth={auth} username={username} avatarURL={avatarURL} logout={logout} />
+        </Stack>
+    );
 }

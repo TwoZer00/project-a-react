@@ -6,7 +6,8 @@ import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import EmptyState from '../components/EmptyState';
 import PostCard from '../components/PostCard';
-import PostCardSkeleton from '../components/PostCardSkeleton';
+import PostListItem from '../components/PostListItem';
+import PostListItemSkeleton from '../components/PostListItemSkeleton';
 import { getAudioUrl, getPostData, getUserData } from '../firebase/utills';
 import { labels, windowLang } from '../utils';
 
@@ -93,10 +94,10 @@ export default function Bookmarks() {
             {!loading && posts.length === 0 && (
                 <EmptyState icon="🔖" message={labels[windowLang]['no-bookmarks']} />
             )}
-            <Box sx={{ columnCount: "auto", columnWidth: { xs: "100%", sm: "300px" } }}>
+            <Box>
                 {loading
-                    ? Array.from({ length: 3 }).map((_, i) => <PostCardSkeleton key={i} />)
-                    : posts.map(post => <PostCard key={post.id} postData={post} />)
+                    ? Array.from({ length: 3 }).map((_, i) => <PostListItemSkeleton key={i} />)
+                    : posts.map(post => <PostListItem key={post.id} postData={post} />)
                 }
             </Box>
         </Stack>

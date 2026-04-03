@@ -1,61 +1,45 @@
-import { Pause, PauseOutlined, PlayArrow, PlayArrowOutlined, QueueMusic, Radio, SkipNextOutlined, SkipPreviousOutlined, Stop } from '@mui/icons-material';
-import { Box, Chip, Collapse, IconButton, LinearProgress, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import { theme } from '../Pages/Init';
 import { getAudioUrl, getAvatarImage, getInterludesByType, getUserData, setPlay } from '../firebase/utills';
-import AudioCover from './AudioCover';
+import MiniPlayer from './MiniPlayer';
 
-export default function PlayerInDrawer({ open, audio, data }) {
+export default function PlayerInDrawer({ audio, data }) {
     const [initData, setInitData] = data;
     const audioRef = useRef();
     const [audioProgress, setAudioProgress] = useState(0);
-    const [progressTime, setProgressTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [username, setUsername] = useState();
     const [played, setPlayed] = useState(false);
-    const [showQueue, setShowQueue] = useState(false);
     const [user, setUser] = useState();
+
     const handlePlay = () => {
         if (audioRef.current.paused) {
             audioRef.current.play();
             setIsPlaying(true);
-            setInitData((value) => {
-                const temp = { ...value }
-                if (temp?.postInPlay) {
-                    temp.postInPlay.isAudioInProgress = [true];
-                }
-                return temp;
-            })
+            setInitData(val => ({ ...val, postInPlay: { ...val.postInPlay, isAudioInProgress: [true] } }));
         } else {
             audioRef.current.pause();
             setIsPlaying(false);
-            setInitData((value) => {
-                const temp = { ...value }
-                if (temp?.postInPlay) {
-                    temp.postInPlay.isAudioInProgress = [false];
-                }
-                return temp;
-            })
+            setInitData(val => ({ ...val, postInPlay: { ...val.postInPlay, isAudioInProgress: [false] } }));
         }
-    }
+    };
+
     const handleProgress = () => {
-        const temp = audioRef.current.currentTime / audioRef.current.duration;
-        setAudioProgress(temp * 100);
+        const pct = (audioRef.current.currentTime / audioRef.current.duration) * 100;
+        setAudioProgress(pct);
         updatePositionState();
-        if (getCurrentPorcentage() > 30) setPlayed(true);
-        setInitData((value) => {
-            const t = { ...value };
-            if (t?.postInPlay) t.postInPlay.progress = temp * 100;
+        if (pct > 30) setPlayed(true);
+        setInitData(val => {
+            const t = { ...val };
+            if (t?.postInPlay) t.postInPlay.progress = pct;
             return t;
         });
-    }
+    };
+
     const handleEnded = async () => {
         setIsPlaying(false);
         setPlayed(false);
         setAudioProgress(0);
         audioRef.current.currentTime = 0;
 
-        // Auto-advance queue (station mode)
         const queue = initData?.station?.queue;
         const currentIndex = initData?.station?.currentIndex;
         if (queue && currentIndex !== undefined && currentIndex < queue.length - 1) {
@@ -63,7 +47,6 @@ export default function PlayerInDrawer({ open, audio, data }) {
             return;
         }
 
-        // Single track ended — try to play author outro/credit
         if (!initData?.station && audio?.userId && !audio?.isInterlude) {
             try {
                 const outros = await getInterludesByType(audio.userId, 'outro');
@@ -72,17 +55,12 @@ export default function PlayerInDrawer({ open, audio, data }) {
                 if (candidates.length > 0) {
                     const pick = candidates[Math.floor(Math.random() * candidates.length)];
                     const url = await getAudioUrl(pick.filePath);
-                    setInitData((val) => ({
+                    setInitData(val => ({
                         ...val,
                         postInPlay: {
-                            title: pick.title,
-                            desc: '',
-                            id: pick.id,
-                            userId: audio.userId,
-                            isAudioInProgress: [false],
-                            audioUrl: url,
-                            username: audio.username,
-                            isInterlude: true
+                            title: pick.title, desc: '', id: pick.id,
+                            userId: audio.userId, isAudioInProgress: [false],
+                            audioUrl: url, username: audio.username, isInterlude: true
                         }
                     }));
                     return;
@@ -90,32 +68,27 @@ export default function PlayerInDrawer({ open, audio, data }) {
             } catch (e) { console.error(e); }
         }
 
-        setInitData((value) => {
-            const temp = { ...value }
-            if (temp?.postInPlay) {
-                temp.postInPlay.isAudioInProgress = [false];
-            }
+        setInitData(val => {
+            const temp = { ...val };
+            if (temp?.postInPlay) temp.postInPlay.isAudioInProgress = [false];
             if (temp?.station) delete temp.station;
             return temp;
-        })
-    }
+        });
+    };
 
     const playFromQueue = async (index) => {
         const queue = initData?.station?.queue;
-        if (!queue || !queue[index]) return;
+        if (!queue?.[index]) return;
         const item = queue[index];
         const url = await getAudioUrl(item.filePath);
 
         if (item.isInterlude) {
-            setInitData((val) => ({
+            setInitData(val => ({
                 ...val,
                 postInPlay: {
-                    title: item.title,
-                    desc: '',
-                    id: item.id,
+                    title: item.title, desc: '', id: item.id,
                     userId: val.station?.queue?.[0]?.user?.id || '',
-                    isAudioInProgress: [false],
-                    audioUrl: url,
+                    isAudioInProgress: [false], audioUrl: url,
                     username: val.station?.name?.replace("'s station", '') || '',
                     isInterlude: true
                 },
@@ -123,147 +96,109 @@ export default function PlayerInDrawer({ open, audio, data }) {
             }));
         } else {
             const userData = await getUserData(item.user.id);
-            setInitData((val) => ({
+            setInitData(val => ({
                 ...val,
                 postInPlay: {
-                    title: item.title,
-                    desc: item.desc,
-                    id: item.id,
-                    userId: item.user.id,
-                    isAudioInProgress: [false],
-                    audioUrl: url,
-                    username: userData.username,
+                    title: item.title, desc: item.desc, id: item.id,
+                    userId: item.user.id, isAudioInProgress: [false],
+                    audioUrl: url, username: userData.username,
                     cover: item.coverURL || userData.avatarURL
                 },
                 station: { ...val.station, currentIndex: index }
             }));
         }
-    }
+    };
 
     const handleSkipNext = () => {
-        const queue = initData?.station?.queue;
-        const currentIndex = initData?.station?.currentIndex;
-        if (queue && currentIndex !== undefined && currentIndex < queue.length - 1) {
-            playFromQueue(currentIndex + 1);
-        }
-    }
+        const { queue, currentIndex } = initData?.station || {};
+        if (queue && currentIndex < queue.length - 1) playFromQueue(currentIndex + 1);
+    };
 
     const handleSkipPrev = () => {
-        const queue = initData?.station?.queue;
-        const currentIndex = initData?.station?.currentIndex;
-        if (queue && currentIndex !== undefined && currentIndex > 0) {
-            playFromQueue(currentIndex - 1);
-        }
-    }
+        const { queue, currentIndex } = initData?.station || {};
+        if (queue && currentIndex > 0) playFromQueue(currentIndex - 1);
+    };
 
     const handleStopStation = () => {
         audioRef.current.pause();
         setIsPlaying(false);
-        setInitData((val) => {
+        setInitData(val => {
             const temp = { ...val };
             delete temp.station;
             if (temp?.postInPlay) temp.postInPlay.isAudioInProgress = [false];
             return temp;
         });
-    }
+    };
+
+    const handleSeek = (pct) => {
+        audioRef.current.currentTime = (pct / 100) * audioRef.current.duration;
+        setAudioProgress(pct);
+    };
+
     const handleLoaded = async () => {
-        const duration = audioRef.current.duration;
         audioRef.current.currentTime = 0;
         audioRef.current.play();
         setIsPlaying(true);
-        setProgressTime(audioRef.current.currentTime);
-        setInitData((value) => {
-            const temp = { ...value }
-            if (temp?.postInPlay) {
-                temp.postInPlay.isAudioInProgress = [true];
-            }
-            let history = [];
-            if (temp.history) history = [...temp.history]
+        setInitData(val => {
+            const temp = { ...val };
+            if (temp?.postInPlay) temp.postInPlay.isAudioInProgress = [true];
+            let history = temp.history ? [...temp.history] : [];
             history.unshift(audio);
             temp.history = history;
             return temp;
-        })
+        });
         if ("mediaSession" in navigator) {
             const cover = await getAvatarImage(user?.avatarURL || audio?.cover);
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: `${audio?.title}`,
+                title: audio?.title,
                 artist: audio?.username,
-                artwork: [
-                    {
-                        src: `${cover}`,
-                        sizes: "512x512",
-                        type: "image/jpeg",
-                    },
-                    {
-                        src: `${cover}`,
-                        sizes: "30x30",
-                        type: "image/jpeg",
-                    },
-                ],
+                artwork: [{ src: `${cover}`, sizes: "512x512", type: "image/jpeg" }],
             });
         }
+    };
 
-    }
     useEffect(() => {
-        if (initData?.postInPlay?.isAudioInProgress[1]) {
-            handlePlay()
-        }
+        if (initData?.postInPlay?.isAudioInProgress[1]) handlePlay();
     }, [initData?.postInPlay?.isAudioInProgress[1]]);
 
     useEffect(() => {
-        navigator.mediaSession.setActionHandler("play", () => {
+        const play = () => {
             audioRef.current.play();
-            setIsPlaying((val) => !val);
-            setInitData((value) => {
-                const temp = { ...value }
-                if (temp?.postInPlay) {
-                    temp.postInPlay.isAudioInProgress = [true];
-                }
-                return temp;
-            })
-        });
-        navigator.mediaSession.setActionHandler("pause", () => {
+            setIsPlaying(true);
+            setInitData(val => ({ ...val, postInPlay: { ...val.postInPlay, isAudioInProgress: [true] } }));
+        };
+        const pause = () => {
             audioRef.current.pause();
-            setIsPlaying((val) => !val);
-            setInitData((value) => {
-                const temp = { ...value }
-                if (temp?.postInPlay) {
-                    temp.postInPlay.isAudioInProgress = [false];
-                }
-                return temp;
-            })
-        });
+            setIsPlaying(false);
+            setInitData(val => ({ ...val, postInPlay: { ...val.postInPlay, isAudioInProgress: [false] } }));
+        };
+        navigator.mediaSession.setActionHandler("play", play);
+        navigator.mediaSession.setActionHandler("pause", pause);
         return () => {
             navigator.mediaSession.setActionHandler("play", null);
             navigator.mediaSession.setActionHandler("pause", null);
         };
     }, []);
 
-    const getCurrentPorcentage = () => {
-        return (((100 * audioRef.current.currentTime) / audioRef.current.duration));
-    }
     useEffect(() => {
-        const fetchPlay = async () => {
-            const temp = await setPlay(audio?.id);
-        }
-        if (played) {
-            fetchPlay();
-        }
-    }, [played])
+        if (played && audio?.id) setPlay(audio.id);
+    }, [played]);
+
     function updatePositionState() {
-        navigator.mediaSession.setPositionState({
-            duration: audioRef.current.duration,
-            playbackRate: audioRef.current.playbackRate,
-            position: audioRef.current.currentTime,
-        });
+        if (audioRef.current?.duration) {
+            navigator.mediaSession.setPositionState({
+                duration: audioRef.current.duration,
+                playbackRate: audioRef.current.playbackRate,
+                position: audioRef.current.currentTime,
+            });
+        }
     }
 
     useEffect(() => {
         const seekTo = initData?.postInPlay?.seekTo;
         if (seekTo !== undefined && audioRef.current?.duration) {
-            audioRef.current.currentTime = (seekTo / 100) * audioRef.current.duration;
-            setAudioProgress(seekTo);
-            setInitData((val) => {
+            handleSeek(seekTo);
+            setInitData(val => {
                 const temp = { ...val };
                 if (temp?.postInPlay) delete temp.postInPlay.seekTo;
                 return temp;
@@ -272,118 +207,36 @@ export default function PlayerInDrawer({ open, audio, data }) {
     }, [initData?.postInPlay?.seekTo]);
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            const temp = await getUserData(audio?.userId);
-            setUser(temp);
-        }
-        if (audio?.userId) {
-            fetchUserData();
-        }
+        if (audio?.userId) getUserData(audio.userId).then(setUser);
     }, [audio]);
 
     const toHHMMSS = (secs) => {
-        const sec_num = parseInt(secs, 10);
-        const hours = Math.floor(sec_num / 3600);
-        const minutes = Math.floor((sec_num % 3600) / 60);
-        const seconds = sec_num % 60;
-
-        const formatValue = (value) => (value < 10 ? `0${value}` : value);
-
-        const timeArray = [hours, minutes, seconds].map(formatValue);
-
-        return timeArray.filter((v, i) => v !== "00" || i > 0).join(":");
+        const n = parseInt(secs, 10);
+        const h = Math.floor(n / 3600);
+        const m = Math.floor((n % 3600) / 60);
+        const s = n % 60;
+        const fmt = (v) => (v < 10 ? `0${v}` : v);
+        return [h, m, s].map(fmt).filter((v, i) => v !== "00" || i > 0).join(":");
     };
 
     return (
-        <Stack direction="column" width={"100%"} sx={{ placeSelf: "end" }} gap={1}>
-            <div>
-                {(open && audio?.coverUrl || audio?.cover) && <AudioCover url={audio?.coverUrl || audio?.cover} />}
-                {open && <Typography textAlign={"center"} fontSize={"16px"} textOverflow={"ellipsis"} overflow={"hidden"}>{audio?.title}</Typography>}
-                {open && audio?.isInterlude && <Chip label="🎙️ Interlude" size="small" sx={{ display: 'flex', mx: 'auto', mt: 0.5 }} />}
-                {open && !audio?.isInterlude && <Typography textAlign={"center"} fontSize={"12px"}>{audio?.username}</Typography>}
-            </div>
-            {open && (
-                <Box>
-                    <LinearProgress variant="determinate" value={audioProgress} color='secondary' sx={{ width: "100%", borderRadius: "1rem", cursor: 'pointer' }} onClick={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const pct = ((e.clientX - rect.left) / rect.width) * 100;
-                        audioRef.current.currentTime = (pct / 100) * audioRef.current.duration;
-                        setAudioProgress(pct);
-                    }} />
-                    <Stack direction={"row"} justifyContent={"space-between"} >
-                        {/* <Typography>{audio && (audioRef.current.currentTime / 60).toLocaleString(undefined, {
-                            minimumFractionDigits: 1,
-                            maximumFractionDigits: 1
-                        })}</Typography>*/}
-                        <Typography>{audio && toHHMMSS(audioRef.current.currentTime)}</Typography>
-                        <Typography>{audio && toHHMMSS(audioRef?.current.duration)}</Typography>
-                    </Stack>
-                </Box>)}
-            <Stack direction={open ? "row" : "column"} justifyContent={"center"} alignItems={"center"} width={"100%"} >
-                {
-                    open &&
-                    <IconButton onClick={handleSkipPrev} disabled={!initData?.station || initData?.station?.currentIndex === 0}>
-                        <SkipPreviousOutlined />
-                    </IconButton>
-                }
-                <IconButton onClick={handlePlay} disabled={!audio} >
-                    {
-                        initData?.postInPlay?.isAudioInProgress[0] && audio.id === initData?.postInPlay?.id ?
-                            (theme.palette.mode === "dark" ? <Pause /> : <PauseOutlined />) :
-                            (theme.palette.mode == "dark" ? <PlayArrow /> : <PlayArrowOutlined />)
-                    }
-                </IconButton>
-                {
-                    open &&
-                    <IconButton onClick={handleSkipNext} disabled={!initData?.station || initData?.station?.currentIndex >= (initData?.station?.queue?.length - 1)}>
-                        <SkipNextOutlined />
-                    </IconButton>
-                }
-            </Stack>
-            {open && initData?.station && (
-                <Stack alignItems="center" gap={0.5}>
-                    <Stack direction="row" alignItems="center" gap={0.5}>
-                        <Chip
-                            icon={<Radio />}
-                            label={`${initData.station.name} (${(initData.station.currentIndex || 0) + 1}/${initData.station.queue.length})`}
-                            size="small"
-                            color="primary"
-                            variant="outlined"
-                            onDelete={handleStopStation}
-                        />
-                        <IconButton size="small" onClick={() => setShowQueue(v => !v)}>
-                            <QueueMusic fontSize="small" />
-                        </IconButton>
-                    </Stack>
-                    <Collapse in={showQueue} sx={{ width: '100%', maxHeight: 200, overflow: 'auto' }}>
-                        <List dense disablePadding>
-                            {initData.station.queue.map((item, i) => (
-                                <ListItem
-                                    key={i}
-                                    disablePadding
-                                    sx={{
-                                        px: 1, py: 0.25,
-                                        bgcolor: i === initData.station.currentIndex ? 'action.selected' : 'transparent',
-                                        borderRadius: 1,
-                                        cursor: 'pointer',
-                                        opacity: i < initData.station.currentIndex ? 0.5 : 1
-                                    }}
-                                    onClick={() => playFromQueue(i)}
-                                >
-                                    <ListItemText
-                                        primary={
-                                            <Typography variant="caption" noWrap fontWeight={i === initData.station.currentIndex ? 600 : 400}>
-                                                {item.isInterlude ? `🎙️ ${item.title}` : item.title}
-                                            </Typography>
-                                        }
-                                    />
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Collapse>
-                </Stack>
-            )}
-            <audio src={audio?.audioUrl} hidden ref={audioRef} onTimeUpdate={handleProgress} onEnded={handleEnded} onLoadedData={handleLoaded} ></audio>
-        </Stack>
-    )
+        <>
+            <MiniPlayer
+                audio={audio}
+                initData={initData}
+                setInitData={setInitData}
+                audioRef={audioRef}
+                audioProgress={audioProgress}
+                isPlaying={isPlaying}
+                onPlay={handlePlay}
+                onSkipNext={handleSkipNext}
+                onSkipPrev={handleSkipPrev}
+                onSeek={handleSeek}
+                onStopStation={handleStopStation}
+                playFromQueue={playFromQueue}
+                toHHMMSS={toHHMMSS}
+            />
+            <audio src={audio?.audioUrl} hidden ref={audioRef} onTimeUpdate={handleProgress} onEnded={handleEnded} onLoadedData={handleLoaded} />
+        </>
+    );
 }

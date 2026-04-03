@@ -16,6 +16,7 @@ export default function Preferences() {
     )
     return (
         <Stack direction={'column'} gap={2} >
+            <Typography variant="h5" fontWeight={600} sx={{ ':first-letter': { textTransform: 'uppercase' } }}>{labels[windowLang]['settings']}</Typography>
             <Stack direction={'row'}>
                 <Stack direction={'column'} sx={{ width: "100%" }} >
                     <Stack direction={'row'} gap={1} alignItems={'end'}>

@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 import PostCard from '../components/PostCard';
@@ -33,11 +33,14 @@ export default function Tags() {
     }
 
     return (
-        <Stack direction={"row"} gap={2} flexWrap={"wrap"}>
+        <Stack direction="column" gap={2}>
+            <Typography variant="h5" fontWeight={600}>#{decodeURIComponent(tags)}</Typography>
+            <Stack direction={"row"} gap={2} flexWrap={"wrap"}>
             {posts?.length > 0
                 ? posts.map((post) => <PostCard key={post.id} postData={post} />)
                 : posts && <EmptyState icon="🏷️" message={`No posts found for "${tags}"`} />
             }
+            </Stack>
         </Stack>
     )
 }

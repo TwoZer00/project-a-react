@@ -126,6 +126,7 @@ export default function Upload() {
         <>
             <Backdrop open={!!initData?.loading} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} />
             <Stack gap={1} ref={formRef} component={"form"} sx={{ height: "100%" }}>
+                <Typography variant="h5" fontWeight={600} sx={{ ':first-letter': { textTransform: 'uppercase' } }}>{labels[windowLang]['upload']}</Typography>
                 <Stack direction={"row"} gap={2} width={"100%"} mx={"auto"} maxWidth={"lg"}   >
                     <InputField label={"title"} type={"text"} name={"title"} error={!!error.title} required />
                     <Visibility />
