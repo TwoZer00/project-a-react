@@ -131,6 +131,28 @@ export async function getReplies(commentId) {
     return snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
 }
 
+export async function getInterludes(userId) {
+    const db = getFirestore();
+    const ref = collection(db, "user", userId, "interludes");
+    const snapshot = await getDocs(ref);
+    return snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+}
+
+export async function getInterludesByType(userId, type) {
+    const db = getFirestore();
+    const ref = collection(db, "user", userId, "interludes");
+    const q = query(ref, where('type', '==', type));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+}
+
+export async function getUserStations(userId) {
+    const db = getFirestore();
+    const ref = collection(db, "user", userId, "stations");
+    const snapshot = await getDocs(ref);
+    return snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+}
+
 export async function getUsername(id) {
     const temp = await getUserData(id);
     return temp?.username;

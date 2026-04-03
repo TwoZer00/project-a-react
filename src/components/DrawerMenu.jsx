@@ -1,5 +1,5 @@
 import { useTheme } from '@emotion/react';
-import { AccountCircleOutlined, Dashboard, Logout, MoreVert, Settings } from '@mui/icons-material';
+import { AccountCircleOutlined, Dashboard, Logout, Mic, MoreVert, Radio, Settings } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Typography, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -108,6 +108,18 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                         <Dashboard fontSize="small" />
                     </ListItemIcon>
                     {labels[windowLang]['dashboard']}
+                </MenuItem>}
+                {auth && <MenuItem component={RouterLink} to={"interludes"}>
+                    <ListItemIcon>
+                        <Mic fontSize="small" />
+                    </ListItemIcon>
+                    Interludes
+                </MenuItem>}
+                {auth && <MenuItem component={RouterLink} to={"stations"}>
+                    <ListItemIcon>
+                        <Radio fontSize="small" />
+                    </ListItemIcon>
+                    My Stations
                 </MenuItem>}
                 {auth &&
                     <MenuItem onClick={handleLogout}>

@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 .env
 TODO.md
+firestore.rules
+storage.rules

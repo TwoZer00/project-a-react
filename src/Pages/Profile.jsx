@@ -8,7 +8,7 @@ import ButtonFollow from '../components/Follow/Button';
 import PostCard from '../components/PostCard';
 import EmptyState from '../components/EmptyState';
 import UserAvatar from '../components/UserAvatar';
-import { getAudioUrl, getAvatarImage, getUserData, getPostsUser } from '../firebase/utills';
+import { getAudioUrl, getAvatarImage, getInterludesByType, getPostData, getUserData, getUserStations, getPostsUser } from '../firebase/utills';
 import { labels, windowLang } from '../utils';
 
 export default function Profile() {
@@ -87,7 +87,7 @@ export default function Profile() {
                     )}
                 </Box>
                 <Typography variant="subtitle">{userData?.desc}</Typography>
-                <StationButton userId={id || getAuth().currentUser?.uid} username={userData?.username} />
+                <StationSection userId={id || getAuth().currentUser?.uid} username={userData?.username} />
                 <Box sx={{ columnCount: "auto", columnWidth: { xs: "100%", sm: "300px" } }}>
                     <PostList userId={id || getAuth().currentUser?.uid} />
                 </Box>
@@ -96,60 +96,152 @@ export default function Profile() {
     )
 }
 
-function StationButton({ userId, username }) {
+function StationSection({ userId, username }) {
     const [initData, setInitData] = useOutletContext();
-    const [loading, setLoading] = useState(false);
+    const [stations, setStations] = useState([]);
+    const [loading, setLoading] = useState(null);
 
-    const handlePlayStation = async () => {
-        setLoading(true);
+    useEffect(() => {
+        getUserStations(userId).then(setStations);
+    }, [userId]);
+
+    const playStation = async (station) => {
+        setLoading(station.id);
+        // Fetch full post data for each post in the station
+        const postPromises = station.postIds.map(id => getPostData(id).catch(() => null));
+        let tracks = (await Promise.all(postPromises)).filter(Boolean).filter(p => p.indexed && p.visibility === 'public');
+
+        if (tracks.length === 0) { setLoading(null); return; }
+
+        if (station.shuffle) {
+            for (let i = tracks.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
+            }
+        }
+
+        // Fetch interludes
+        const [intros, betweens, outros] = await Promise.all([
+            getInterludesByType(userId, 'intro'),
+            getInterludesByType(userId, 'between'),
+            getInterludesByType(userId, 'outro'),
+        ]);
+
+        const queue = [];
+        if (intros.length > 0) queue.push({ ...intros[Math.floor(Math.random() * intros.length)], isInterlude: true });
+        tracks.forEach((post, i) => {
+            queue.push(post);
+            if (i < tracks.length - 1 && betweens.length > 0) {
+                queue.push({ ...betweens[Math.floor(Math.random() * betweens.length)], isInterlude: true });
+            }
+        });
+        if (outros.length > 0) queue.push({ ...outros[Math.floor(Math.random() * outros.length)], isInterlude: true });
+
+        const first = queue[0];
+        const url = await getAudioUrl(first.filePath);
+        const firstUser = first.isInterlude ? { username } : await getUserData(first.user.id);
+
+        setInitData(val => ({
+            ...val,
+            postInPlay: {
+                title: first.title,
+                desc: first.desc || '',
+                id: first.id,
+                userId: first.isInterlude ? userId : first.user.id,
+                isAudioInProgress: [false],
+                audioUrl: url,
+                username: first.isInterlude ? username : firstUser.username,
+                cover: first.isInterlude ? undefined : (first.coverURL || firstUser.avatarURL),
+                isInterlude: first.isInterlude
+            },
+            station: {
+                name: station.name,
+                queue,
+                currentIndex: 0
+            }
+        }));
+        setLoading(null);
+    };
+
+    const playAllStation = async () => {
+        setLoading('all');
         const posts = await getPostsUser(userId);
         const publicPosts = posts.filter(p => p.visibility === 'public');
-        if (publicPosts.length === 0) {
-            setLoading(false);
-            return;
-        }
-        // Shuffle for variety
+        if (publicPosts.length === 0) { setLoading(null); return; }
+
         for (let i = publicPosts.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [publicPosts[i], publicPosts[j]] = [publicPosts[j], publicPosts[i]];
         }
-        const first = publicPosts[0];
+
+        const [intros, betweens, outros] = await Promise.all([
+            getInterludesByType(userId, 'intro'),
+            getInterludesByType(userId, 'between'),
+            getInterludesByType(userId, 'outro'),
+        ]);
+
+        const queue = [];
+        if (intros.length > 0) queue.push({ ...intros[Math.floor(Math.random() * intros.length)], isInterlude: true });
+        publicPosts.forEach((post, i) => {
+            queue.push(post);
+            if (i < publicPosts.length - 1 && betweens.length > 0) {
+                queue.push({ ...betweens[Math.floor(Math.random() * betweens.length)], isInterlude: true });
+            }
+        });
+        if (outros.length > 0) queue.push({ ...outros[Math.floor(Math.random() * outros.length)], isInterlude: true });
+
+        const first = queue[0];
         const url = await getAudioUrl(first.filePath);
-        const userData = await getUserData(first.user.id);
-        setInitData((val) => ({
+        const firstUser = first.isInterlude ? { username } : await getUserData(first.user.id);
+
+        setInitData(val => ({
             ...val,
             postInPlay: {
                 title: first.title,
-                desc: first.desc,
+                desc: first.desc || '',
                 id: first.id,
-                userId: first.user.id,
+                userId: first.isInterlude ? userId : first.user.id,
                 isAudioInProgress: [false],
                 audioUrl: url,
-                username: userData.username,
-                cover: first.coverURL || userData.avatarURL
+                username: first.isInterlude ? username : firstUser.username,
+                cover: first.isInterlude ? undefined : (first.coverURL || firstUser.avatarURL),
+                isInterlude: first.isInterlude
             },
             station: {
                 name: `${username}'s station`,
-                queue: publicPosts,
+                queue,
                 currentIndex: 0
             }
         }));
-        setLoading(false);
-    }
-
-    const isStationPlaying = initData?.station?.name === `${username}'s station`;
+        setLoading(null);
+    };
 
     return (
-        <Button
-            variant={isStationPlaying ? "contained" : "outlined"}
-            size="small"
-            startIcon={<Radio />}
-            onClick={handlePlayStation}
-            disabled={loading}
-            sx={{ alignSelf: 'flex-start' }}
-        >
-            {isStationPlaying ? 'Station playing' : `Play ${username}'s station`}
-        </Button>
+        <Stack gap={1}>
+            <Stack direction="row" gap={1} flexWrap="wrap">
+                <Button
+                    variant={initData?.station?.name === `${username}'s station` ? 'contained' : 'outlined'}
+                    size="small"
+                    startIcon={<Radio />}
+                    onClick={playAllStation}
+                    disabled={loading === 'all'}
+                >
+                    {initData?.station?.name === `${username}'s station` ? 'Playing' : `Play all`}
+                </Button>
+                {stations.map(s => (
+                    <Button
+                        key={s.id}
+                        variant={initData?.station?.name === s.name ? 'contained' : 'outlined'}
+                        size="small"
+                        startIcon={<Radio />}
+                        onClick={() => playStation(s)}
+                        disabled={loading === s.id}
+                    >
+                        {initData?.station?.name === s.name ? 'Playing' : s.name}
+                    </Button>
+                ))}
+            </Stack>
+        </Stack>
     );
 }
 

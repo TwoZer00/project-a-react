@@ -7,6 +7,7 @@ import HomeDashboard from "../Pages/Dashboard/Home";
 import PostListDashboard from "../Pages/Dashboard/Posts/List";
 import DashboardPost from "../Pages/Dashboard/Posts/Post";
 import ProfileDashboard from "../Pages/Dashboard/Profile/ProfileDashboard";
+import DashboardInterludes from "../Pages/Dashboard/Interludes/DashboardInterludes";
 import EditProfile from "../Pages/EditProfile";
 import Genre from "../Pages/Genre";
 import Home from "../Pages/Home";
@@ -19,6 +20,8 @@ import Register from "../Pages/Register";
 import Settings from "../Pages/Settings";
 import Tags from "../Pages/Tags";
 import Upload from "../Pages/Upload";
+import Interludes from "../Pages/Interludes";
+import Stations from "../Pages/Stations";
 import Error from "../Pages/Error";
 import { app } from '../firebase/init';
 import { getCategories, getPostData } from "../firebase/utills";
@@ -49,6 +52,16 @@ export const router = createBrowserRouter([
             {
                 path: "upload",
                 element: <Upload />,
+                errorElement: <Error />
+            },
+            {
+                path: "interludes",
+                element: <Interludes />,
+                errorElement: <Error />
+            },
+            {
+                path: "stations",
+                element: <Stations />,
                 errorElement: <Error />
             },
             {
@@ -125,6 +138,10 @@ export const router = createBrowserRouter([
             {
                 path: "profile",
                 element: <ProfileDashboard />,
+            },
+            {
+                path: "interludes",
+                element: <DashboardInterludes />,
             }
         ]
     }

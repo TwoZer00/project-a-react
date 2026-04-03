@@ -2,7 +2,7 @@ import { Pause, PauseOutlined, PlayArrow, PlayArrowOutlined, Radio, SkipNextOutl
 import { Box, Chip, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { theme } from '../Pages/Init';
-import { getAudioUrl, getAvatarImage, getUserData, setPlay } from '../firebase/utills';
+import { getAudioUrl, getAvatarImage, getInterludesByType, getUserData, setPlay } from '../firebase/utills';
 import AudioCover from './AudioCover';
 
 export default function PlayerInDrawer({ open, audio, data }) {
@@ -48,7 +48,7 @@ export default function PlayerInDrawer({ open, audio, data }) {
             return t;
         });
     }
-    const handleEnded = () => {
+    const handleEnded = async () => {
         setIsPlaying(false);
         setPlayed(false);
         setAudioProgress(0);
@@ -62,12 +62,38 @@ export default function PlayerInDrawer({ open, audio, data }) {
             return;
         }
 
+        // Single track ended — try to play author outro/credit
+        if (!initData?.station && audio?.userId && !audio?.isInterlude) {
+            try {
+                const outros = await getInterludesByType(audio.userId, 'outro');
+                const credits = await getInterludesByType(audio.userId, 'credit');
+                const candidates = [...outros, ...credits];
+                if (candidates.length > 0) {
+                    const pick = candidates[Math.floor(Math.random() * candidates.length)];
+                    const url = await getAudioUrl(pick.filePath);
+                    setInitData((val) => ({
+                        ...val,
+                        postInPlay: {
+                            title: pick.title,
+                            desc: '',
+                            id: pick.id,
+                            userId: audio.userId,
+                            isAudioInProgress: [false],
+                            audioUrl: url,
+                            username: audio.username,
+                            isInterlude: true
+                        }
+                    }));
+                    return;
+                }
+            } catch (e) { console.error(e); }
+        }
+
         setInitData((value) => {
             const temp = { ...value }
             if (temp?.postInPlay) {
                 temp.postInPlay.isAudioInProgress = [false];
             }
-            // Clear station if queue ended
             if (temp?.station) delete temp.station;
             return temp;
         })
@@ -76,23 +102,41 @@ export default function PlayerInDrawer({ open, audio, data }) {
     const playFromQueue = async (index) => {
         const queue = initData?.station?.queue;
         if (!queue || !queue[index]) return;
-        const post = queue[index];
-        const url = await getAudioUrl(post.filePath);
-        const userData = await getUserData(post.user.id);
-        setInitData((val) => ({
-            ...val,
-            postInPlay: {
-                title: post.title,
-                desc: post.desc,
-                id: post.id,
-                userId: post.user.id,
-                isAudioInProgress: [false],
-                audioUrl: url,
-                username: userData.username,
-                cover: post.coverURL || userData.avatarURL
-            },
-            station: { ...val.station, currentIndex: index }
-        }));
+        const item = queue[index];
+        const url = await getAudioUrl(item.filePath);
+
+        if (item.isInterlude) {
+            setInitData((val) => ({
+                ...val,
+                postInPlay: {
+                    title: item.title,
+                    desc: '',
+                    id: item.id,
+                    userId: val.station?.queue?.[0]?.user?.id || '',
+                    isAudioInProgress: [false],
+                    audioUrl: url,
+                    username: val.station?.name?.replace("'s station", '') || '',
+                    isInterlude: true
+                },
+                station: { ...val.station, currentIndex: index }
+            }));
+        } else {
+            const userData = await getUserData(item.user.id);
+            setInitData((val) => ({
+                ...val,
+                postInPlay: {
+                    title: item.title,
+                    desc: item.desc,
+                    id: item.id,
+                    userId: item.user.id,
+                    isAudioInProgress: [false],
+                    audioUrl: url,
+                    username: userData.username,
+                    cover: item.coverURL || userData.avatarURL
+                },
+                station: { ...val.station, currentIndex: index }
+            }));
+        }
     }
 
     const handleSkipNext = () => {
@@ -254,7 +298,8 @@ export default function PlayerInDrawer({ open, audio, data }) {
             <div>
                 {(open && audio?.coverUrl || audio?.cover) && <AudioCover url={audio?.coverUrl || audio?.cover} />}
                 {open && <Typography textAlign={"center"} fontSize={"16px"} textOverflow={"ellipsis"} overflow={"hidden"}>{audio?.title}</Typography>}
-                {open && <Typography textAlign={"center"} fontSize={"12px"}>{audio?.username}</Typography>}
+                {open && audio?.isInterlude && <Chip label="🎙️ Interlude" size="small" sx={{ display: 'flex', mx: 'auto', mt: 0.5 }} />}
+                {open && !audio?.isInterlude && <Typography textAlign={"center"} fontSize={"12px"}>{audio?.username}</Typography>}
             </div>
             {open && (
                 <Box>

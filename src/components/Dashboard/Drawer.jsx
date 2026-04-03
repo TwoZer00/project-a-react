@@ -1,4 +1,4 @@
-import { ArrowBack, Dashboard, ListAlt, Person } from '@mui/icons-material';
+import { ArrowBack, Dashboard, ListAlt, Mic, Person } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -132,6 +132,30 @@ export default function DrawerDashboard({ user, postList }) {
                                     <Person />
                                 </ListItemIcon>
                                 <ListItemText primary={labels[windowLang]["profile"]} sx={{ opacity: open ? 1 : 0, ":first-letter": { textTransform: "uppercase" } }} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Tooltip>
+                    <Tooltip title="Interludes" placement='right-end'>
+                        <ListItem disablePadding sx={{ display: 'block' }}>
+                            <ListItemButton
+                                sx={{
+                                    minHeight: 48,
+                                    justifyContent: open ? 'initial' : 'center',
+                                    px: 2.5,
+                                }}
+                                component={RouterLink}
+                                to="interludes"
+                            >
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 3 : 'auto',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Mic />
+                                </ListItemIcon>
+                                <ListItemText primary="Interludes" sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>
                         </ListItem>
                     </Tooltip>
