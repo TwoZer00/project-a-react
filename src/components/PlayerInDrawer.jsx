@@ -1,8 +1,8 @@
-import { Pause, PauseOutlined, PlayArrow, PlayArrowOutlined, SkipNextOutlined, SkipPreviousOutlined } from '@mui/icons-material';
-import { Box, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
+import { Pause, PauseOutlined, PlayArrow, PlayArrowOutlined, Radio, SkipNextOutlined, SkipPreviousOutlined, Stop } from '@mui/icons-material';
+import { Box, Chip, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { theme } from '../Pages/Init';
-import { getAvatarImage, getUserData, setPlay } from '../firebase/utills';
+import { getAudioUrl, getAvatarImage, getUserData, setPlay } from '../firebase/utills';
 import AudioCover from './AudioCover';
 
 export default function PlayerInDrawer({ open, audio, data }) {
@@ -53,13 +53,73 @@ export default function PlayerInDrawer({ open, audio, data }) {
         setPlayed(false);
         setAudioProgress(0);
         audioRef.current.currentTime = 0;
+
+        // Auto-advance queue (station mode)
+        const queue = initData?.station?.queue;
+        const currentIndex = initData?.station?.currentIndex;
+        if (queue && currentIndex !== undefined && currentIndex < queue.length - 1) {
+            playFromQueue(currentIndex + 1);
+            return;
+        }
+
         setInitData((value) => {
             const temp = { ...value }
             if (temp?.postInPlay) {
                 temp.postInPlay.isAudioInProgress = [false];
             }
+            // Clear station if queue ended
+            if (temp?.station) delete temp.station;
             return temp;
         })
+    }
+
+    const playFromQueue = async (index) => {
+        const queue = initData?.station?.queue;
+        if (!queue || !queue[index]) return;
+        const post = queue[index];
+        const url = await getAudioUrl(post.filePath);
+        const userData = await getUserData(post.user.id);
+        setInitData((val) => ({
+            ...val,
+            postInPlay: {
+                title: post.title,
+                desc: post.desc,
+                id: post.id,
+                userId: post.user.id,
+                isAudioInProgress: [false],
+                audioUrl: url,
+                username: userData.username,
+                cover: post.coverURL || userData.avatarURL
+            },
+            station: { ...val.station, currentIndex: index }
+        }));
+    }
+
+    const handleSkipNext = () => {
+        const queue = initData?.station?.queue;
+        const currentIndex = initData?.station?.currentIndex;
+        if (queue && currentIndex !== undefined && currentIndex < queue.length - 1) {
+            playFromQueue(currentIndex + 1);
+        }
+    }
+
+    const handleSkipPrev = () => {
+        const queue = initData?.station?.queue;
+        const currentIndex = initData?.station?.currentIndex;
+        if (queue && currentIndex !== undefined && currentIndex > 0) {
+            playFromQueue(currentIndex - 1);
+        }
+    }
+
+    const handleStopStation = () => {
+        audioRef.current.pause();
+        setIsPlaying(false);
+        setInitData((val) => {
+            const temp = { ...val };
+            delete temp.station;
+            if (temp?.postInPlay) temp.postInPlay.isAudioInProgress = [false];
+            return temp;
+        });
     }
     const handleLoaded = async () => {
         const duration = audioRef.current.duration;
@@ -216,7 +276,7 @@ export default function PlayerInDrawer({ open, audio, data }) {
             <Stack direction={open ? "row" : "column"} justifyContent={"center"} alignItems={"center"} width={"100%"} >
                 {
                     open &&
-                    <IconButton disabled>
+                    <IconButton onClick={handleSkipPrev} disabled={!initData?.station || initData?.station?.currentIndex === 0}>
                         <SkipPreviousOutlined />
                     </IconButton>
                 }
@@ -229,11 +289,23 @@ export default function PlayerInDrawer({ open, audio, data }) {
                 </IconButton>
                 {
                     open &&
-                    <IconButton disabled>
+                    <IconButton onClick={handleSkipNext} disabled={!initData?.station || initData?.station?.currentIndex >= (initData?.station?.queue?.length - 1)}>
                         <SkipNextOutlined />
                     </IconButton>
                 }
             </Stack>
+            {open && initData?.station && (
+                <Stack direction="row" alignItems="center" justifyContent="center" gap={0.5}>
+                    <Chip
+                        icon={<Radio />}
+                        label={`${initData.station.name} (${(initData.station.currentIndex || 0) + 1}/${initData.station.queue.length})`}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                        onDelete={handleStopStation}
+                    />
+                </Stack>
+            )}
             <audio src={audio?.audioUrl} hidden ref={audioRef} onTimeUpdate={handleProgress} onEnded={handleEnded} onLoadedData={handleLoaded} ></audio>
         </Stack>
     )

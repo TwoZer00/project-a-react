@@ -1,5 +1,5 @@
-import { Person, Person2, Person4 } from '@mui/icons-material';
-import { Box, Skeleton, Stack, Typography } from '@mui/material';
+import { Person, Person2, Person4, Radio } from '@mui/icons-material';
+import { Box, Button, Skeleton, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { getAuth } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
@@ -8,7 +8,7 @@ import ButtonFollow from '../components/Follow/Button';
 import PostCard from '../components/PostCard';
 import EmptyState from '../components/EmptyState';
 import UserAvatar from '../components/UserAvatar';
-import { getAvatarImage, getUserData, getPostsUser } from '../firebase/utills';
+import { getAudioUrl, getAvatarImage, getUserData, getPostsUser } from '../firebase/utills';
 import { labels, windowLang } from '../utils';
 
 export default function Profile() {
@@ -87,12 +87,70 @@ export default function Profile() {
                     )}
                 </Box>
                 <Typography variant="subtitle">{userData?.desc}</Typography>
+                <StationButton userId={id || getAuth().currentUser?.uid} username={userData?.username} />
                 <Box sx={{ columnCount: "auto", columnWidth: { xs: "100%", sm: "300px" } }}>
                     <PostList userId={id || getAuth().currentUser?.uid} />
                 </Box>
             </Stack>
         </>
     )
+}
+
+function StationButton({ userId, username }) {
+    const [initData, setInitData] = useOutletContext();
+    const [loading, setLoading] = useState(false);
+
+    const handlePlayStation = async () => {
+        setLoading(true);
+        const posts = await getPostsUser(userId);
+        const publicPosts = posts.filter(p => p.visibility === 'public');
+        if (publicPosts.length === 0) {
+            setLoading(false);
+            return;
+        }
+        // Shuffle for variety
+        for (let i = publicPosts.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [publicPosts[i], publicPosts[j]] = [publicPosts[j], publicPosts[i]];
+        }
+        const first = publicPosts[0];
+        const url = await getAudioUrl(first.filePath);
+        const userData = await getUserData(first.user.id);
+        setInitData((val) => ({
+            ...val,
+            postInPlay: {
+                title: first.title,
+                desc: first.desc,
+                id: first.id,
+                userId: first.user.id,
+                isAudioInProgress: [false],
+                audioUrl: url,
+                username: userData.username,
+                cover: first.coverURL || userData.avatarURL
+            },
+            station: {
+                name: `${username}'s station`,
+                queue: publicPosts,
+                currentIndex: 0
+            }
+        }));
+        setLoading(false);
+    }
+
+    const isStationPlaying = initData?.station?.name === `${username}'s station`;
+
+    return (
+        <Button
+            variant={isStationPlaying ? "contained" : "outlined"}
+            size="small"
+            startIcon={<Radio />}
+            onClick={handlePlayStation}
+            disabled={loading}
+            sx={{ alignSelf: 'flex-start' }}
+        >
+            {isStationPlaying ? 'Station playing' : `Play ${username}'s station`}
+        </Button>
+    );
 }
 
 function PostList({ userId }) {
