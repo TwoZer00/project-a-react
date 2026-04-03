@@ -1,5 +1,5 @@
-import { Headphones, Radio } from '@mui/icons-material';
-import { Box, Card, CardActionArea, CardContent, Chip, Skeleton, Stack, Typography } from '@mui/material';
+import { Headphones, Radio, Share } from '@mui/icons-material';
+import { Box, Card, CardActionArea, CardContent, Chip, IconButton, Skeleton, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useOutletContext } from 'react-router-dom';
 import { getAudioUrl, getAvatarImage, getInterludesByType, getPostsUser, getUserData } from '../firebase/utills';
@@ -134,6 +134,12 @@ export default function StationCard({ userId, station }) {
                             <Chip label="Now playing" size="small" color="primary" sx={{ height: 18, fontSize: 10, mt: 0.5 }} />
                         )}
                     </Box>
+                    <IconButton size="small" onClick={(e) => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(`${window.location.origin}/user/${userId}`);
+                    }}>
+                        <Share fontSize="small" />
+                    </IconButton>
                     <Radio color={isPlaying ? 'primary' : 'action'} />
                 </CardContent>
             </CardActionArea>

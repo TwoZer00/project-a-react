@@ -5,7 +5,9 @@ import { Link as RouterLink, useLoaderData, useOutletContext, useSearchParams } 
 import { Share } from '@mui/icons-material';
 import InputComment from '../components/Comments/InputComment';
 import List from '../components/Comments/List';
+import LikeButton from '../components/LikeButton';
 import PlayButton from '../components/PlayButton';
+import StationCard from '../components/StationCard';
 import Waveform from '../components/Waveform';
 import UserAvatar from '../components/UserAvatar';
 import VisibilityIcon from '../components/VisibilityIcon';
@@ -83,6 +85,7 @@ export default function Post() {
             {user && (
                 <Stack direction="row" gap={1} alignItems="center">
                     <PlayButton post={postData} user={user} />
+                    <LikeButton postId={postData.id} initialCount={postData.likes || 0} />
                     <Box sx={{ flex: 1 }}>
                         <Waveform
                             audioUrl={audioUrl}
@@ -115,6 +118,12 @@ export default function Post() {
                     refreshReplies={refreshReplies}
                 />
             </Box>
+            {user && (
+                <Box sx={{ py: 1 }}>
+                    <Typography variant="subtitle2" gutterBottom>📻 More from {user.username}</Typography>
+                    <StationCard userId={postData.user.id} />
+                </Box>
+            )}
             <Snackbar open={copied} autoHideDuration={2000} onClose={() => setCopied(false)} message="Link copied to clipboard" />
         </Stack>
     )

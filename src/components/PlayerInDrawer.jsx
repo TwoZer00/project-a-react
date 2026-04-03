@@ -1,5 +1,5 @@
-import { Pause, PauseOutlined, PlayArrow, PlayArrowOutlined, Radio, SkipNextOutlined, SkipPreviousOutlined, Stop } from '@mui/icons-material';
-import { Box, Chip, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
+import { Pause, PauseOutlined, PlayArrow, PlayArrowOutlined, QueueMusic, Radio, SkipNextOutlined, SkipPreviousOutlined, Stop } from '@mui/icons-material';
+import { Box, Chip, Collapse, IconButton, LinearProgress, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { theme } from '../Pages/Init';
 import { getAudioUrl, getAvatarImage, getInterludesByType, getUserData, setPlay } from '../firebase/utills';
@@ -13,6 +13,7 @@ export default function PlayerInDrawer({ open, audio, data }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [username, setUsername] = useState();
     const [played, setPlayed] = useState(false);
+    const [showQueue, setShowQueue] = useState(false);
     const [user, setUser] = useState();
     const handlePlay = () => {
         if (audioRef.current.paused) {
@@ -340,15 +341,46 @@ export default function PlayerInDrawer({ open, audio, data }) {
                 }
             </Stack>
             {open && initData?.station && (
-                <Stack direction="row" alignItems="center" justifyContent="center" gap={0.5}>
-                    <Chip
-                        icon={<Radio />}
-                        label={`${initData.station.name} (${(initData.station.currentIndex || 0) + 1}/${initData.station.queue.length})`}
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                        onDelete={handleStopStation}
-                    />
+                <Stack alignItems="center" gap={0.5}>
+                    <Stack direction="row" alignItems="center" gap={0.5}>
+                        <Chip
+                            icon={<Radio />}
+                            label={`${initData.station.name} (${(initData.station.currentIndex || 0) + 1}/${initData.station.queue.length})`}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                            onDelete={handleStopStation}
+                        />
+                        <IconButton size="small" onClick={() => setShowQueue(v => !v)}>
+                            <QueueMusic fontSize="small" />
+                        </IconButton>
+                    </Stack>
+                    <Collapse in={showQueue} sx={{ width: '100%', maxHeight: 200, overflow: 'auto' }}>
+                        <List dense disablePadding>
+                            {initData.station.queue.map((item, i) => (
+                                <ListItem
+                                    key={i}
+                                    disablePadding
+                                    sx={{
+                                        px: 1, py: 0.25,
+                                        bgcolor: i === initData.station.currentIndex ? 'action.selected' : 'transparent',
+                                        borderRadius: 1,
+                                        cursor: 'pointer',
+                                        opacity: i < initData.station.currentIndex ? 0.5 : 1
+                                    }}
+                                    onClick={() => playFromQueue(i)}
+                                >
+                                    <ListItemText
+                                        primary={
+                                            <Typography variant="caption" noWrap fontWeight={i === initData.station.currentIndex ? 600 : 400}>
+                                                {item.isInterlude ? `🎙️ ${item.title}` : item.title}
+                                            </Typography>
+                                        }
+                                    />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Collapse>
                 </Stack>
             )}
             <audio src={audio?.audioUrl} hidden ref={audioRef} onTimeUpdate={handleProgress} onEnded={handleEnded} onLoadedData={handleLoaded} ></audio>

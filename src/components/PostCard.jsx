@@ -15,6 +15,7 @@ import { savePlay } from '../utils/recentPlays'
 import { inTime } from './Comments/Comment'
 import ButtonFollow from './Follow/Button'
 import PlayButton from './PlayButton'
+import LikeButton from './LikeButton'
 import UserAvatar from './UserAvatar'
 dayjs.extend(duration)
 dayjs.extend(relativeTime)
@@ -98,6 +99,7 @@ export default function PostCard({ postData }) {
             </CardContent>
             <CardActions sx={{ display: "flex", flexDirection: "row", gap: 2 }} >
                 <PlayButton post={postData} user={user} variant="icon" />
+                <LikeButton postId={postData.id} initialCount={postData.likes || 0} />
                 <Stack direction={"row"} gap={1}>
                     <Comment />
                     <Tooltip title={(postData?.commentCount || postData?.comment?.length || 0).toLocaleString(window.navigator.language, { style: "decimal" })}>

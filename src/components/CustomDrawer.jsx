@@ -1,4 +1,4 @@
-import { Category, CategoryOutlined, Home, HomeOutlined, Upload } from '@mui/icons-material';
+import { Category, CategoryOutlined, History, Home, HomeOutlined, Upload } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -21,6 +21,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import CustomNotification, { SlideTransition } from './CustomNotification';
 import DrawerMenu from './DrawerMenu';
 import PlayerInDrawer from './PlayerInDrawer';
+import SearchUsers from './SearchUsers';
 import { AppBar, Drawer, DrawerHeader } from './StyledDrawer';
 import { labels, windowLang } from '../utils';
 
@@ -86,6 +87,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                         <Typography variant="h1" noWrap textAlign={"center"} flex={1} textTransform={"uppercase"} fontSize={20} letterSpacing={1} fontWeight={500}>
                             {title}
                         </Typography>
+                        <SearchUsers />
                         <AvatarInMenu username={initData?.user?.username} avatarURL={initData?.user?.avatarURL} />
                     </Toolbar>
                 </AppBar>
@@ -138,6 +140,27 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                         {theme.palette.mode === "dark" ? <Category /> : <CategoryOutlined />}
                                     </ListItemIcon>
                                     <ListItemText primary={labels[windowLang]['category']} sx={{ ":first-letter":{textTransform:"uppercase"},opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </Tooltip>
+                            <Tooltip title={!open && 'History'} placement="right">
+                                <ListItemButton
+                                    component={RouterLink}
+                                    to="/history"
+                                    selected={currentPath === '/history'}
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
+                                    }}>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                        }}>
+                                        <History />
+                                    </ListItemIcon>
+                                    <ListItemText primary="History" sx={{ opacity: open ? 1 : 0 }} />
                                 </ListItemButton>
                             </Tooltip>
                         </ListItem>
