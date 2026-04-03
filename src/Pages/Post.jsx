@@ -57,7 +57,7 @@ export default function Post() {
                     </Typography>
                 </Box>
                 <Stack gap={1} alignItems={'center'} direction="row">
-                    <Tooltip title={labels[windowLang]['send'] || 'Share'}>
+                    <Tooltip title={labels[windowLang]['share']}>
                         <IconButton size="small" onClick={() => {
                             navigator.clipboard.writeText(window.location.href);
                             setCopied(true);
@@ -120,11 +120,11 @@ export default function Post() {
             </Box>
             {user && (
                 <Box sx={{ py: 1 }}>
-                    <Typography variant="subtitle2" gutterBottom>📻 More from {user.username}</Typography>
+                    <Typography variant="subtitle2" gutterBottom>📻 {labels[windowLang]['more-from']} {user.username}</Typography>
                     <StationCard userId={postData.user.id} />
                 </Box>
             )}
-            <Snackbar open={copied} autoHideDuration={2000} onClose={() => setCopied(false)} message="Link copied to clipboard" />
+            <Snackbar open={copied} autoHideDuration={2000} onClose={() => setCopied(false)} message={labels[windowLang]['link-copied']} />
         </Stack>
     )
 }

@@ -4,6 +4,7 @@ import { collection, getDocs, getFirestore, limit, orderBy, query, where } from 
 import React, { useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import UserAvatar from './UserAvatar';
+import { labels, windowLang } from '../utils';
 
 export default function SearchUsers() {
     const [results, setResults] = useState([]);
@@ -34,7 +35,7 @@ export default function SearchUsers() {
         <Box sx={{ position: 'relative', width: '100%', maxWidth: 300 }}>
             <TextField
                 size="small"
-                placeholder="Search users..."
+                placeholder={labels[windowLang]['search-users']}
                 value={searchVal}
                 onChange={(e) => handleSearch(e.target.value)}
                 onBlur={() => setTimeout(() => setOpen(false), 200)}
@@ -62,7 +63,7 @@ export default function SearchUsers() {
             )}
             {open && results.length === 0 && searchVal.trim().length >= 2 && (
                 <Paper elevation={4} sx={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10, mt: 0.5, p: 1.5 }}>
-                    <Typography variant="caption" color="text.secondary">No users found</Typography>
+                    <Typography variant="caption" color="text.secondary">{labels[windowLang]['no-users-found']}</Typography>
                 </Paper>
             )}
         </Box>

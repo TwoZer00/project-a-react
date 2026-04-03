@@ -36,7 +36,7 @@ export default function Init() {
                     });
                 } catch (error) {
                     if (error.code == 101) {
-                        setInitData(prev => ({ ...prev, notification: { msg: "you don have information for your profile, in order to use the app fill out this form", type: "info", duration: 10000 } }))
+                        setInitData(prev => ({ ...prev, notification: { msg: labels[windowLang]['no-profile-info'], type: "info", duration: 10000 } }))
                         navigate('settings/profile')
                     }
                 }

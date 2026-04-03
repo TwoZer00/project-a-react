@@ -60,7 +60,7 @@ export default function InputComment({ post, setCommentList, replyTo, onCancelRe
         setInitData((prev) => {
             const temp = { ...prev }
             delete temp.loading;
-            temp.notification = { type: 'success', msg: replyTo ? 'Reply sent' : 'Comment sent' };
+            temp.notification = { type: 'success', msg: replyTo ? labels[windowLang]['reply-sent'] : labels[windowLang]['comment-sent'] };
             return temp;
         })
     }

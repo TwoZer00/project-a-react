@@ -81,10 +81,10 @@ export default function Home() {
             {/* Stations section */}
             <Box>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-                    <Typography variant="h6">📻 Stations</Typography>
+                    <Typography variant="h6">📻 {labels[windowLang]['stations']}</Typography>
                     {getAuth().currentUser && (
                         <Button component={RouterLink} to="/stations" size="small" variant="text">
-                            My stations
+                            {labels[windowLang]['my-stations']}
                         </Button>
                     )}
                 </Stack>
@@ -115,7 +115,7 @@ export default function Home() {
             {/* Recommendations */}
             {recommended.length > 0 && (
                 <Box>
-                    <Typography variant="h6" mb={1}>🎧 Based on your listening</Typography>
+                    <Typography variant="h6" mb={1}>🎧 {labels[windowLang]['based-on-listening']}</Typography>
                     <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto', pb: 1, scrollbarWidth: 'thin' }}>
                         {recommended.map(item => (
                             <Box key={item.id + 'rec'} sx={{ minWidth: 300, flexShrink: 0 }}>

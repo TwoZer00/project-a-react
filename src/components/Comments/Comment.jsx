@@ -62,7 +62,7 @@ export default function Comment({ id, postAuthorId, onReply, isReply, replyData,
                     title={
                         <Stack direction={"row"} gap={1} alignItems="center">
                             <Link component={RouterLink} underline='hover' to={`/user/${comment?.user.id}`} variant={isReply ? 'caption' : 'body1'}>{user?.username}</Link>
-                            {isAuthor && <Chip label={labels[windowLang]['post'] + ' author'} size='small' color='primary' variant='outlined' sx={{ height: 20, fontSize: 11 }} />}
+                            {isAuthor && <Chip label={labels[windowLang]['post-author']} size='small' color='primary' variant='outlined' sx={{ height: 20, fontSize: 11 }} />}
                         </Stack>
                     }
                     subheader={<Link variant="caption" component={RouterLink} to={`?comment=${id}`} underline='hover' color={"inherit"} sx={{ fontSize: isReply ? 11 : 12 }}>{comment?.creationTime}</Link>}

@@ -5,6 +5,7 @@ import CustomNotification, { SlideTransition } from '../components/CustomNotific
 import PostCard from '../components/PostCard';
 import EmptyState from '../components/EmptyState';
 import { getPostFromCategory } from '../firebase/utills';
+import { labels, windowLang } from '../utils';
 
 export default function Category() {
     const { category } = useParams();
@@ -55,7 +56,7 @@ export default function Category() {
             {posts?.length > 0 && posts.map(post => <PostCard key={post.id} postData={post} />)}
                 {posts?.length === 0 && <EmptyState icon="📂" message={`No posts in "${category}" yet`} actionLabel="Browse categories" actionTo="/categories" />}
             </Stack>
-            <CustomNotification val={notification} msg={"not post founded"} setFlag={setNotification} type={"warning"} />
+            <CustomNotification val={notification} msg={labels[windowLang]['no-posts-found']} setFlag={setNotification} type={"warning"} />
         </>
     )
 }

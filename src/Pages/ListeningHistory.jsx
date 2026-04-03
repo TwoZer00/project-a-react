@@ -5,6 +5,7 @@ import { useOutletContext } from 'react-router-dom';
 import EmptyState from '../components/EmptyState';
 import PostCard from '../components/PostCard';
 import { getPostData } from '../firebase/utills';
+import { labels, windowLang } from '../utils';
 import { getRecentPlays } from '../utils/recentPlays';
 
 export default function ListeningHistory() {
@@ -13,7 +14,7 @@ export default function ListeningHistory() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setInitData(val => ({ ...val, main: { ...val?.main, title: 'Listening history' } }));
+        setInitData(val => ({ ...val, main: { ...val?.main, title: labels[windowLang]['listening-history'] } }));
         const load = async () => {
             const recent = getRecentPlays();
             const results = await Promise.all(
@@ -29,10 +30,10 @@ export default function ListeningHistory() {
         <Stack gap={2}>
             <Stack direction="row" gap={1} alignItems="center">
                 <History />
-                <Typography variant="h6">Listening history</Typography>
+                <Typography variant="h6">{labels[windowLang]['listening-history']}</Typography>
             </Stack>
             {!loading && posts.length === 0 && (
-                <EmptyState icon="🎧" message="Nothing played yet. Start listening!" />
+                <EmptyState icon="🎧" message={labels[windowLang]['nothing-played']} />
             )}
             <Box sx={{ columnCount: "auto", columnWidth: { xs: "100%", sm: "300px" } }}>
                 {posts.map(post => <PostCard key={post.id} postData={post} />)}

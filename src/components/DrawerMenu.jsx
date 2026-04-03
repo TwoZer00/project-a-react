@@ -31,7 +31,7 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
     return (
         <Stack direction={"row"} gap={1}>
             {!auth && <Button component={RouterLink} to={"/login"} variant="outlined" startIcon={<AccountCircleOutlined />} sx={{ borderRadius: 9, '.MuiButton-startIcon': { padding: `${!matches && "0"}`, margin: `${!matches && "0"}` }, padding: `${!matches && "0"}` }} color='inherit'>
-                {matches && "Sign in"}
+                {matches && labels[windowLang]['sign-in']}
             </Button>}
             {auth ?
                 <IconButton
@@ -137,7 +137,7 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {labels[windowLang]['delete-sure']?.replace('post', 'session') || 'Are you sure you want to logout?'}
+                    {labels[windowLang]['logout-sure']}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">

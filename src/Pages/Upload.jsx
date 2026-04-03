@@ -304,7 +304,7 @@ async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) 
             uploadingProgress((val) => {
                 const temp = { ...val };
                 delete temp.loading;
-                temp.notification = { type: "success", msg: "Post uploaded!" }
+                temp.notification = { type: "success", msg: labels[windowLang]['post-uploaded'] }
                 return temp;
             })
         }

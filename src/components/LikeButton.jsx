@@ -3,6 +3,7 @@ import { IconButton, Stack, Typography } from '@mui/material';
 import { getAuth } from 'firebase/auth';
 import { doc, getDoc, getFirestore, increment, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { labels, windowLang } from '../utils';
 
 export default function LikeButton({ postId, initialCount }) {
     const [liked, setLiked] = useState(false);
@@ -39,7 +40,9 @@ export default function LikeButton({ postId, initialCount }) {
 
     return (
         <Stack direction="row" gap={0.5} alignItems="center">
-            <IconButton size="small" onClick={handleToggle} disabled={!userId} color={liked ? 'error' : 'default'}>
+            <IconButton size="small" onClick={handleToggle} disabled={!userId} color={liked ? 'error' : 'default'}
+                title={!userId ? labels[windowLang]['sign-in-first'] : ''}
+            >
                 {liked ? <Favorite fontSize="small" /> : <FavoriteBorder fontSize="small" />}
             </IconButton>
             <Typography variant="body2">{count.toLocaleString(window.navigator.language, { notation: 'compact' })}</Typography>
