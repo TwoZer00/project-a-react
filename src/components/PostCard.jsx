@@ -6,10 +6,9 @@ import 'dayjs/locale/es'
 import duration from 'dayjs/plugin/duration'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { getAuth } from 'firebase/auth'
-import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
-import { getUserData } from '../firebase/utills'
+import { getAudioUrl, getUserData } from '../firebase/utills'
 import { windowLang } from '../utils'
 import { inTime } from './Comments/Comment'
 import ButtonFollow from './Follow/Button'
@@ -146,16 +145,6 @@ export function stringAvatar(name = "", size = { width: 50, height: 50 }) {
         },
         children: `${name.includes(" ") ? `${name.split(' ')[0][0]}${name.split(' ')[1][0]}` : `${name[0]}`}`,
     };
-}
-
-
-async function getAudioUrl(filePath) {
-    // console.log(filePath);
-    const storage = getStorage();
-    const storageRef = ref(storage, `${filePath}`);
-    // console.log(storageRef);
-    const audioUrl = await getDownloadURL(storageRef);
-    return audioUrl;
 }
 
 
