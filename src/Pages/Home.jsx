@@ -61,15 +61,18 @@ export default function Home() {
             }
             setStationsLoading(false);
 
-            // For You
+            // For You — try recommendations first, fall back to random
+            let forYouData = [];
             const topTags = getTopTags(10);
             if (topTags.length > 0) {
-                const rec = await fetchRecommended(topTags);
-                setForYou(rec);
-            } else {
-                const random = await fetchRandom();
-                setForYou(random);
+                try {
+                    forYouData = await fetchRecommended(topTags);
+                } catch (e) { console.error(e); }
             }
+            if (forYouData.length === 0) {
+                forYouData = await fetchRandom();
+            }
+            setForYou(forYouData);
             setForYouLoading(false);
 
             // New feed (first page)
@@ -170,7 +173,7 @@ export default function Home() {
 
 function ForYouTab({ items, loading }) {
     if (loading) return Array.from({ length: 6 }).map((_, i) => <PostListItemSkeleton key={i} />);
-    if (items.length === 0) return <EmptyState icon="🎧" message={labels[windowLang]['nothing-played']} />;
+    if (items.length === 0) return <EmptyState icon="🎵" message={labels[windowLang]['no-posts']} />;
     return items.map(item => <PostListItem key={item.id} postData={item} />);
 }
 
