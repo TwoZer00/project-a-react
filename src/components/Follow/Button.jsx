@@ -14,11 +14,10 @@ export default function ButtonFollow({ userId, followerId, setFData, ...props })
             navigate('/login')
             return;
         }
-        handleFollow();
+        await handleFollow();
     }
     const handleFollow = async () => {
         try {
-            if (!initData?.user) throw new Error('Please log in first');
             const temp = { ...initData }
             if (getAuth().currentUser.uid === followerId) throw new Error('Cant follow yourself :C')
             if (alreadyFollowing()) {
@@ -53,7 +52,7 @@ export default function ButtonFollow({ userId, followerId, setFData, ...props })
     if (props.type === "text") {
         return (
             <>
-                <Tooltip title={getAuth().currentUser?.uid ? "You have to log in" : ""}>
+                <Tooltip title={!getAuth().currentUser?.uid ? "You have to log in" : ""}>
                     {getAuth().currentUser?.uid !== followerId &&
                         <Button ref={buttonRef} variant='outlined' color='inherit' sx={{ width: "fit-content", ":first-letter": { textTransform: 'uppercase' } }} size='small' onClick={handleClick} disabled={initData?.loading} >
                             {alreadyFollowing() ? "unfollow" : "follow"} {getAuth().currentUser?.uid == followerId ? 'self' : ''}
