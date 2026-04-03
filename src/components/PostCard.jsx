@@ -100,7 +100,7 @@ export default function PostCard({ postData }) {
             </CardContent>
             <CardActions sx={{ display: "flex", flexDirection: "row", gap: 2 }} >
                 <PlayButton post={postData} user={user} variant="icon" />
-                <LikeButton postId={postData.id} initialCount={postData.likes || 0} />
+                <LikeButton postId={postData.id} initialCount={postData.likes || 0} postOwnerId={postData.user?.id} />
                 <BookmarkButton postId={postData.id} />
                 <Stack direction={"row"} gap={1}>
                     <Comment />

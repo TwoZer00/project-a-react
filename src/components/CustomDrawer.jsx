@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import CustomNotification, { SlideTransition } from './CustomNotification';
 import DrawerMenu from './DrawerMenu';
+import NotificationBell from './NotificationBell';
 import PlayerInDrawer from './PlayerInDrawer';
 import SearchUsers from './SearchUsers';
 
@@ -69,6 +70,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                     </Typography>
                     <Box sx={{ flex: 1 }} />
                     <SearchUsers />
+                    <NotificationBell />
                     <AvatarInMenu username={initData?.user?.username} avatarURL={initData?.user?.avatarURL} />
                 </Toolbar>
             </AppBar>

@@ -67,7 +67,7 @@ export default function PostListItem({ postData }) {
                     </Stack>
                 </Box>
                 <Stack direction="row" gap={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
-                    <LikeButton postId={postData.id} initialCount={postData.likes || 0} />
+                    <LikeButton postId={postData.id} initialCount={postData.likes || 0} postOwnerId={postData.user?.id} />
                     <BookmarkButton postId={postData.id} />
                     <Stack direction="row" gap={0.25} alignItems="center">
                         <Comment sx={{ fontSize: 16, color: 'text.secondary' }} />

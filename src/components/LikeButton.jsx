@@ -4,8 +4,9 @@ import { getAuth } from 'firebase/auth';
 import { doc, getDoc, getFirestore, increment, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { labels, windowLang } from '../utils';
+import { createNotification } from '../firebase/notifications';
 
-export default function LikeButton({ postId, initialCount }) {
+export default function LikeButton({ postId, initialCount, postOwnerId }) {
     const [liked, setLiked] = useState(false);
     const [count, setCount] = useState(initialCount || 0);
     const userId = getAuth().currentUser?.uid;
@@ -34,6 +35,9 @@ export default function LikeButton({ postId, initialCount }) {
             await setDoc(likeRef, { createdAt: new Date() });
             await updateDoc(postRef, { likes: increment(1) });
             setCount(c => c + 1);
+            if (postOwnerId && postOwnerId !== userId) {
+                createNotification(postOwnerId, { type: 'like', fromUserId: userId, postId });
+            }
         }
         setLiked(v => !v);
     };

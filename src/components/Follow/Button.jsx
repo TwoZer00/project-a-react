@@ -4,6 +4,7 @@ import { doc, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { deleteFollower, setFollower } from '../../firebase/utills';
+import { createNotification } from '../../firebase/notifications';
 
 export default function ButtonFollow({ userId, followerId, setFData, ...props }) {
     const [initData, setInitData] = useOutletContext();
@@ -32,6 +33,7 @@ export default function ButtonFollow({ userId, followerId, setFData, ...props })
                 temp.user.followings = temp.user.followings || []
                 temp.user.followings.push({ user: doc(getFirestore(), 'user', followerId), date })
                 temp.notification = { msg: "Followed", type: "success" }
+                createNotification(followerId, { type: 'follow', fromUserId: userId });
             }
             setInitData(temp)
         } catch (error) {

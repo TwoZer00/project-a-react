@@ -86,7 +86,7 @@ export default function Post() {
             {user && (
                 <Stack direction="row" gap={1} alignItems="center">
                     <PlayButton post={postData} user={user} />
-                    <LikeButton postId={postData.id} initialCount={postData.likes || 0} />
+                    <LikeButton postId={postData.id} initialCount={postData.likes || 0} postOwnerId={postData.user?.id} />
                     <BookmarkButton postId={postData.id} />
                     <Box sx={{ flex: 1 }}>
                         <Waveform

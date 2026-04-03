@@ -154,7 +154,9 @@ export const labels = {
         'logout-sure': 'Are you sure you want to logout?',
         'no-posts-found': 'No posts found',
         'bookmarks': 'Bookmarks',
-        'no-bookmarks': 'No saved posts yet. Bookmark posts to find them here.'
+        'no-bookmarks': 'No saved posts yet. Bookmark posts to find them here.',
+        'notifications': 'Notifications',
+        'no-notifications': 'No notifications yet'
     },
     es: {
         'my-profile': 'Mi perfil',
@@ -284,7 +286,9 @@ export const labels = {
         'logout-sure': '¿Estás seguro de que deseas cerrar sesión?',
         'no-posts-found': 'No se encontraron publicaciones',
         'bookmarks': 'Guardados',
-        'no-bookmarks': 'Sin publicaciones guardadas aún. Guarda publicaciones para encontrarlas aquí.'
+        'no-bookmarks': 'Sin publicaciones guardadas aún. Guarda publicaciones para encontrarlas aquí.',
+        'notifications': 'Notificaciones',
+        'no-notifications': 'Sin notificaciones aún'
     }
 }
 

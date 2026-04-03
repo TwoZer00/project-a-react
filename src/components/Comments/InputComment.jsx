@@ -5,6 +5,7 @@ import { arrayUnion, collection, doc, getFirestore, increment, writeBatch } from
 import React, { useEffect, useRef, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { labels, windowLang } from '../../utils'
+import { createNotification } from '../../firebase/notifications'
 
 export default function InputComment({ post, setCommentList, replyTo, onCancelReply, onReplySent }) {
     const [initData, setInitData] = useOutletContext();
@@ -54,8 +55,13 @@ export default function InputComment({ post, setCommentList, replyTo, onCancelRe
         }
 
         await batch.commit();
+        // Notify post owner of new comment
+        if (!replyTo?.id && post.user.id !== getAuth().currentUser.uid) {
+            createNotification(post.user.id, { type: 'comment', fromUserId: getAuth().currentUser.uid, postId: post.id });
+        }
         setComment("");
         if (replyTo?.id && onReplySent) onReplySent();
+        // Notify original commenter of reply (we don't have the commenter's userId here, handled by the caller if needed)
         if (onCancelReply) onCancelReply();
         setInitData((prev) => {
             const temp = { ...prev }
