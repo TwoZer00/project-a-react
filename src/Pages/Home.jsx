@@ -3,6 +3,7 @@ import { collection, doc, getDocs, getFirestore, limit, orderBy, query, startAft
 import React, { useEffect, useRef, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import PostCard from '../components/PostCard';
+import PostCardSkeleton from '../components/PostCardSkeleton';
 import { labels, windowLang } from '../utils';
 import { getRecentPlays, getTopTags } from '../utils/recentPlays';
 
@@ -15,7 +16,7 @@ export default function Home() {
     const [hasMore, setHasMore] = useState(true);
     const [random, setRandom] = useState([]);
     const [recommended, setRecommended] = useState([]);
-    const lastDoc = useRef(null);
+    const [initialLoading, setInitialLoading] = useState(true);
 
     useEffect(() => {
         setInitData((val) => ({ ...val, main: { ...val?.main, title: "A project" } }));
@@ -37,6 +38,7 @@ export default function Home() {
         setLoading(false);
     };
 
+    const lastDoc = useRef(null);
     const shownIds = useRef(new Set());
 
     useEffect(() => {
@@ -51,7 +53,8 @@ export default function Home() {
                 setRecommended(recData);
                 recData.forEach(p => shownIds.current.add(p.id));
             }
-            loadMore();
+            await loadMore();
+            setInitialLoading(false);
         };
         init();
     }, []);
@@ -87,7 +90,10 @@ export default function Home() {
                 </>
             )}
             <Box sx={{ columnCount: "auto", columnWidth: { xs: "100%", sm: "300px" } }}>
-                {data?.map(item => <PostCard key={item.id + "postCard"} postData={item} />)}
+                {initialLoading
+                    ? Array.from({ length: 6 }).map((_, i) => <PostCardSkeleton key={`skel-${i}`} />)
+                    : data?.map(item => <PostCard key={item.id + "postCard"} postData={item} />)
+                }
             </Box>
             {hasMore && (
                 <Button onClick={loadMore} disabled={loading} variant="outlined" sx={{ alignSelf: "center" }}>
