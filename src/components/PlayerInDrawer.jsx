@@ -1,6 +1,5 @@
 import { Pause, PauseOutlined, PlayArrow, PlayArrowOutlined, SkipNextOutlined, SkipPreviousOutlined } from '@mui/icons-material';
 import { Box, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
 import { theme } from '../Pages/Init';
 import { getAvatarImage, getUserData, setPlay } from '../firebase/utills';
@@ -101,32 +100,34 @@ export default function PlayerInDrawer({ open, audio, data }) {
         }
     }, [initData?.postInPlay?.isAudioInProgress[1]]);
 
-    navigator.mediaSession.setActionHandler("play", () => {
-        audioRef.current.play();
-        setIsPlaying((val) => {
-            return !val
+    useEffect(() => {
+        navigator.mediaSession.setActionHandler("play", () => {
+            audioRef.current.play();
+            setIsPlaying((val) => !val);
+            setInitData((value) => {
+                const temp = { ...value }
+                if (temp?.postInPlay) {
+                    temp.postInPlay.isAudioInProgress = [true];
+                }
+                return temp;
+            })
         });
-        setInitData((value) => {
-            const temp = { ...value }
-            if (temp?.postInPlay) {
-                temp.postInPlay.isAudioInProgress = [true];
-            }
-            return temp;
-        })
-    });
-    navigator.mediaSession.setActionHandler("pause", () => {
-        audioRef.current.pause();
-        setIsPlaying((val) => {
-            return !val
+        navigator.mediaSession.setActionHandler("pause", () => {
+            audioRef.current.pause();
+            setIsPlaying((val) => !val);
+            setInitData((value) => {
+                const temp = { ...value }
+                if (temp?.postInPlay) {
+                    temp.postInPlay.isAudioInProgress = [false];
+                }
+                return temp;
+            })
         });
-        setInitData((value) => {
-            const temp = { ...value }
-            if (temp?.postInPlay) {
-                temp.postInPlay.isAudioInProgress = [false];
-            }
-            return temp;
-        })
-    });
+        return () => {
+            navigator.mediaSession.setActionHandler("play", null);
+            navigator.mediaSession.setActionHandler("pause", null);
+        };
+    }, []);
 
     const getCurrentPorcentage = () => {
         return (((100 * audioRef.current.currentTime) / audioRef.current.duration));
@@ -223,11 +224,4 @@ export default function PlayerInDrawer({ open, audio, data }) {
             <audio src={audio?.audioUrl} hidden ref={audioRef} onTimeUpdate={handleProgress} onEnded={handleEnded} onLoadedData={handleLoaded} ></audio>
         </Stack>
     )
-}
-
-async function fetchUsername(userId) {
-    const db = getFirestore();
-    const docRef = doc(db, "user", userId)
-    const docSnap = await getDoc(docRef);
-    return docSnap.exists() ? docSnap.data().username : null;
 }

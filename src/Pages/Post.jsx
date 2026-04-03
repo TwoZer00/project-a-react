@@ -65,7 +65,7 @@ export default function Post() {
                 {postData?.tags?.map(tag => <Chip component={RouterLink} to={`/${tag.path}`} clickable key={tag.id} label={decodeURIComponent(tag.id)} variant="outlined" size="small" />)}
             </Stack>
             <Typography variant="body1">{postData.desc}</Typography>
-            <PlayButton post={postData} user={user} />
+            {user && <PlayButton post={postData} user={user} />}
             <Box paddingY={2}>
                 <InputComment post={postData} setCommentList={setCommentList} />
             </Box>

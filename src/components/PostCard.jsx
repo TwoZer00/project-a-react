@@ -6,7 +6,6 @@ import 'dayjs/locale/es'
 import duration from 'dayjs/plugin/duration'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { getAuth } from 'firebase/auth'
-import { getDoc, getFirestore } from 'firebase/firestore'
 import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
@@ -114,13 +113,6 @@ export default function PostCard({ postData }) {
     )
 }
 
-const formatNumber = (number) =>
-    number >= 1e6
-        ? (number / 1e6).toLocaleString(windowLang, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'M'
-        : number >= 1e3
-            ? (number / 1e3).toLocaleString(windowLang, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'k'
-            : number.toLocaleString();
-
 
 function stringToColor(string) {
     let hash = 0;
@@ -164,28 +156,6 @@ async function getAudioUrl(filePath) {
     // console.log(storageRef);
     const audioUrl = await getDownloadURL(storageRef);
     return audioUrl;
-}
-
-async function getProfileImgUrl(id) {
-    const storage = getStorage();
-    const storageRef = ref(storage, `userPhotos/${id}/profileImage.jpg`);
-    let profileImgUrl = ''
-    try {
-        if (id) {
-            await getDownloadURL(storageRef);
-        }
-    } catch (error) {
-        console.log(error.code);
-    }
-    return profileImgUrl;
-}
-
-async function getUsername(user) {
-    let username = ""
-    const db = getFirestore();
-    const docRef = await getDoc(user);
-    username = docRef.data().username;
-    return username;
 }
 
 

@@ -13,6 +13,8 @@ export default function InputComment({ post, setCommentList }) {
         setComment(e.target.value);
     }
     const handleSubmit = async () => {
+        const sanitized = commentContent.trim().substring(0, 1000);
+        if (!sanitized) return;
         setInitData((prev) => {
             return { ...prev, loading: true }
         })
@@ -20,7 +22,7 @@ export default function InputComment({ post, setCommentList }) {
         const commentRef = doc(collection(db, 'comment'));
         const postRef = doc(db, "post", post.id);
         const comment = {
-            content: commentContent,
+            content: sanitized,
             creationTime: new Date(),
             user: doc(db, "user", getAuth().currentUser.uid),
             post: doc(db, "post", post.id),
@@ -48,10 +50,11 @@ export default function InputComment({ post, setCommentList }) {
                 fullWidth
                 onChange={handleChange}
                 label={labels[windowLang]['leave-comment']}
+                inputProps={{ maxLength: 1000 }}
             />
             <Tooltip title={`${getAuth().currentUser ? "" : "Please sign in first"}`} >
                 <span style={{ width: "fit-content", marginLeft: "auto" }}>
-                    <Button onClick={handleSubmit} disabled={!getAuth().currentUser} endIcon={<Send />} color="primary" size="small" variant='contained'>
+                    <Button onClick={handleSubmit} disabled={!getAuth().currentUser || !commentContent.trim()} endIcon={<Send />} color="primary" size="small" variant='contained'>
                         {labels[windowLang]['send']}
                     </Button>
                 </span>

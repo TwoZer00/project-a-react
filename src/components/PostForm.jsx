@@ -7,7 +7,7 @@ import { NSFWToggleButton, Visibility } from "../Pages/Upload";
 import { getCategories, getTags, updatePost } from "../firebase/utills";
 import { capitalizeFirstLetter, labels, windowLang } from "../utils";
 
-export default function PostForm({ data, setData, formRefa }) {
+export default function PostForm({ data, setData, formRefa, onClose }) {
     const [newData, setNewData] = useState(data)
     const [postList, setPostList] = useOutletContext();
     const [tags, setTags] = useState([]);
@@ -76,7 +76,8 @@ export default function PostForm({ data, setData, formRefa }) {
                 temp[postList.findIndex((item) => { return item.id === updatedPost.id })] = updatedPost;
                 return temp;
             })
-            navigate(-1);
+            if (onClose) onClose();
+            else navigate(-1);
         }
     }
     const requiredPostFields = (post) => {

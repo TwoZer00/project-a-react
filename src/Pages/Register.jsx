@@ -20,7 +20,7 @@ export default function Register() {
         const tempE = {};
         validateForm(formElements, tempE);
         validatePassword([formElements.password, formElements.confirmPassword], tempE);
-        validateUsername(formElements.username, tempE);
+        await validateUsername(formElements.username, tempE);
         if (Object.keys(tempE).length === 0) {
             try {
                 await createUserWithEmailAndPassword(getAuth(), formData.get("email"), formData.get("password"));

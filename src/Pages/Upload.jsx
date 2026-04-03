@@ -178,8 +178,8 @@ export default function Upload() {
                     <MuiFileInput fullWidth error={!!error.file} getSizeText={(value) => `${((value?.size) / Math.pow(1024, 2)).toFixed(2)} MB`} inputProps={{ accept: 'audio/*' }} value={valuea} onChange={handleChangeF} color='info' name='file' />
                 </Stack>
                 <Box sx={{ mt: "auto", height: "100%", display: "flex", alignItems: "self-end", justifyContent: "flex-end" }} >
-                    <Button variant='contained' onClick={handleSubmit} disabled={initData.loading} >
-                        Upload
+                    <Button variant='contained' onClick={handleSubmit} disabled={!!initData?.loading} >
+                        {initData?.loading ? labels[windowLang]['updating'] || 'Uploading...' : labels[windowLang]['upload']}
                     </Button>
                 </Box>
             </Stack >

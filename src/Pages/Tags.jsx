@@ -23,7 +23,6 @@ export default function Tags() {
 
     const handleTags = async () => {
         const temp = tags.split(',').map((tag) => (tag));
-        console.log(temp);
         setPosts(await getPostFromTags(temp))
         setInitialData((val) => {
             const temp = { ...val };
@@ -33,7 +32,7 @@ export default function Tags() {
     }
 
     return (
-        <Stack direction={"row"} gap={2}>
+        <Stack direction={"row"} gap={2} flexWrap={"wrap"}>
             {posts?.map((post) => { return <PostCard key={post.id} postData={post} /> })}
         </Stack>
     )

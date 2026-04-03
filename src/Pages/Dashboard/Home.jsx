@@ -43,7 +43,7 @@ export default function HomeDashboard() {
                     <Divider orientation="vertical" flexItem variant="middle" />
                     <Box textAlign={"center"}>
                         <Typography variant="h2" fontSize={24}>{labels[windowLang]['followers']}</Typography>
-                        <Typography variant="body1" >{user?.followers?.length.toLocaleString(window.navigator.language, { style: "decimal" }) || 0}</Typography>
+                        <Typography variant="body1" >{(user?.followers?.length || 0).toLocaleString(window.navigator.language, { style: "decimal" })}</Typography>
                     </Box>
                 </Stack>
             </Box>

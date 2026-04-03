@@ -12,11 +12,13 @@ export default function ButtonFollow({ userId, followerId, setFData, ...props })
     const handleClick = async () => {
         if (!getAuth().currentUser) {
             navigate('/login')
+            return;
         }
         handleFollow();
     }
     const handleFollow = async () => {
         try {
+            if (!initData?.user) throw new Error('Please log in first');
             const temp = { ...initData }
             if (getAuth().currentUser.uid === followerId) throw new Error('Cant follow yourself :C')
             if (alreadyFollowing()) {

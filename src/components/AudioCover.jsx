@@ -9,13 +9,13 @@ export default function AudioCover({ url, username }) {
             const temp = await getAvatarImage(url)
             setImage(temp);
         }
-        if (url.includes('gs://')) {
+        if (url?.includes('gs://')) {
             fetchImage()
         }
         else {
             setImage(url);
         }
-    })
+    }, [url])
     return (
         <Box>
             <img src={image} alt={`${username} cover image`} width="100%" height={"100%"} style={{ aspectRatio: "1/1", objectFit: "cover" }} />

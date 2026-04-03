@@ -50,7 +50,7 @@ export default function Category() {
 
     return (
         <>
-            <Stack direction={"row"} gap={2}>
+            <Stack direction={"row"} gap={2} flexWrap={"wrap"}>
                 {posts?.length > 0 && posts?.map(post => { return <PostCard key={post.id} postData={post} /> })}
                 {posts?.length === 0 && <Typography variant='body1' sx={{ mx: "auto" }} >No Posts</Typography>}
             </Stack>

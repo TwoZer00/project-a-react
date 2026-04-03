@@ -68,7 +68,7 @@ export default function DashboardPost() {
                     </Toolbar>
                 </AppBar>
                 {/* {post ? <EditPostForm data={post} /> : (<Typography variant="h2" >No post founded</Typography>) } */}
-                <PostForm data={post} setData={setPost} formRefa={formRef} postList />
+                <PostForm data={post} setData={setPost} formRefa={formRef} postList onClose={handleClose} />
             </Dialog>
         </>
     )

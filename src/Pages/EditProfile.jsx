@@ -62,15 +62,12 @@ export default function EditProfile() {
             tempUser.avatarURL = tempImageUrl;
         }
         if (initData.user) {
-            console.log(tempUser, "aaa");
             await updateUser(getAuth().currentUser.uid, tempUser);
         }
         else {
-            console.log(tempUser, "aaab");
             try {
                 await setUserDoc(getAuth().currentUser.uid, tempUser);
             } catch (error) {
-                console.log(error);
             }
         }
         const temp = { ...initData };

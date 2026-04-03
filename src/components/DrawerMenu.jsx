@@ -125,17 +125,17 @@ export default function DrawerMenu({ auth, username, avatarURL, logout }) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    Are you sure you want to logout?
+                    {labels[windowLang]['delete-sure']?.replace('post', 'session') || 'Are you sure you want to logout?'}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        This will clear all your data. You can always login again.
+                        {labels[windowLang]['delete-sure-desc'] || 'This action cannot be undone.'}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseDialog}>Cancel</Button>
+                    <Button onClick={handleCloseDialog}>{labels[windowLang]['cancel']}</Button>
                     <Button onClick={() => { logout(); handleCloseDialog() }} autoFocus>
-                        Logout
+                        {labels[windowLang]['logout']}
                     </Button>
                 </DialogActions>
             </Dialog>
