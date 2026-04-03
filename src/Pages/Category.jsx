@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 import CustomNotification, { SlideTransition } from '../components/CustomNotification';
 import PostCard from '../components/PostCard';
+import EmptyState from '../components/EmptyState';
 import { getPostFromCategory } from '../firebase/utills';
 
 export default function Category() {
@@ -51,8 +52,8 @@ export default function Category() {
     return (
         <>
             <Stack direction={"row"} gap={2} flexWrap={"wrap"}>
-                {posts?.length > 0 && posts?.map(post => { return <PostCard key={post.id} postData={post} /> })}
-                {posts?.length === 0 && <Typography variant='body1' sx={{ mx: "auto" }} >No Posts</Typography>}
+            {posts?.length > 0 && posts.map(post => <PostCard key={post.id} postData={post} />)}
+                {posts?.length === 0 && <EmptyState icon="📂" message={`No posts in "${category}" yet`} actionLabel="Browse categories" actionTo="/categories" />}
             </Stack>
             <CustomNotification val={notification} msg={"not post founded"} setFlag={setNotification} type={"warning"} />
         </>

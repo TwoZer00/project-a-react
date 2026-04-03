@@ -49,7 +49,7 @@ export default function Register() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <Box sx={{ display: 'flex', height: "100vh", width: "100vw", justifyContent: "center", alignItems: "center" }}>
-                    <Box component={Paper} variant='outlined' sx={{ maxWidth: 500, width: { md: "100%" } }} >
+                    <Box component={Paper} variant='outlined' sx={{ maxWidth: 500, width: { md: "100%" }, mx: 2, pb: 2 }} >
                         <Box display={"flex"} flexDirection={"column"} alignItems={"center"} paddingBottom={2}>
                             <Box display={"flex"} flexDirection={"column"} alignItems={"center"} marginY={1}>
                                 <img src="./aproject.svg" alt="aproject logo" width={70} />

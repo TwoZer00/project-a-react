@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { getAuth, signOut } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import CustomNotification, { SlideTransition } from './CustomNotification';
 import DrawerMenu from './DrawerMenu';
 import PlayerInDrawer from './PlayerInDrawer';
@@ -30,6 +30,8 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
     const [error, setError] = useState();
     const [open, setOpen] = useState(useMediaQuery(theme.breakpoints.up('lg')));
     const matches = useMediaQuery(theme.breakpoints.up('lg'));
+    const location = useLocation();
+    const currentPath = location.pathname;
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -100,6 +102,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                 <ListItemButton
                                     component={RouterLink}
                                     to="/"
+                                    selected={currentPath === '/'}
                                     sx={{
                                         minHeight: 48,
                                         justifyContent: open ? 'initial' : 'center',
@@ -120,6 +123,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                 <ListItemButton
                                     component={RouterLink}
                                     to="/categories"
+                                    selected={currentPath.startsWith('/categories')}
                                     sx={{
                                         minHeight: 48,
                                         justifyContent: open ? 'initial' : 'center',

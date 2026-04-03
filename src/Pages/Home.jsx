@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import PostCard from '../components/PostCard';
 import PostCardSkeleton from '../components/PostCardSkeleton';
+import EmptyState from '../components/EmptyState';
 import { labels, windowLang } from '../utils';
 import { getRecentPlays, getTopTags } from '../utils/recentPlays';
 
@@ -89,10 +90,13 @@ export default function Home() {
                     </Box>
                 </>
             )}
+            {!initialLoading && data.length === 0 && (
+                <EmptyState icon="🎵" message={labels[windowLang]['no-posts'] || 'No posts yet'} actionLabel={labels[windowLang]['upload'] || 'Upload'} actionTo="/upload" />
+            )}
             <Box sx={{ columnCount: "auto", columnWidth: { xs: "100%", sm: "300px" } }}>
                 {initialLoading
                     ? Array.from({ length: 6 }).map((_, i) => <PostCardSkeleton key={`skel-${i}`} />)
-                    : data?.map(item => <PostCard key={item.id + "postCard"} postData={item} />)
+                    : data.map(item => <PostCard key={item.id + "postCard"} postData={item} />)
                 }
             </Box>
             {hasMore && (

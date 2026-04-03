@@ -2,6 +2,7 @@ import { Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 import PostCard from '../components/PostCard';
+import EmptyState from '../components/EmptyState';
 import { getPostFromTags } from '../firebase/utills';
 
 export default function Tags() {
@@ -33,7 +34,10 @@ export default function Tags() {
 
     return (
         <Stack direction={"row"} gap={2} flexWrap={"wrap"}>
-            {posts?.map((post) => { return <PostCard key={post.id} postData={post} /> })}
+            {posts?.length > 0
+                ? posts.map((post) => <PostCard key={post.id} postData={post} />)
+                : posts && <EmptyState icon="🏷️" message={`No posts found for "${tags}"`} />
+            }
         </Stack>
     )
 }

@@ -1,7 +1,8 @@
-import { Box, Chip, Link, Stack, Tooltip } from '@mui/material';
+import { Box, Chip, IconButton, Link, Snackbar, Stack, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLoaderData, useOutletContext, useSearchParams } from 'react-router-dom';
+import { Share } from '@mui/icons-material';
 import InputComment from '../components/Comments/InputComment';
 import List from '../components/Comments/List';
 import PlayButton from '../components/PlayButton';
@@ -19,6 +20,7 @@ export default function Post() {
     const postData = useLoaderData();
     const [audioUrl, setAudioUrl] = useState(null);
     const [commentList, setCommentList] = useState();
+    const [copied, setCopied] = useState(false);
     let [searchParams, setSearchParams] = useSearchParams();
     useEffect(() => {
         const loadUser = async (id) => {
@@ -50,7 +52,15 @@ export default function Post() {
                         {labels[windowLang]['plays']}: {(postData?.plays).toLocaleString(window.navigator.language, { style: "decimal" })}
                     </Typography>
                 </Box>
-                <Stack gap={1} alignItems={'center'}>
+                <Stack gap={1} alignItems={'center'} direction="row">
+                    <Tooltip title={labels[windowLang]['send'] || 'Share'}>
+                        <IconButton size="small" onClick={() => {
+                            navigator.clipboard.writeText(window.location.href);
+                            setCopied(true);
+                        }}>
+                            <Share fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
                     <VisibilityIcon visibility={postData.visibility} fontSize="small" />
                     {postData.nsfw && <Tooltip title={labels[windowLang]['nsfw-alt']} ><Chip clickable variant='outlined' size='small' color='error' label={labels[windowLang]['nsfw']} /></Tooltip>}
                 </Stack>
@@ -91,6 +101,7 @@ export default function Post() {
             <Box>
                 <List commentsList={commentList} comment={searchParams.get("comment")} />
             </Box>
+            <Snackbar open={copied} autoHideDuration={2000} onClose={() => setCopied(false)} message="Link copied to clipboard" />
         </Stack>
     )
 }

@@ -13,6 +13,10 @@ export default function Init() {
     const location = useLocation();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [location.pathname]);
     useEffect(() => {
         const authState = onAuthStateChanged(auth, async (user) => {
             // console.log(location.pathname, "bbbb");

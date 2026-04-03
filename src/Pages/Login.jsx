@@ -60,7 +60,7 @@ export default function Login() {
                     {loading && <LinearProgress />}
                     <CssBaseline />
                     <Box width={"100vw"} height={"100%"} display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
-                        <Stack component={Paper} variant='outlined' direction={"column"} width={"100%"} maxWidth={400} >
+                        <Stack component={Paper} variant='outlined' direction={"column"} width={"100%"} maxWidth={400} sx={{ mx: 2, pb: 2 }} >
                             <Box display={"flex"} flexDirection={"column"} alignItems={"center"} paddingBottom={2}>
                                 <Box display={"flex"} flexDirection={"column"} alignItems={"center"} marginY={1}>
                                     <img src="./aproject.svg" alt="aproject logo" width={70} />
