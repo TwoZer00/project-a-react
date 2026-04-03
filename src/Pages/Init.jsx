@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import CustomDrawer from '../components/CustomDrawer';
 import { getAvatarImage, getUserData } from '../firebase/utills';
+import { UserCacheProvider } from '../context/UserCacheContext';
 
 export default function Init() {
     const auth = useLoaderData();
@@ -84,7 +85,9 @@ export default function Init() {
     return (
         <>
             <ThemeProvider theme={initData?.preferences?.theme || theme}>
-                <CustomDrawer loading={loading} title={initData?.main?.title} audio={initData?.postInPlay} data={[initData, setInitData]} outlet={<Outlet context={[initData, setInitData]} />} />
+                <UserCacheProvider>
+                    <CustomDrawer loading={loading} title={initData?.main?.title} audio={initData?.postInPlay} data={[initData, setInitData]} outlet={<Outlet context={[initData, setInitData]} />} />
+                </UserCacheProvider>
             </ThemeProvider>
         </>
     )

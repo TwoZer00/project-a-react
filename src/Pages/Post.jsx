@@ -5,9 +5,10 @@ import { Link as RouterLink, useLoaderData, useOutletContext, useSearchParams } 
 import InputComment from '../components/Comments/InputComment';
 import List from '../components/Comments/List';
 import PlayButton from '../components/PlayButton';
+import Waveform from '../components/Waveform';
 import UserAvatar from '../components/UserAvatar';
 import VisibilityIcon from '../components/VisibilityIcon';
-import { getUserData } from '../firebase/utills';
+import { getAudioUrl, getUserData } from '../firebase/utills';
 import { capitalizeFirstLetter, labels, windowLang } from '../utils';
 import dayjs from 'dayjs';
 
@@ -16,6 +17,7 @@ export default function Post() {
     const [initData, setInitData] = useOutletContext();
     const [user, setUser] = useState();
     const postData = useLoaderData();
+    const [audioUrl, setAudioUrl] = useState(null);
     const [commentList, setCommentList] = useState();
     let [searchParams, setSearchParams] = useSearchParams();
     useEffect(() => {
@@ -30,6 +32,7 @@ export default function Post() {
         temp.main = { title: capitalizeFirstLetter(postData.title) }
         setInitData(temp)
         setCommentList(postData?.comment || []);
+        getAudioUrl(postData.filePath).then(setAudioUrl);
     }, [])
     return (
         <Stack direction={"column"} gap={1}>
@@ -65,7 +68,23 @@ export default function Post() {
                 {postData?.tags?.map(tag => <Chip component={RouterLink} to={`/${tag.path}`} clickable key={tag.id} label={decodeURIComponent(tag.id)} variant="outlined" size="small" />)}
             </Stack>
             <Typography variant="body1">{postData.desc}</Typography>
-            {user && <PlayButton post={postData} user={user} />}
+            {user && (
+                <Stack direction="row" gap={1} alignItems="center">
+                    <PlayButton post={postData} user={user} />
+                    <Box sx={{ flex: 1 }}>
+                        <Waveform
+                            audioUrl={audioUrl}
+                            progress={initData?.postInPlay?.id === postData.id ? (initData.postInPlay.progress || 0) : 0}
+                            onSeek={initData?.postInPlay?.id === postData.id ? (pct) => {
+                                setInitData((val) => ({
+                                    ...val,
+                                    postInPlay: { ...val.postInPlay, seekTo: pct }
+                                }));
+                            } : undefined}
+                        />
+                    </Box>
+                </Stack>
+            )}
             <Box paddingY={2}>
                 <InputComment post={postData} setCommentList={setCommentList} />
             </Box>

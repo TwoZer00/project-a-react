@@ -1,15 +1,13 @@
-import { getDownloadURL, getStorage, ref } from '@firebase/storage';
 import { Person, Person2, Person4 } from '@mui/icons-material';
 import { Box, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { getAuth } from 'firebase/auth';
-import { collection, doc, getDoc, getDocs, getFirestore, query, where } from 'firebase/firestore';
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 import ButtonFollow from '../components/Follow/Button';
 import PostCard from '../components/PostCard';
 import UserAvatar from '../components/UserAvatar';
+import { getAvatarImage, getUserData, getPostsUser } from '../firebase/utills';
 import { labels, windowLang } from '../utils';
 
 export default function Profile() {
@@ -19,15 +17,10 @@ export default function Profile() {
     useEffect(() => {
         const temp = { ...initData }
         const loadUserData = async (userId) => {
-            const data = await fetchUserData(userId);
-            let profileURL = ""
-            try {
-                profileURL = await getProfileImgUrl(data.profileImg);
+            const data = await getUserData(userId);
+            if (data.avatarURL) {
+                try { data.avatarURL = await getAvatarImage(data.avatarURL); } catch (e) { console.error(e); }
             }
-            catch (e) {
-                console.error(e);
-            }
-            // const temp = { ...data, photoURL: profileURL };
             setUserData(data);
             temp.main = { title: `${data.username}'s ${labels[windowLang]['profile']}` };
             setInitData(temp);
@@ -90,62 +83,22 @@ export default function Profile() {
     )
 }
 
-async function fetchUserData(userId) {
-    let userData = undefined;
-    const db = getFirestore();
-    // const userRef = collection(db, 'users');
-    const docSnap = await getDoc(doc(db, 'user', userId));
-    if (docSnap.exists()) {
-        userData = { ...docSnap.data(), id: docSnap.id }
-    }
-    // console.log(userData, userId);
-    return userData;
-}
-
-async function getProfileImgUrl(id) {
-    const storage = getStorage();
-    const storageRef = ref(storage, `userPhotos/${id}/profileImage.jpg`);
-    let profileImgUrl = ""
-    try {
-        if (id) {
-            profileImgUrl = await getDownloadURL(storageRef);
-        }
-    } catch (error) {
-        console.log(error.code);
-    }
-    return profileImgUrl;
-}
-
 function PostList({ userId }) {
     const [posts, setPosts] = useState([]);
     useEffect(() => {
         const loadPosts = async () => {
-            const posts = await getPosts(userId);
-            setPosts(posts);
+            const posts = await getPostsUser(userId);
+            // Filter private posts for non-owners
+            const filtered = userId !== getAuth().currentUser?.uid
+                ? posts.filter(p => p.visibility === 'public')
+                : posts;
+            setPosts(filtered);
         }
         loadPosts();
     }, [])
     return (
         <>
-            {
-                posts.map((post) => <PostCard key={post.id} postData={post} />)
-            }
+            {posts.map((post) => <PostCard key={post.id} postData={post} />)}
         </>
     )
-}
-
-async function getPosts(userId) {
-    const posts = [];
-    const db = getFirestore();
-    const userRef = doc(db, 'user', userId);
-    const postsRef = collection(db, 'post');
-    let q = query(postsRef, where('indexed', '==', true), where('user', '==', userRef));
-    if (userId !== getAuth().currentUser?.uid) {
-        q = query(postsRef, where('indexed', '==', true), where('user', '==', userRef), where('visibility', '==', "public"));
-    }
-    const postsArr = await getDocs(q);
-    postsArr.forEach((doc) => {
-        posts.push({ ...doc.data(), id: doc.id });
-    })
-    return posts;
 }

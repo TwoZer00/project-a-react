@@ -101,12 +101,14 @@ export async function setUser(userId, user) {
     return setDoc(userRef, { ...user, creationTime: (new Date(getAuth().currentUser.metadata.creationTime)) });
 }
 
+let categoriesCache = null;
 export async function getCategories() {
+    if (categoriesCache) return categoriesCache;
     const db = getFirestore();
     const categoriesRef = collection(db, "category");
     const categoriesSnapshot = await getDocs(categoriesRef);
-    const categories = categoriesSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
-    return categories;
+    categoriesCache = categoriesSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
+    return categoriesCache;
 }
 
 export async function getComment(id) {
@@ -137,12 +139,14 @@ export async function getPostsUser(id, size) {
     return posts;
 }
 
+let tagsCache = null;
 export async function getTags() {
+    if (tagsCache) return tagsCache;
     const db = getFirestore();
     const tagsRef = collection(db, "tag");
     const tagsSnapshot = await getDocs(tagsRef);
-    const tags = tagsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
-    return tags;
+    tagsCache = tagsSnapshot.docs.map(doc => { return { ...doc.data(), id: doc.id } });
+    return tagsCache;
 }
 export async function getPostsUserCount(id) {
     const posts = await getPostsUser(id);

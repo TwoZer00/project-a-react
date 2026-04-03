@@ -35,10 +35,12 @@ export const router = createBrowserRouter([
             {
                 path: "",
                 element: <Home />,
+                errorElement: <Error />
             },
             {
                 path: "user",
                 element: <Profile />,
+                errorElement: <Error />,
                 children: [{
                     path: ":id",
                     element: <Profile />
@@ -46,11 +48,13 @@ export const router = createBrowserRouter([
             },
             {
                 path: "upload",
-                element: <Upload />
+                element: <Upload />,
+                errorElement: <Error />
             },
             {
                 path: "post/:id",
                 element: <Post />,
+                errorElement: <Error />,
                 loader: async ({ params }) => {
                     return getPostData(params.id);
                 }
@@ -99,6 +103,7 @@ export const router = createBrowserRouter([
     {
         path: "/dashboard",
         element: <Dashboard />,
+        errorElement: <Error />,
         loader: async () => {
             return getAuth(app);
         },

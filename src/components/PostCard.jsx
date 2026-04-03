@@ -8,8 +8,10 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { getAuth } from 'firebase/auth'
 import React, { useEffect, useState } from 'react'
 import { Link as RouterLink, useOutletContext } from 'react-router-dom'
-import { getAudioUrl, getUserData } from '../firebase/utills'
+import { getAudioUrl } from '../firebase/utills'
+import { useUserCache } from '../context/UserCacheContext'
 import { windowLang } from '../utils'
+import { savePlay } from '../utils/recentPlays'
 import { inTime } from './Comments/Comment'
 import ButtonFollow from './Follow/Button'
 import PlayButton from './PlayButton'
@@ -22,6 +24,7 @@ export default function PostCard({ postData }) {
     const [profileImgUrl, setProfileImgUrl] = useState();
     const [username, setUsername] = useState("");
     const [user, setUser] = useState()
+    const { users, getUser } = useUserCache();
     const handlePlayButton = async () => {
         if (initData?.postInPlay?.isAudioInProgress && postData.id === initData.postInPlay.id) {
             const temp = { ...initData }
@@ -40,17 +43,17 @@ export default function PostCard({ postData }) {
                 username: user.username,
                 cover: postData.coverURL || user.avatarURL
             }
+            savePlay(postData);
             const temp = { ...initData, postInPlay }
             setInitData(temp);
         }
     }
     useEffect(() => {
-        const fetchUser = async () => {
-            const userData = await getUserData(postData.user.id);
-            setUser(userData);
-        }
-        fetchUser();
+        getUser(postData.user.id);
     }, [])
+    useEffect(() => {
+        if (users[postData.user.id]) setUser(users[postData.user.id]);
+    }, [users[postData.user.id]])
     return (
         <Card sx={{ ":first-child": { marginTop: 0 }, marginY: 2, ":last-child": { marginBottom: 0 } }}>
             <CardHeader

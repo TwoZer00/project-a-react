@@ -5,6 +5,7 @@ import { useOutletContext } from 'react-router-dom';
 import { getAudioUrl } from '../firebase/utills';
 import { Pause, PlayArrow } from '@mui/icons-material';
 import { labels, windowLang } from '../utils';
+import { savePlay } from '../utils/recentPlays';
 
 export default function PlayButton(props) {
     const [initData, setInitData] = useOutletContext();
@@ -30,6 +31,7 @@ export default function PlayButton(props) {
                 username: props.user.username,
                 cover: props.post.coverURL || props.user.avatarURL
             }
+            savePlay(props.post);
             const temp = { ...initData, postInPlay }
             setInitData(temp);
         }

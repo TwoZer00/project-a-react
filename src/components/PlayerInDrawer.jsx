@@ -42,6 +42,11 @@ export default function PlayerInDrawer({ open, audio, data }) {
         setAudioProgress(temp * 100);
         updatePositionState();
         if (getCurrentPorcentage() > 30) setPlayed(true);
+        setInitData((value) => {
+            const t = { ...value };
+            if (t?.postInPlay) t.postInPlay.progress = temp * 100;
+            return t;
+        });
     }
     const handleEnded = () => {
         setIsPlaying(false);
@@ -149,6 +154,19 @@ export default function PlayerInDrawer({ open, audio, data }) {
     }
 
     useEffect(() => {
+        const seekTo = initData?.postInPlay?.seekTo;
+        if (seekTo !== undefined && audioRef.current?.duration) {
+            audioRef.current.currentTime = (seekTo / 100) * audioRef.current.duration;
+            setAudioProgress(seekTo);
+            setInitData((val) => {
+                const temp = { ...val };
+                if (temp?.postInPlay) delete temp.postInPlay.seekTo;
+                return temp;
+            });
+        }
+    }, [initData?.postInPlay?.seekTo]);
+
+    useEffect(() => {
         const fetchUserData = async () => {
             const temp = await getUserData(audio?.userId);
             setUser(temp);
@@ -170,17 +188,7 @@ export default function PlayerInDrawer({ open, audio, data }) {
 
         return timeArray.filter((v, i) => v !== "00" || i > 0).join(":");
     };
-    const handleClick = (e) => {
-        let start = 0;
-        if (e.clientX > 15) {
-            start = e.clientX - 15;
-        }
-        const eq = (start * e.target.clientWidth) / (222 - 15);
-        const eqTime = (eq * audioRef.current.duration) / (222 - 15);
-        const eqPorcentage = ((eq * 100) / (222 - 15))
-        audioRef.current.currentTime = Math.round(eqTime);
-        setAudioProgress(eqPorcentage);
-    }
+
     return (
         <Stack direction="column" width={"100%"} sx={{ placeSelf: "end" }} gap={1}>
             <div>
@@ -190,7 +198,12 @@ export default function PlayerInDrawer({ open, audio, data }) {
             </div>
             {open && (
                 <Box>
-                    <LinearProgress variant="determinate" value={audioProgress} color='secondary' sx={{ width: "100%" }} style={{ borderRadius: "1rem" }} onClick={handleClick} />
+                    <LinearProgress variant="determinate" value={audioProgress} color='secondary' sx={{ width: "100%", borderRadius: "1rem", cursor: 'pointer' }} onClick={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const pct = ((e.clientX - rect.left) / rect.width) * 100;
+                        audioRef.current.currentTime = (pct / 100) * audioRef.current.duration;
+                        setAudioProgress(pct);
+                    }} />
                     <Stack direction={"row"} justifyContent={"space-between"} >
                         {/* <Typography>{audio && (audioRef.current.currentTime / 60).toLocaleString(undefined, {
                             minimumFractionDigits: 1,
