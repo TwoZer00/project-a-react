@@ -6,11 +6,11 @@ export default function List({ commentsList, comment, postAuthorId, onReply, ref
     const [listC, setListC] = useState();
 
     useEffect(() => {
-        if (comment) {
+        if (comment && commentsList) {
             const temp = commentsList.filter(item => item.id !== comment);
             setListC(temp);
         }
-    }, [comment]);
+    }, [comment, commentsList]);
 
     if (comment === null) {
         return (
@@ -24,8 +24,8 @@ export default function List({ commentsList, comment, postAuthorId, onReply, ref
 
     return (
         <Stack direction="column" gap={2}>
-            <Box paddingY={2}>
-                <Comment id={comment} postAuthorId={postAuthorId} onReply={onReply} refreshReplies={refreshReplies} />
+            <Box paddingY={2} sx={{ bgcolor: 'action.selected', borderRadius: 1, px: 1 }}>
+                <Comment id={comment} postAuthorId={postAuthorId} onReply={onReply} refreshReplies={refreshReplies} defaultShowReplies />
             </Box>
             {listC?.length > 0 && listC.map(c => (
                 <Comment key={c.id} id={c.id} postAuthorId={postAuthorId} onReply={onReply} refreshReplies={refreshReplies} />

@@ -14,11 +14,11 @@ import UserAvatar from '../UserAvatar';
 dayjs.extend(duration)
 dayjs.extend(relativeTime)
 
-export default function Comment({ id, postAuthorId, onReply, isReply, replyData, refreshReplies }) {
+export default function Comment({ id, postAuthorId, onReply, isReply, replyData, refreshReplies, defaultShowReplies }) {
     const [comment, setComment] = useState()
     const [user, setUser] = useState();
     const [replies, setReplies] = useState([]);
-    const [showReplies, setShowReplies] = useState(false);
+    const [showReplies, setShowReplies] = useState(defaultShowReplies || false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,6 +38,16 @@ export default function Comment({ id, postAuthorId, onReply, isReply, replyData,
             const replyList = await getReplies(id);
             setReplies(replyList);
             if (replyList.length > replies.length && replies.length > 0) setShowReplies(true);
+            if (defaultShowReplies && replyList.length > 0) {
+                setShowReplies(true);
+                setTimeout(() => {
+                    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            } else if (defaultShowReplies) {
+                setTimeout(() => {
+                    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
         };
         fetchReplies();
     }, [id, refreshReplies]);
