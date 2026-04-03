@@ -1,4 +1,4 @@
-import { Category, CategoryOutlined, History, Home, HomeOutlined, Upload } from '@mui/icons-material';
+import { Bookmark, Category, CategoryOutlined, History, Home, HomeOutlined, Upload } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -142,7 +142,7 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                     <ListItemText primary={labels[windowLang]['category']} sx={{ ":first-letter":{textTransform:"uppercase"},opacity: open ? 1 : 0 }} />
                                 </ListItemButton>
                             </Tooltip>
-                            <Tooltip title={!open && 'History'} placement="right">
+                            <Tooltip title={!open && labels[windowLang]['history']} placement="right">
                                 <ListItemButton
                                     component={RouterLink}
                                     to="/history"
@@ -160,7 +160,28 @@ export default function CustomDrawer({ outlet, title, audio, loading, data }) {
                                         }}>
                                         <History />
                                     </ListItemIcon>
-                                    <ListItemText primary="History" sx={{ opacity: open ? 1 : 0 }} />
+                                    <ListItemText primary={labels[windowLang]['history']} sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </Tooltip>
+                            <Tooltip title={!open && labels[windowLang]['bookmarks']} placement="right">
+                                <ListItemButton
+                                    component={RouterLink}
+                                    to="/bookmarks"
+                                    selected={currentPath === '/bookmarks'}
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
+                                    }}>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                        }}>
+                                        <Bookmark />
+                                    </ListItemIcon>
+                                    <ListItemText primary={labels[windowLang]['bookmarks']} sx={{ opacity: open ? 1 : 0 }} />
                                 </ListItemButton>
                             </Tooltip>
                         </ListItem>

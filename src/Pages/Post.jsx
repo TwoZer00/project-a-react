@@ -6,6 +6,7 @@ import { Share } from '@mui/icons-material';
 import InputComment from '../components/Comments/InputComment';
 import List from '../components/Comments/List';
 import LikeButton from '../components/LikeButton';
+import BookmarkButton from '../components/BookmarkButton';
 import PlayButton from '../components/PlayButton';
 import StationCard from '../components/StationCard';
 import Waveform from '../components/Waveform';
@@ -86,6 +87,7 @@ export default function Post() {
                 <Stack direction="row" gap={1} alignItems="center">
                     <PlayButton post={postData} user={user} />
                     <LikeButton postId={postData.id} initialCount={postData.likes || 0} />
+                    <BookmarkButton postId={postData.id} />
                     <Box sx={{ flex: 1 }}>
                         <Waveform
                             audioUrl={audioUrl}

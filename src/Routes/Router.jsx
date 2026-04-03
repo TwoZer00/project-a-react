@@ -23,6 +23,7 @@ import Upload from "../Pages/Upload";
 import Interludes from "../Pages/Interludes";
 import Stations from "../Pages/Stations";
 import ListeningHistory from "../Pages/ListeningHistory";
+import Bookmarks from "../Pages/Bookmarks";
 import Error from "../Pages/Error";
 import { app } from '../firebase/init';
 import { getCategories, getPostData } from "../firebase/utills";
@@ -68,6 +69,11 @@ export const router = createBrowserRouter([
             {
                 path: "history",
                 element: <ListeningHistory />,
+                errorElement: <Error />
+            },
+            {
+                path: "bookmarks",
+                element: <Bookmarks />,
                 errorElement: <Error />
             },
             {

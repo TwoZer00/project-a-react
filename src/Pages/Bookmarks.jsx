@@ -1,14 +1,16 @@
-import { History, Radio } from '@mui/icons-material';
+import { Bookmark, Radio } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
+import { getAuth } from 'firebase/auth';
+import { collection, getDocs, getFirestore, orderBy, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import EmptyState from '../components/EmptyState';
 import PostCard from '../components/PostCard';
+import PostCardSkeleton from '../components/PostCardSkeleton';
 import { getAudioUrl, getPostData, getUserData } from '../firebase/utills';
 import { labels, windowLang } from '../utils';
-import { getRecentPlays } from '../utils/recentPlays';
 
-export default function ListeningHistory() {
+export default function Bookmarks() {
     const [initData, setInitData] = useOutletContext();
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,11 +18,18 @@ export default function ListeningHistory() {
     const [playing, setPlaying] = useState(false);
 
     useEffect(() => {
-        setInitData(val => ({ ...val, main: { ...val?.main, title: labels[windowLang]['listening-history'] } }));
+        setInitData(val => ({ ...val, main: { ...val?.main, title: labels[windowLang]['bookmarks'] } }));
         const load = async () => {
-            const recent = getRecentPlays();
+            const userId = getAuth().currentUser?.uid;
+            if (!userId) { setLoading(false); return; }
+            const db = getFirestore();
+            const q = query(
+                collection(db, "user", userId, "bookmarks"),
+                orderBy('createdAt', 'desc')
+            );
+            const snap = await getDocs(q);
             const results = await Promise.all(
-                recent.map(r => getPostData(r.id).catch(() => null))
+                snap.docs.map(d => getPostData(d.id).catch(() => null))
             );
             setPosts(results.filter(Boolean));
             setLoading(false);
@@ -52,7 +61,7 @@ export default function ListeningHistory() {
                 cover: first.coverURL || userData.avatarURL
             },
             station: {
-                name: labels[windowLang]['listening-history'],
+                name: labels[windowLang]['bookmarks'],
                 queue: shuffled,
                 currentIndex: 0
             }
@@ -60,14 +69,14 @@ export default function ListeningHistory() {
         setPlaying(false);
     };
 
-    const isStationPlaying = initData?.station?.name === labels[windowLang]['listening-history'];
+    const isStationPlaying = initData?.station?.name === labels[windowLang]['bookmarks'];
 
     return (
         <Stack gap={2}>
             <Stack direction="row" gap={1} alignItems="center" justifyContent="space-between">
                 <Stack direction="row" gap={1} alignItems="center">
-                    <History />
-                    <Typography variant="h6">{labels[windowLang]['listening-history']}</Typography>
+                    <Bookmark />
+                    <Typography variant="h6">{labels[windowLang]['bookmarks']}</Typography>
                 </Stack>
                 {posts.length > 0 && (
                     <Button
@@ -82,10 +91,13 @@ export default function ListeningHistory() {
                 )}
             </Stack>
             {!loading && posts.length === 0 && (
-                <EmptyState icon="🎧" message={labels[windowLang]['nothing-played']} />
+                <EmptyState icon="🔖" message={labels[windowLang]['no-bookmarks']} />
             )}
             <Box sx={{ columnCount: "auto", columnWidth: { xs: "100%", sm: "300px" } }}>
-                {posts.map(post => <PostCard key={post.id} postData={post} />)}
+                {loading
+                    ? Array.from({ length: 3 }).map((_, i) => <PostCardSkeleton key={i} />)
+                    : posts.map(post => <PostCard key={post.id} postData={post} />)
+                }
             </Box>
         </Stack>
     );

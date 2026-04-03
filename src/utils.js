@@ -152,7 +152,9 @@ export const labels = {
         'outro-desc': 'Plays when station or single track ends',
         'credit-desc': 'Short sign-off after your content',
         'logout-sure': 'Are you sure you want to logout?',
-        'no-posts-found': 'No posts found'
+        'no-posts-found': 'No posts found',
+        'bookmarks': 'Bookmarks',
+        'no-bookmarks': 'No saved posts yet. Bookmark posts to find them here.'
     },
     es: {
         'my-profile': 'Mi perfil',
@@ -280,7 +282,9 @@ export const labels = {
         'outro-desc': 'Se reproduce al terminar la estación o una pista',
         'credit-desc': 'Despedida corta después de tu contenido',
         'logout-sure': '¿Estás seguro de que deseas cerrar sesión?',
-        'no-posts-found': 'No se encontraron publicaciones'
+        'no-posts-found': 'No se encontraron publicaciones',
+        'bookmarks': 'Guardados',
+        'no-bookmarks': 'Sin publicaciones guardadas aún. Guarda publicaciones para encontrarlas aquí.'
     }
 }
 
