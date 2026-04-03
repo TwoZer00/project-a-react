@@ -123,6 +123,14 @@ export async function getComment(id) {
     }
 }
 
+export async function getReplies(commentId) {
+    const db = getFirestore();
+    const repliesRef = collection(db, "comment", commentId, "replies");
+    const q = query(repliesRef, orderBy('creationTime', 'asc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+}
+
 export async function getUsername(id) {
     const temp = await getUserData(id);
     return temp?.username;

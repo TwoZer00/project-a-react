@@ -1,14 +1,20 @@
-import { Send } from '@mui/icons-material'
-import { Button, Stack, TextField, Tooltip } from '@mui/material'
+import { Close, Send } from '@mui/icons-material'
+import { Button, Chip, Stack, TextField, Tooltip } from '@mui/material'
 import { getAuth } from 'firebase/auth'
-import { arrayUnion, collection, doc, getFirestore, writeBatch } from 'firebase/firestore'
-import React, { useState } from 'react'
+import { arrayUnion, collection, doc, getFirestore, increment, writeBatch } from 'firebase/firestore'
+import React, { useEffect, useRef, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { labels, windowLang } from '../../utils'
 
-export default function InputComment({ post, setCommentList }) {
+export default function InputComment({ post, setCommentList, replyTo, onCancelReply, onReplySent }) {
     const [initData, setInitData] = useOutletContext();
     const [commentContent, setComment] = useState("");
+    const inputRef = useRef();
+
+    useEffect(() => {
+        if (replyTo) inputRef.current?.focus();
+    }, [replyTo]);
+
     const handleChange = (e) => {
         setComment(e.target.value);
     }
@@ -19,29 +25,58 @@ export default function InputComment({ post, setCommentList }) {
             return { ...prev, loading: true }
         })
         const db = getFirestore();
-        const commentRef = doc(collection(db, 'comment'));
         const postRef = doc(db, "post", post.id);
-        const comment = {
-            content: sanitized,
-            creationTime: new Date(),
-            user: doc(db, "user", getAuth().currentUser.uid),
-            post: doc(db, "post", post.id),
-            postOwned: doc(db, "user", post.user.id)
-        }
         const batch = writeBatch(db);
-        batch.update(postRef, { comment: arrayUnion(commentRef) })
-        batch.set(commentRef, comment);
+
+        if (replyTo?.id) {
+            // Reply goes into subcollection: comment/{parentId}/replies/{replyId}
+            const replyRef = doc(collection(db, "comment", replyTo.id, "replies"));
+            batch.set(replyRef, {
+                content: sanitized,
+                creationTime: new Date(),
+                user: doc(db, "user", getAuth().currentUser.uid),
+                post: postRef,
+                postOwned: doc(db, "user", post.user.id)
+            });
+            batch.update(postRef, { commentCount: increment(1) });
+        } else {
+            // Top-level comment
+            const commentRef = doc(collection(db, 'comment'));
+            batch.update(postRef, { comment: arrayUnion(commentRef), commentCount: increment(1) });
+            batch.set(commentRef, {
+                content: sanitized,
+                creationTime: new Date(),
+                user: doc(db, "user", getAuth().currentUser.uid),
+                post: postRef,
+                postOwned: doc(db, "user", post.user.id)
+            });
+            setCommentList((prev) => [commentRef, ...prev]);
+        }
+
         await batch.commit();
-        setCommentList((prev) => [commentRef, ...prev]);
         setComment("");
+        if (replyTo?.id && onReplySent) onReplySent();
+        if (onCancelReply) onCancelReply();
         setInitData((prev) => {
             const temp = { ...prev }
             delete temp.loading;
+            temp.notification = { type: 'success', msg: replyTo ? 'Reply sent' : 'Comment sent' };
             return temp;
         })
     }
     return (
         <Stack direction={"column"} gap={2}>
+            {replyTo && (
+                <Chip
+                    label={`Replying to @${replyTo.username}`}
+                    onDelete={onCancelReply}
+                    deleteIcon={<Close />}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    sx={{ alignSelf: 'flex-start' }}
+                />
+            )}
             <TextField
                 value={commentContent}
                 multiline
@@ -49,8 +84,9 @@ export default function InputComment({ post, setCommentList }) {
                 maxRows={4}
                 fullWidth
                 onChange={handleChange}
-                label={labels[windowLang]['leave-comment']}
+                label={replyTo ? `Reply to @${replyTo.username}` : labels[windowLang]['leave-comment']}
                 inputProps={{ maxLength: 1000 }}
+                inputRef={inputRef}
             />
             <Tooltip title={`${getAuth().currentUser ? "" : "Please sign in first"}`} >
                 <span style={{ width: "fit-content", marginLeft: "auto" }}>

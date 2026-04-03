@@ -21,6 +21,8 @@ export default function Post() {
     const [audioUrl, setAudioUrl] = useState(null);
     const [commentList, setCommentList] = useState();
     const [copied, setCopied] = useState(false);
+    const [replyTo, setReplyTo] = useState(null);
+    const [refreshReplies, setRefreshReplies] = useState(0);
     let [searchParams, setSearchParams] = useSearchParams();
     useEffect(() => {
         const loadUser = async (id) => {
@@ -96,10 +98,22 @@ export default function Post() {
                 </Stack>
             )}
             <Box paddingY={2}>
-                <InputComment post={postData} setCommentList={setCommentList} />
+                <InputComment
+                    post={postData}
+                    setCommentList={setCommentList}
+                    replyTo={replyTo}
+                    onCancelReply={() => setReplyTo(null)}
+                    onReplySent={() => setRefreshReplies(v => v + 1)}
+                />
             </Box>
             <Box>
-                <List commentsList={commentList} comment={searchParams.get("comment")} />
+                <List
+                    commentsList={commentList}
+                    comment={searchParams.get("comment")}
+                    postAuthorId={postData.user.id}
+                    onReply={(id, username) => setReplyTo({ id, username })}
+                    refreshReplies={refreshReplies}
+                />
             </Box>
             <Snackbar open={copied} autoHideDuration={2000} onClose={() => setCopied(false)} message="Link copied to clipboard" />
         </Stack>

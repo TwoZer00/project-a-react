@@ -100,8 +100,8 @@ export default function PostCard({ postData }) {
                 <PlayButton post={postData} user={user} variant="icon" />
                 <Stack direction={"row"} gap={1}>
                     <Comment />
-                    <Tooltip title={(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal" })}>
-                        <Typography>{(postData?.comment?.length || [].length).toLocaleString(window.navigator.language, { style: "decimal", roundingPriority: "morePrecision", notation: "compact", })}</Typography>
+                    <Tooltip title={(postData?.commentCount || postData?.comment?.length || 0).toLocaleString(window.navigator.language, { style: "decimal" })}>
+                        <Typography>{(postData?.commentCount || postData?.comment?.length || 0).toLocaleString(window.navigator.language, { style: "decimal", roundingPriority: "morePrecision", notation: "compact", })}</Typography>
                     </Tooltip>
                 </Stack>
                 <Stack direction={"row"} gap={1}>
