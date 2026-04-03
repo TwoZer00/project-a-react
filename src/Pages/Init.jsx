@@ -19,7 +19,6 @@ export default function Init() {
     }, [location.pathname]);
     useEffect(() => {
         const authState = onAuthStateChanged(auth, async (user) => {
-            // console.log(location.pathname, "bbbb");
             if (user) {
                 const temp = {
                     uid: user.uid,
@@ -60,7 +59,6 @@ export default function Init() {
             const preferences = { theme: tempTheme }
             preferences.nsfw = JSON.parse(localStorage.getItem('preferences')).nsfw;
             preferences.selectedTheme = JSON.parse(localStorage.getItem('preferences')).selectedTheme;
-            // console.log(preferences);
             setInitData((val) => {
                 return { ...val, preferences };
             });

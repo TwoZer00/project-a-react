@@ -111,8 +111,5 @@ export const inTime = (date) => {
     const now = dayjs(new Date())
     const created = dayjs(new Date(date.seconds * 1000))
     const diff = dayjs.duration(created.diff(now)).locale(windowLang)
-    // console.log(diff.humanize());
     return diff.humanize(true)
-    // console.log(now.format("DD/MM/YYYY HH:MM:ss"), created.format("DD/MM/YYYY HH:MM:ss"), diff.humanize(true));
-    //dayjs.duration(dayjs(new Date(comment?.creationTime.seconds * 1000)).subtract(new Date())).locale(windowLang).humanize(true)
 }

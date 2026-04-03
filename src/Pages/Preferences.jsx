@@ -42,7 +42,6 @@ export default function Preferences() {
                     <Typography variant="caption">{labels[windowLang]['theme-sub']}</Typography>
                 </Stack>
                 <FormControl sx={{ flexGrow: 0, flex: "none" }}>
-                    {/* <InputLabel id="demo-simple-select-label">Theme</InputLabel> */}
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -53,9 +52,7 @@ export default function Preferences() {
                             const temp = { ...initData }
                             const preferences = { ...temp?.preferences }
                             preferences.selectedTheme = event.target.value === 'default' ? "default" : event.target.value;
-                            // console.log({ ...paletteTemp.palette, mode });
                             preferences.theme = createTheme({ palette: { ...paletteTemp.palette, mode: preferences.selectedTheme === "default" ? isDarkModeEnabled() ? "dark" : "light" : preferences.selectedTheme } })
-                            // console.log(preferences);
                             setInitData({ ...temp, preferences })
                         }}
                     >

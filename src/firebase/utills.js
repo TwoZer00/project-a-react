@@ -26,7 +26,6 @@ export async function getUserData(userId) {
 export async function getAudioUrl(path) {
     const storage = getStorage();
     const storageRef = ref(storage, path);
-    // console.log(storageRef);
     const url = await getDownloadURL(storageRef);
     return url;
 }
@@ -43,7 +42,6 @@ export async function updateUser(id, user) {
         await updateDoc(userRef, user);
         return user;
     } catch (error) {
-        // console.log(error);
         return undefined;
     }
 }

@@ -1,10 +1,9 @@
 import { ThemeProvider } from '@emotion/react'
-import styled from '@emotion/styled'
-import { Accessibility, FireExtinguisher, Man, Park, PedalBike, SportsRugby, Woman } from '@mui/icons-material'
-import { Box, Button, CssBaseline, Divider, Paper, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
+import { Accessibility, Man, Woman } from '@mui/icons-material'
+import { Box, Button, CssBaseline, Paper, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { labels, windowLang } from '../utils'
 import { theme } from './Init'
@@ -35,8 +34,7 @@ export default function Register() {
                 const user = await setDoc(userRef, userObj);
                 navigate("/user");
             }
-            catch (err) {
-                console.log(err);
+            catch (error) {
                 tempE.password = (labels[windowLang]);
                 setError(tempE);
                 return;
@@ -53,7 +51,6 @@ export default function Register() {
                         <Box display={"flex"} flexDirection={"column"} alignItems={"center"} paddingBottom={2}>
                             <Box display={"flex"} flexDirection={"column"} alignItems={"center"} marginY={1}>
                                 <img src="./aproject.svg" alt="aproject logo" width={70} />
-                                {/* <Typography variant="h2" color="inherit" fontSize={22} marginTop={1} fontWeight={400}>A.M.É</Typography> */}
                             </Box>
                             <Typography variant="h1" color="inherit" fontSize={32} fontWeight={500} >{labels[windowLang]["register"]}</Typography>
                             <Typography variant="body1" color="inherit">{labels[windowLang]["welcome-register"]}</Typography>
@@ -82,7 +79,6 @@ export default function Register() {
 
 function validateForm(formElements, error) {
     for (const formElment of formElements) {
-        // console.log(formElment);
         if (!formElment.checkValidity()) {
             error[formElment.name] = formElment.validationMessage;
         }
@@ -106,12 +102,6 @@ function validatePassword(passwords, error) {
 export function CustomToggleButton(props) {
     const [gender, setGender] = useState(props.value || 'other');
     useEffect(() => { if (props.value) setGender(props.value); }, [props.value]);
-    const otherGender = Math.random() < 0.5 ? 'male' : 'female';
-    //a variable that contains a random rumber between 0 and 5
-    const randomNumber = useRef(Math.floor(Math.random() * 3));
-
-    const gend = [<FireExtinguisher />, <Park />, <SportsRugby />, <PedalBike />];
-
     const handleGender = (event, newGender) => {
         setGender(newGender);
     }
@@ -128,13 +118,11 @@ export function CustomToggleButton(props) {
                     <Man />
                 </ToggleButton>
                 <ToggleButton value="other" aria-label="other">
-                    {/* {gend[randomNumber.current]} */}
                     <Accessibility/>
                 </ToggleButton>
                 <ToggleButton value="female" aria-label="female">
                     <Woman />
                 </ToggleButton>
-                {/* <Divider flexItem orientation="vertical" sx={{ fontSize: "12px", mx: 1 }}>or</Divider> */}
                 <input type="number" hidden name='gender' value={genderToNumber(gender)} id='gender' />
             </ToggleButtonGroup>
         </>
@@ -151,26 +139,6 @@ export function genderToNumber(gender) {
             return 2;
     }
 }
-
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-    '& .MuiToggleButtonGroup-grouped': {
-        '&.Mui-disabled': {
-            border: 0,
-        },
-        '&.MuiToggleButton-root': {
-            borderColor: theme.palette.divider
-        },
-        '&:last-of-type': {
-            borderRadius: theme.shape.borderRadius,
-        },
-        '&:nth-of-type(2)': {
-            borderRadius: theme.shape.borderRadius,
-            borderTopLeftRadius: 0,
-            borderLeftWidth: 0,
-            borderBottomLeftRadius: 0,
-        },
-    },
-}));
 
 async function validateUsername(username, error) {
     if (username.value.length < 3) {

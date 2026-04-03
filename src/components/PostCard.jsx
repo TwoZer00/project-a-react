@@ -140,7 +140,6 @@ function stringToColor(string) {
 }
 
 export function stringAvatar(name = "", size = { width: 50, height: 50 }) {
-    // console.log(size);
     return {
         sx: {
             bgcolor: stringToColor(name),

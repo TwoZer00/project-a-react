@@ -1,6 +1,5 @@
 import { Box, Button, Stack, TextField } from '@mui/material';
 import { getAuth } from 'firebase/auth';
-import { setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import CustomNotification, { SlideTransition } from '../../../components/CustomNotification';
@@ -65,9 +64,7 @@ export default function ProfileDashboard() {
             }
             setUser(temp);
             setNotFlag({ open: true, Transition: SlideTransition });
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) {}
 
     }
 

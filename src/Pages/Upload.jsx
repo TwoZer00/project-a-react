@@ -1,4 +1,4 @@
-import { Alert, Autocomplete, Backdrop, Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, Snackbar, Stack, TextField, ToggleButton, ToggleButtonGroup, Tooltip, Typography, createFilterOptions } from '@mui/material';
+import { Alert, Autocomplete, Backdrop, Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, Snackbar, Stack, TextField, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
 import { collection, doc, getDocs, getFirestore, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { MuiFileInput } from 'mui-file-input';
 import React, { useEffect, useRef, useState } from 'react';
@@ -11,13 +11,11 @@ import { getCategories, getLoggedUserRef } from '../firebase/utills';
 import { InputField } from './Login';
 import { labels, windowLang } from '../utils';
 
-const filter = createFilterOptions();
 export default function Upload() {
     const [initData, setInitData] = useOutletContext();
     const navigate = useNavigate();
     const location = useLocation();
     const [tags, setTags] = useState([]);
-    const [genre, setGenre] = useState([]);
     const [category, setCategory] = useState([]);
     const [value, setValue] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -229,25 +227,6 @@ async function getTags() {
     return tags;
 }
 
-async function getGenre() {
-    const tags = []
-    const db = getFirestore();
-    const docs = await getDocs(collection(db, "genre"));
-    docs.size > 0 && docs.forEach((doc) => {
-        tags.push({ ...doc.data() })
-    });
-    return tags;
-}
-async function getCategory() {
-    let categories = ["audiobook", "effects", "music", "general"]
-    const db = getFirestore();
-    const docs = await getDocs(collection(db, "category"));
-    categories = [...categories, ...docs.docs]
-    // docs.size > 0 && docs.forEach((doc) => {
-    //     categories.push({ ...doc.data() })
-    // });
-    return categories;
-}
 
 async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) {
     if (!userId) throw new CustomError("No user found")
@@ -264,13 +243,10 @@ async function uploadFile(file, postRef, userId, uploadingProgress, post, tags) 
             uploadingProgress((val) => {
                 return { ...val, loading: { state: "loading", progress: progress } }
             })
-            // console.log('Upload is ' + progress + '% done');
             switch (snapshot.state) {
                 case 'paused':
-                    // console.log('Upload is paused');
                     break;
                 case 'running':
-                    // console.log('Upload is running');
                     break;
             }
         },
@@ -321,10 +297,6 @@ function createTagsReference(tags) {
     return tagRefs
 }
 
-function getGenreRef(genre) {
-    const genreRef = doc(getFirestore(), 'genre', genre)
-    return genreRef;
-}
 function getCategoryRef(category) {
     const categoryRef = doc(getFirestore(), 'category', category)
     return categoryRef;
